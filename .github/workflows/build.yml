@@ -37,5 +37,14 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
       - name: publish
         run: ./gradlew publish
+        env:
+          GPR_TOKEN: ${{secrets.GITHUB_TOKEN}}

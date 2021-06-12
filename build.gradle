@@ -88,8 +88,8 @@ publishing {
 			name = "GitHubPackages"
 			url = uri("https://maven.pkg.github.com/blay09/Forbic")
 			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
+				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
 			}
 		}
 	}
