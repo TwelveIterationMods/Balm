@@ -68,6 +68,8 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			artifactId = 'forbic-fabric'
+
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
 				builtBy remapJar
