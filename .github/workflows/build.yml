@@ -4,7 +4,7 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+on: [push]
 
 jobs:
   build:
@@ -37,3 +37,5 @@ jobs:
         with:
           name: Artifacts
           path: build/libs/
+      - name: publish
+        run: ./gradlew publish
