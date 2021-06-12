@@ -4,13 +4,14 @@
   "version": "${version}",
 
   "name": "Forbic",
-  "description": "",
+  "description": "Abstraction Layer for mods wanting to support both Forge and Fabric",
   "authors": [
     "BlayTheNinth"
   ],
   "contact": {
     "homepage": "https://blay09.net/",
-    "sources": "https://github.com/blay09/Forbic"
+    "sources": "https://github.com/blay09/Forbic",
+    "issues": "https://github.com/blay09/Forbic/issues"
   },
 
   "license": "MIT",
@@ -34,5 +35,13 @@
     "java": ">=16"
   },
   "suggests": {
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/scGAfXC"
+      },
+      "badges": ["library"]
+    }
   }
 }
