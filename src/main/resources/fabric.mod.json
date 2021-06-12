@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "forbic-fabric",
+  "version": "${version}",
+
+  "name": "Forbic",
+  "description": "",
+  "authors": [
+    "BlayTheNinth"
+  ],
+  "contact": {
+    "homepage": "https://blay09.net/",
+    "sources": "https://github.com/blay09/Forbic"
+  },
+
+  "license": "MIT",
+  "icon": "assets/forbic/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "client": [
+    ]
+  },
+  "mixins": [
+    "forbic.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+  }
+}
