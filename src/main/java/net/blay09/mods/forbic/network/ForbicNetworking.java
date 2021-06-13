@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -42,6 +43,17 @@ public class ForbicNetworking {
         FriendlyByteBuf buf = PacketByteBufs.create();
         messageRegistration.getEncodeFunc().accept(message, buf);
         for (ServerPlayer player : PlayerLookup.tracking(world, pos)) {
+            ServerPlayNetworking.send(player, identifier, buf);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> void sendToAll(MinecraftServer server, T message) {
+        ForbicMessageRegistration<T> messageRegistration = (ForbicMessageRegistration<T>) messagesByClass.get(message.getClass());
+        ResourceLocation identifier = messageRegistration.getIdentifier();
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        messageRegistration.getEncodeFunc().accept(message, buf);
+        for (ServerPlayer player : PlayerLookup.all(server)) {
             ServerPlayNetworking.send(player, identifier, buf);
         }
     }
