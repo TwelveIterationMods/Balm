@@ -24,6 +24,10 @@ public class ForbicEvents {
         // TODO
     }
 
+    public static void onConfigReloaded(ConfigReloadedHandler handler) {
+        // TODO
+    }
+
     public static <T> void addCustomListener(Class<T> clazz, Consumer<T> handler) {
         // TODO
     }
