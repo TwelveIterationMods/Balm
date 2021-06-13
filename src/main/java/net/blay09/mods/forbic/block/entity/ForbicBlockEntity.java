@@ -15,4 +15,7 @@ public class ForbicBlockEntity extends BlockEntity {
     public AABB forbicGetRenderBoundingBox() {
         return AABB.unitCubeFromLowerCorner(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getY()));
     }
+
+    public void forbicOnLoad() {
+    }
 }
