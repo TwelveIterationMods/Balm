@@ -22,7 +22,7 @@ public class EntityModelSetMixin {
 
     @Inject(method = "onResourceManagerReload(Lnet/minecraft/server/packs/resources/ResourceManager;)V", at = @At("HEAD"))
     private void onResourceManagerReload(ResourceManager resourceManager, CallbackInfo callbackInfo) {
-        roots = ImmutableMap.<ModelLayerLocation, LayerDefinition>builder().putAll(roots).putAll(ForbicModRenderers.getLayerDefinitions()).build();
+        roots = ImmutableMap.<ModelLayerLocation, LayerDefinition>builder().putAll(roots).putAll(ForbicModRenderers.createRoots()).build();
     }
 
 }

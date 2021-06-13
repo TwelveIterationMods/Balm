@@ -16,11 +16,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ForbicModRenderers {
-    private static Map<ModelLayerLocation, LayerDefinition> layerDefinitions = new HashMap<>();
+    private static final Map<ModelLayerLocation, Supplier<LayerDefinition>> layerDefinitions = new HashMap<>();
 
-    protected static ModelLayerLocation registerModel(ResourceLocation location, LayerDefinition layerDefinition) {
+    protected static ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
         ModelLayerLocation modelLayerLocation = new ModelLayerLocation(location, "main");
         if (!ModelLayersAccessor.getAllModels().add(modelLayerLocation)) {
             throw new IllegalStateException("Duplicate registration for " + modelLayerLocation);
@@ -30,8 +32,8 @@ public class ForbicModRenderers {
         }
     }
 
-    public static Map<ModelLayerLocation, LayerDefinition> getLayerDefinitions() {
-        return layerDefinitions;
+    public static Map<ModelLayerLocation, LayerDefinition> createRoots() {
+        return layerDefinitions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().get()));
     }
 
     protected static <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
