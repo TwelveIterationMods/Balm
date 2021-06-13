@@ -1,5 +1,6 @@
 package net.blay09.mods.forbic.item;
 
+import net.blay09.mods.forbic.core.DeferredObject;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
@@ -15,8 +16,11 @@ public class ForbicItems {
         return new FabricItemSettings().group(creativeModeTab);
     }
 
-    protected static void register(Item item, ResourceLocation identifier) {
-        Registry.register(Registry.ITEM, identifier, item);
+    protected static DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier) {
+        return new DeferredObject<>(() -> {
+            Item item = supplier.get();
+            return Registry.register(Registry.ITEM, identifier, item);
+        }).resolveImmediately();
     }
 
     protected static CreativeModeTab createCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
