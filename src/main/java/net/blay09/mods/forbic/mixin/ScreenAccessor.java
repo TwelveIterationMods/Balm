@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface ScreenAccessor {
 
     @Accessor
     List<Widget> getRenderables();
+
+    @Invoker
+    <T extends GuiEventListener & Widget & NarratableEntry> T callAddRenderableWidget(T guiEventListener);
 }
