@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.Set;
 
 @Mixin(ModelLayers.class)
-public class ModelLayersAccessor {
+public interface ModelLayersAccessor {
 
     @Accessor("ALL_MODELS")
-    public static Set<ModelLayerLocation> getAllModels() {
+    static Set<ModelLayerLocation> getAllModels() {
         throw new AssertionError();
     }
 
