@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Level.class)
 public class LevelMixin {
-    @Inject(method = "setBlockEntity(Lnet.minecraft.world.level.block.entity.BlockEntity;)V", at = @At("HEAD"))
+    @Inject(method = "setBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;)V", at = @At("HEAD"))
     private void setBlockEntity(BlockEntity blockEntity, CallbackInfo callbackInfo) {
         if (blockEntity instanceof ForbicBlockEntity) {
             ((ForbicBlockEntity) blockEntity).forbicOnLoad();
