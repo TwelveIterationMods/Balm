@@ -1,16 +1,39 @@
 package net.blay09.mods.forbic.client;
 
+import net.blay09.mods.forbic.mixin.ModelLayersAccessor;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ForbicModRenderers {
+    private static Map<ModelLayerLocation, LayerDefinition> layerDefinitions = new HashMap<>();
+
+    protected static ModelLayerLocation registerModel(ResourceLocation location, LayerDefinition layerDefinition) {
+        ModelLayerLocation modelLayerLocation = new ModelLayerLocation(location, "main");
+        if (!ModelLayersAccessor.getAllModels().add(modelLayerLocation)) {
+            throw new IllegalStateException("Duplicate registration for " + modelLayerLocation);
+        } else {
+            layerDefinitions.put(modelLayerLocation, layerDefinition);
+            return modelLayerLocation;
+        }
+    }
+
+    public static Map<ModelLayerLocation, LayerDefinition> getLayerDefinitions() {
+        return layerDefinitions;
+    }
+
     protected static <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
         BlockEntityRendererRegistry.INSTANCE.register(type, provider);
     }

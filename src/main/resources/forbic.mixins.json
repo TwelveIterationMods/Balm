@@ -9,7 +9,9 @@
   "client": [
     "AbstractContainerScreenAccessor",
     "ScreenAccessor",
-    "CheckboxAccessor"
+    "CheckboxAccessor",
+    "EntityModelSetMixin",
+    "ModelLayersAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
