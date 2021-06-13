@@ -28,6 +28,14 @@ public class ForbicEvents {
         // TODO
     }
 
+    public static void onScreenInitialized(ScreenInitializedHandler handler) {
+        // TODO
+    }
+
+    public static void onScreenDrawn(ScreenInitializedHandler handler) {
+        // TODO
+    }
+
     public static <T> void addCustomListener(Class<T> clazz, Consumer<T> handler) {
         // TODO
     }
