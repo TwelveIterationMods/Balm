@@ -17,6 +17,9 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
+	// For Cloth Config
+	maven { url "https://maven.shedaniel.me/" }
+
 	// For ModMenu
 	maven { url "https://maven.terraformersmc.com/releases/" }
 }
@@ -33,6 +36,10 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+
+	modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 
 	modImplementation "com.terraformersmc:modmenu:2.0.2"
 }
