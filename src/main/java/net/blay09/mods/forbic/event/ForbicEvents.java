@@ -32,7 +32,7 @@ public class ForbicEvents {
         // TODO
     }
 
-    public static void onScreenDrawn(ScreenInitializedHandler handler) {
+    public static void onScreenDrawn(ScreenDrawnHandler handler) {
         // TODO
     }
 
