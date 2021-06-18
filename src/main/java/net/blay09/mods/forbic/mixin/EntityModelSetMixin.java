@@ -24,7 +24,6 @@ public class EntityModelSetMixin {
                 .putAll(originalRoots)
                 .putAll(ForbicModRenderers.createRoots())
                 .build();
-        System.out.println(roots);
         ((EntityModelSetAccessor) this).setRoots(roots);
     }
 

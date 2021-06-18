@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#c:green_dyes",
+    {"id":"#c:green_dyes", "required": false}
     "minecraft:green_dye"
   ]
 }

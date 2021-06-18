@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#c:light_gray_dyes",
+    {"id":"#c:light_gray_dyes", "required": false}
     "minecraft:light_gray_dye"
   ]
 }

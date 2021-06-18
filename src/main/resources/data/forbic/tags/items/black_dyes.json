@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#c:black_dyes",
-    "minecraft:black_dye"
+    "minecraft:black_dye",
+    {
+      "id": "#c:black_dyes",
+      "required": false
+    }
   ]
 }
