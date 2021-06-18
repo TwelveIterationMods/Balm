@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    {"id":"#c:pink_dyes", "required": false}
+    {"id":"#c:pink_dyes", "required": false},
     "minecraft:pink_dye"
   ]
 }

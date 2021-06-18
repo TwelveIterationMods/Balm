@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    {"id":"#c:emeralds", "required": false}
+    {"id":"#c:emeralds", "required": false},
     "minecraft:emerald"
   ]
 }
