@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Player.class)
-public class PlayerMixin {
+public class PlayerMixin implements IPlayerMixin {
 
     private CompoundTag forbicData;
 
@@ -22,10 +22,12 @@ public class PlayerMixin {
         compound.put("ForbicData", forbicData);
     }
 
+    @Override
     public CompoundTag getForbicData() {
         return forbicData;
     }
 
+    @Override
     public void setForbicData(CompoundTag forbicData) {
         this.forbicData = forbicData;
     }
