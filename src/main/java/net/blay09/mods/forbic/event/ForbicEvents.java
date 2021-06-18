@@ -25,7 +25,20 @@ public class ForbicEvents {
 
                 return null;
             });
-    ;
+
+    public static Event<LivingDamageHandler> LIVING_DAMAGE = EventFactory.createArrayBacked(LivingDamageHandler.class,
+            (listeners) -> (entity) -> {
+                for (LivingDamageHandler listener : listeners) {
+                    listener.handle(entity);
+                }
+            });
+
+    public static Event<ConfigReloadedHandler> CONFIG_RELOADED = EventFactory.createArrayBacked(ConfigReloadedHandler.class,
+            (listeners) -> () -> {
+                for (ConfigReloadedHandler listener : listeners) {
+                    listener.handle();
+                }
+            });
 
     public static void onPlayerLogin(PlayerLoginHandler handler) {
         ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> handler.handle(listener.player));
@@ -36,11 +49,11 @@ public class ForbicEvents {
     }
 
     public static void onLivingDamage(LivingDamageHandler handler) {
-        // TODO
+        LIVING_DAMAGE.register(handler);
     }
 
     public static void onConfigReloaded(ConfigReloadedHandler handler) {
-        // TODO
+        CONFIG_RELOADED.register(handler);
     }
 
     public static void onScreenInitialized(ScreenInitializedHandler handler) {
