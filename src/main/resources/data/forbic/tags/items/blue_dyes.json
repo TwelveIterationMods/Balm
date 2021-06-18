@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#c:blue_dyes",
+    "minecraft:blue_dye"
+  ]
+}
