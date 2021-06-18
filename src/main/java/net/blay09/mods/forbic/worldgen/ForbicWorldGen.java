@@ -49,7 +49,6 @@ public class ForbicWorldGen {
     }
 
     protected static void addFeatureToBiomes(Predicate<Biome> biomePredicate, ResourceKey<ConfiguredFeature<?, ?>> configuredFeature) {
-        BiomeModifications
         BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiome()), GenerationStep.Decoration.VEGETAL_DECORATION, configuredFeature);
     }
 }
