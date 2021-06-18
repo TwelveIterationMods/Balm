@@ -17,12 +17,15 @@ import java.util.Map;
 @Mixin(EntityModelSet.class)
 public class EntityModelSetMixin {
 
-    @Shadow
-    private Map<ModelLayerLocation, LayerDefinition> roots;
-
     @Inject(method = "onResourceManagerReload(Lnet/minecraft/server/packs/resources/ResourceManager;)V", at = @At("HEAD"))
     private void onResourceManagerReload(ResourceManager resourceManager, CallbackInfo callbackInfo) {
-        roots = ImmutableMap.<ModelLayerLocation, LayerDefinition>builder().putAll(roots).putAll(ForbicModRenderers.createRoots()).build();
+        Map<ModelLayerLocation, LayerDefinition> originalRoots = ((EntityModelSetAccessor) this).getRoots();
+        ImmutableMap<ModelLayerLocation, LayerDefinition> roots = ImmutableMap.<ModelLayerLocation, LayerDefinition>builder()
+                .putAll(originalRoots)
+                .putAll(ForbicModRenderers.createRoots())
+                .build();
+        System.out.println(roots);
+        ((EntityModelSetAccessor) this).setRoots(roots);
     }
 
 }

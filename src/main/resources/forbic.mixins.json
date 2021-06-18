@@ -11,6 +11,7 @@
     "ScreenAccessor",
     "CheckboxAccessor",
     "EntityModelSetMixin",
+    "EntityModelSetAccessor",
     "ModelLayersAccessor"
   ],
   "injectors": {
