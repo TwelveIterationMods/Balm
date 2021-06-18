@@ -14,6 +14,16 @@ import java.util.function.Supplier;
 
 public class SyncConfigMessage {
 
+    private final Object data;
+
+    public SyncConfigMessage(Object data) {
+        this.data = data;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
     private static List<Field> getSyncedFields(Class<?> clazz) {
         List<Field> syncedFields = new ArrayList<>();
         Field[] fields = clazz.getDeclaredFields();
@@ -67,7 +77,7 @@ public class SyncConfigMessage {
         };
     }
 
-    public static <T> Function<FriendlyByteBuf, T> createDecoder(Class<?> clazz, Supplier<T> factory) {
+    public static <T> Function<FriendlyByteBuf, SyncConfigMessage> createDecoder(Class<?> clazz, Supplier<T> factory) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
         return buf -> {
@@ -98,14 +108,15 @@ public class SyncConfigMessage {
                     e.printStackTrace();
                 }
             }
-            return data;
+            return new SyncConfigMessage(data);
         };
     }
 
-    public static BiConsumer<Object, FriendlyByteBuf> createEncoder(Class<?> clazz) {
+    public static BiConsumer<SyncConfigMessage, FriendlyByteBuf> createEncoder(Class<?> clazz) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
-        return (data, buf) -> {
+        return (message, buf) -> {
+            Object data = message.data;
             for (Field field : syncedFields) {
                 Class<?> type = field.getType();
                 final Object value;
