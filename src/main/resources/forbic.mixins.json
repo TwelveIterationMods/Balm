@@ -12,7 +12,8 @@
     "CheckboxAccessor",
     "EntityModelSetMixin",
     "EntityModelSetAccessor",
-    "ModelLayersAccessor"
+    "ModelLayersAccessor",
+    "AbstractClientPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
