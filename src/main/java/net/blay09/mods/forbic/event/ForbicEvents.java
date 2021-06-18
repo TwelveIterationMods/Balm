@@ -62,6 +62,10 @@ public class ForbicEvents {
         ServerLifecycleEvents.SERVER_STARTED.register(handler::handle);
     }
 
+    public static void onServerStopped(ServerStartedHandler handler) {
+        ServerLifecycleEvents.SERVER_STOPPED.register(handler::handle);
+    }
+
     public static void onScreenInitialized(ScreenInitializedHandler handler) {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> handler.handle(screen));
     }
