@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class ForbicWorldGen {
     protected static <T extends Feature<?>> DeferredObject<T> registerFeature(Supplier<T> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             T feature = supplier.get();
             Registry.register(Registry.FEATURE, identifier, feature);
             return feature;
@@ -27,7 +27,7 @@ public class ForbicWorldGen {
     }
 
     protected static <T extends ConfiguredFeature<?, ?>> DeferredObject<T> registerConfiguredFeature(Supplier<T> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             T configuredFeature = supplier.get();
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, identifier, configuredFeature);
             return configuredFeature;
@@ -35,7 +35,7 @@ public class ForbicWorldGen {
     }
 
     protected static <T extends FeatureDecorator<?>> DeferredObject<T> registerDecorator(Supplier<T> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             T decorator = supplier.get();
             Registry.register(Registry.DECORATOR, identifier, decorator);
             return decorator;

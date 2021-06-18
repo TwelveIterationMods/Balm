@@ -24,14 +24,14 @@ public class ForbicBlocks {
     }
 
     protected static DeferredObject<Block> registerBlock(Supplier<Block> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             Block block = supplier.get();
             return Registry.register(Registry.BLOCK, identifier, block);
         }).resolveImmediately();
     }
 
     protected static DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             Item item = supplier.get();
             return Registry.register(Registry.ITEM, identifier, item);
         }).resolveImmediately();

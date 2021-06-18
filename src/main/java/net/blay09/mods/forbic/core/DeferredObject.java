@@ -1,12 +1,16 @@
 package net.blay09.mods.forbic.core;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.function.Supplier;
 
 public class DeferredObject<T> {
+    private final ResourceLocation identifier;
     private final Supplier<T> supplier;
     private T object;
 
-    public DeferredObject(Supplier<T> supplier) {
+    public DeferredObject(ResourceLocation identifier, Supplier<T> supplier) {
+        this.identifier = identifier;
         this.supplier = supplier;
     }
 
@@ -28,5 +32,9 @@ public class DeferredObject<T> {
     public DeferredObject<T> resolveImmediately() {
         resolve();
         return this;
+    }
+
+    public ResourceLocation getIdentifier() {
+        return identifier;
     }
 }

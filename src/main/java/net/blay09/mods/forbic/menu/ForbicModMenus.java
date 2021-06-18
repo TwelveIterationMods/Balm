@@ -9,6 +9,6 @@ import net.minecraft.world.inventory.MenuType;
 public class ForbicModMenus {
 
     protected static <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, ForbicMenuFactory<T> factory) {
-        return new DeferredObject<>(() -> ScreenHandlerRegistry.registerExtended(identifier, factory)).resolveImmediately();
+        return new DeferredObject<>(identifier, () -> ScreenHandlerRegistry.registerExtended(identifier, factory)).resolveImmediately();
     }
 }

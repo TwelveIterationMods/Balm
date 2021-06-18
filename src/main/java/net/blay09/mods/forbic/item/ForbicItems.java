@@ -17,7 +17,7 @@ public class ForbicItems {
     }
 
     protected static DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(() -> {
+        return new DeferredObject<>(identifier, () -> {
             Item item = supplier.get();
             return Registry.register(Registry.ITEM, identifier, item);
         }).resolveImmediately();
