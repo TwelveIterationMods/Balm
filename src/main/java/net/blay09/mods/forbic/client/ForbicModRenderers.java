@@ -1,6 +1,5 @@
 package net.blay09.mods.forbic.client;
 
-import net.blay09.mods.forbic.mixin.ModelLayersAccessor;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -24,12 +23,13 @@ public class ForbicModRenderers {
 
     protected static ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
         ModelLayerLocation modelLayerLocation = new ModelLayerLocation(location, "main");
-        if (!ModelLayersAccessor.getAllModels().add(modelLayerLocation)) {
+        layerDefinitions.put(modelLayerLocation, layerDefinition);
+        /*if (!ModelLayersAccessor.getAllModels().add(modelLayerLocation)) {
             throw new IllegalStateException("Duplicate registration for " + modelLayerLocation);
         } else {
-            layerDefinitions.put(modelLayerLocation, layerDefinition);
             return modelLayerLocation;
-        }
+        }*/
+        return modelLayerLocation;
     }
 
     public static Map<ModelLayerLocation, LayerDefinition> createRoots() {
