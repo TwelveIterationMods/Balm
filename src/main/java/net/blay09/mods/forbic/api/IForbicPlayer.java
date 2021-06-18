@@ -1,8 +1,8 @@
-package net.blay09.mods.forbic.mixin;
+package net.blay09.mods.forbic.api;
 
 import net.minecraft.nbt.CompoundTag;
 
-public interface IPlayerMixin {
+public interface IForbicPlayer {
 
     CompoundTag getForbicData();
 
