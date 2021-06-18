@@ -12,15 +12,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SyncConfigMessage {
+public class SyncConfigMessage<T> {
 
-    private final Object data;
+    private final T data;
 
-    public SyncConfigMessage(Object data) {
+    public SyncConfigMessage(T data) {
         this.data = data;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
@@ -77,7 +77,7 @@ public class SyncConfigMessage {
         };
     }
 
-    public static <T> Function<FriendlyByteBuf, SyncConfigMessage> createDecoder(Class<?> clazz, Supplier<T> factory) {
+    public static <T> Function<FriendlyByteBuf, SyncConfigMessage<T>> createDecoder(Class<?> clazz, Supplier<T> factory) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
         return buf -> {
@@ -108,11 +108,11 @@ public class SyncConfigMessage {
                     e.printStackTrace();
                 }
             }
-            return new SyncConfigMessage(data);
+            return new SyncConfigMessage<>(data);
         };
     }
 
-    public static BiConsumer<SyncConfigMessage, FriendlyByteBuf> createEncoder(Class<?> clazz) {
+    public static <T> BiConsumer<SyncConfigMessage<T>, FriendlyByteBuf> createEncoder(Class<T> clazz) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
         return (message, buf) -> {
