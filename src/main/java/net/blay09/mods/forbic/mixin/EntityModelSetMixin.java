@@ -17,7 +17,7 @@ import java.util.Map;
 @Mixin(EntityModelSet.class)
 public class EntityModelSetMixin {
 
-    @Inject(method = "onResourceManagerReload(Lnet/minecraft/server/packs/resources/ResourceManager;)V", at = @At("HEAD"))
+    @Inject(method = "onResourceManagerReload(Lnet/minecraft/server/packs/resources/ResourceManager;)V", at = @At("TAIL"))
     private void onResourceManagerReload(ResourceManager resourceManager, CallbackInfo callbackInfo) {
         Map<ModelLayerLocation, LayerDefinition> originalRoots = ((EntityModelSetAccessor) this).getRoots();
         ImmutableMap<ModelLayerLocation, LayerDefinition> roots = ImmutableMap.<ModelLayerLocation, LayerDefinition>builder()
