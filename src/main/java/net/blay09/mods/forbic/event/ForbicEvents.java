@@ -20,10 +20,6 @@ public class ForbicEvents {
         // TODO
     }
 
-    public static void onBiomeLoading(BiomeLoadingHandler handler) {
-        // TODO
-    }
-
     public static void onConfigReloaded(ConfigReloadedHandler handler) {
         // TODO
     }

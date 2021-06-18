@@ -1,15 +1,20 @@
 package net.blay09.mods.forbic.worldgen;
 
 import net.blay09.mods.forbic.core.DeferredObject;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ForbicWorldGen {
@@ -41,5 +46,10 @@ public class ForbicWorldGen {
         return feature
                 .configured(config)
                 .decorated(configuredDecorator);
+    }
+
+    protected static void addFeatureToBiomes(Predicate<Biome> biomePredicate, ResourceKey<ConfiguredFeature<?, ?>> configuredFeature) {
+        BiomeModifications
+        BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiome()), GenerationStep.Decoration.VEGETAL_DECORATION, configuredFeature);
     }
 }
