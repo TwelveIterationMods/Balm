@@ -4,7 +4,8 @@
   "package": "net.blay09.mods.forbic.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "LevelMixin"
+    "LevelMixin",
+    "PlayerMixin"
   ],
   "client": [
     "AbstractContainerScreenAccessor",
