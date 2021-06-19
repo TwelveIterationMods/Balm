@@ -12,15 +12,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SyncConfigMessage<T> {
+public class SyncConfigMessage<TData> {
 
-    private final T data;
+    private final TData data;
 
-    public SyncConfigMessage(T data) {
+    public SyncConfigMessage(TData data) {
         this.data = data;
     }
 
-    public T getData() {
+    public TData getData() {
         return data;
     }
 
@@ -77,11 +77,11 @@ public class SyncConfigMessage<T> {
         };
     }
 
-    public static <T> Function<FriendlyByteBuf, SyncConfigMessage<T>> createDecoder(Class<?> clazz, Supplier<T> factory) {
+    public static <TData, TMessage extends SyncConfigMessage<TData>> Function<FriendlyByteBuf, TMessage> createDecoder(Class<?> clazz, Function<TData, TMessage> messageFactory, Supplier<TData> dataFactory) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
         return buf -> {
-            T data = factory.get();
+            TData data = dataFactory.get();
             for (Field field : syncedFields) {
                 Class<?> type = field.getType();
                 Object value;
@@ -108,15 +108,15 @@ public class SyncConfigMessage<T> {
                     e.printStackTrace();
                 }
             }
-            return new SyncConfigMessage<>(data);
+            return messageFactory.apply(data);
         };
     }
 
-    public static <T> BiConsumer<SyncConfigMessage<T>, FriendlyByteBuf> createEncoder(Class<T> clazz) {
+    public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<TMessage, FriendlyByteBuf> createEncoder(Class<TData> clazz) {
         List<Field> syncedFields = getSyncedFields(clazz);
         syncedFields.sort(Comparator.comparing(Field::getName));
         return (message, buf) -> {
-            Object data = message.data;
+            TData data = message.getData();
             for (Field field : syncedFields) {
                 Class<?> type = field.getType();
                 final Object value;
