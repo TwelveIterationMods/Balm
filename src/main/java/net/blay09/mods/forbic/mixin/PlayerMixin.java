@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Player.class)
 public class PlayerMixin implements IForbicPlayer {
 
-    private CompoundTag forbicData;
+    private CompoundTag forbicData = new CompoundTag();
 
     @Inject(method = "readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;F)V", at = @At("HEAD"))
     private void readAdditionalSaveData(CompoundTag compound, CallbackInfo callbackInfo) {
