@@ -28,23 +28,8 @@ public class SyncConfigMessage<TData> {
         List<Field> syncedFields = new ArrayList<>();
         Field[] fields = clazz.getFields();
         for (Field field : fields) {
-            Class<?> type = field.getType();
-            if (String.class.isAssignableFrom(type)) {
-                if (field.getAnnotation(Synced.class) != null) {
-                    syncedFields.add(field);
-                }
-            } else if (Enum.class.isAssignableFrom(type)) {
-                if (field.getAnnotation(Synced.class) != null) {
-                    syncedFields.add(field);
-                }
-            } else if (List.class.isAssignableFrom(type)) {
-                // No syncing of lists for now
-            } else if (type.isPrimitive()) {
-                if (field.getAnnotation(Synced.class) != null) {
-                    syncedFields.add(field);
-                }
-            } else {
-                syncedFields.addAll(getSyncedFields(field.getType()));
+            if (field.getAnnotation(Synced.class) != null) {
+                syncedFields.add(field);
             }
         }
         return syncedFields;
@@ -78,13 +63,20 @@ public class SyncConfigMessage<TData> {
     }
 
     public static <TData, TMessage extends SyncConfigMessage<TData>> Function<FriendlyByteBuf, TMessage> createDecoder(Class<?> clazz, Function<TData, TMessage> messageFactory, Supplier<TData> dataFactory) {
-        List<Field> syncedFields = getSyncedFields(clazz);
-        syncedFields.sort(Comparator.comparing(Field::getName));
         return buf -> {
             TData data = dataFactory.get();
-            for (Field field : syncedFields) {
-                Class<?> type = field.getType();
-                Object value;
+            readSyncedFields(buf, data);
+            return messageFactory.apply(data);
+        };
+    }
+
+    private static <TData> void readSyncedFields(FriendlyByteBuf buf, TData data) {
+        List<Field> syncedFields = getSyncedFields(data.getClass());
+        syncedFields.sort(Comparator.comparing(Field::getName));
+        for (Field field : syncedFields) {
+            Class<?> type = field.getType();
+            Object value;
+            try {
                 if (String.class.isAssignableFrom(type)) {
                     value = buf.readUtf();
                 } else if (Enum.class.isAssignableFrom(type)) {
@@ -100,31 +92,31 @@ public class SyncConfigMessage<TData> {
                 } else if (long.class.isAssignableFrom(type)) {
                     value = buf.readLong();
                 } else {
-                    continue;
+                    value = field.get(data);
+                    readSyncedFields(buf, value);
                 }
-                try {
-                    field.set(data, value);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                field.set(data, value);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
             }
-            return messageFactory.apply(data);
-        };
+        }
     }
 
     public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<TMessage, FriendlyByteBuf> createEncoder(Class<TData> clazz) {
-        List<Field> syncedFields = getSyncedFields(clazz);
-        syncedFields.sort(Comparator.comparing(Field::getName));
         return (message, buf) -> {
             TData data = message.getData();
-            for (Field field : syncedFields) {
-                Class<?> type = field.getType();
-                final Object value;
-                try {
-                    value = field.get(data);
-                } catch (IllegalAccessException e) {
-                    throw new IllegalStateException(e);
-                }
+            writeSyncedFields(buf, data);
+        };
+    }
+
+    private static <TData> void writeSyncedFields(FriendlyByteBuf buf, TData data) {
+        List<Field> syncedFields = getSyncedFields(data.getClass());
+        syncedFields.sort(Comparator.comparing(Field::getName));
+        for (Field field : syncedFields) {
+            Class<?> type = field.getType();
+            final Object value;
+            try {
+                value = field.get(data);
                 if (String.class.isAssignableFrom(type)) {
                     buf.writeUtf((String) value);
                 } else if (Enum.class.isAssignableFrom(type)) {
@@ -139,9 +131,13 @@ public class SyncConfigMessage<TData> {
                     buf.writeBoolean((boolean) value);
                 } else if (long.class.isAssignableFrom(type)) {
                     buf.writeLong((long) value);
+                } else {
+                    writeSyncedFields(buf, field.get(data));
                 }
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
             }
-        };
+        }
     }
 
 }
