@@ -69,10 +69,10 @@ public class SyncConfigMessage<TData> {
         return to;
     }
 
-    public static <T> Supplier<T> createDeepCopyFactory(Object from, Supplier<T> factory) {
+    public static <TData> Supplier<TData> createDeepCopyFactory(Supplier<TData> from, Supplier<TData> factory) {
         return () -> {
-            T to = factory.get();
-            deepCopy(from, to);
+            TData to = factory.get();
+            deepCopy(from.get(), to);
             return to;
         };
     }
