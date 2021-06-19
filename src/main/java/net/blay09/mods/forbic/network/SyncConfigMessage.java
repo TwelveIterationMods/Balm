@@ -26,7 +26,7 @@ public class SyncConfigMessage<TData> {
 
     private static List<Field> getSyncedFields(Class<?> clazz) {
         List<Field> syncedFields = new ArrayList<>();
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = clazz.getFields();
         for (Field field : fields) {
             Class<?> type = field.getType();
             if (String.class.isAssignableFrom(type)) {
@@ -51,7 +51,7 @@ public class SyncConfigMessage<TData> {
     }
 
     public static Object deepCopy(Object from, Object to) {
-        Field[] fields = from.getClass().getDeclaredFields();
+        Field[] fields = from.getClass().getFields();
         for (Field field : fields) {
             Class<?> type = field.getType();
             try {
