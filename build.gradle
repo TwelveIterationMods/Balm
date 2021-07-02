@@ -21,7 +21,7 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 
 	// For ModMenu
-	maven { url "https://maven.terraformersmc.com/releases/" }
+	// maven { url "https://maven.terraformersmc.com/releases/" }
 }
 
 dependencies {
