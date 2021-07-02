@@ -4,11 +4,13 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -42,6 +44,10 @@ public class ForbicModRenderers {
 
     protected static void registerBlockColorHandler(BlockColor color, Block... blocks) {
         ColorProviderRegistry.BLOCK.register(color, blocks);
+    }
+
+    protected static void registerItemColorHandler(ItemColor color, ItemLike... items) {
+        ColorProviderRegistry.ITEM.register(color, items);
     }
 
     protected static void setBlockRenderType(Block block, RenderType renderType) {
