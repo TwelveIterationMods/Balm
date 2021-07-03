@@ -29,6 +29,10 @@ public class ForbicBlockEntity extends BlockEntity implements BlockEntityClientS
         return tag;
     }
 
+    public void forbicSync() {
+        sync();
+    }
+
     @Override
     public void fromClientTag(CompoundTag tag) {
         forbicFromClientTag(tag);
