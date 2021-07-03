@@ -30,7 +30,9 @@ public class ForbicBlockEntity extends BlockEntity implements BlockEntityClientS
     }
 
     public void forbicSync() {
-        sync();
+        if (level != null && !level.isClientSide) {
+            sync();
+        }
     }
 
     @Override
