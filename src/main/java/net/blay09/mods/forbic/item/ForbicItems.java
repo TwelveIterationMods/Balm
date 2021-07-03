@@ -12,18 +12,18 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Supplier;
 
 public class ForbicItems {
-    protected static Item.Properties itemProperties(CreativeModeTab creativeModeTab) {
+    public static Item.Properties itemProperties(CreativeModeTab creativeModeTab) {
         return new FabricItemSettings().group(creativeModeTab);
     }
 
-    protected static DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier) {
+    public static DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> {
             Item item = supplier.get();
             return Registry.register(Registry.ITEM, identifier, item);
         }).resolveImmediately();
     }
 
-    protected static CreativeModeTab createCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
+    public static CreativeModeTab createCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
         return FabricItemGroupBuilder.build(identifier, iconSupplier);
     }
 }

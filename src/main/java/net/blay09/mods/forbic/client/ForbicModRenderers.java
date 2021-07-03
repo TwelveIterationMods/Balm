@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class ForbicModRenderers {
     private static final Map<ModelLayerLocation, Supplier<LayerDefinition>> layerDefinitions = new HashMap<>();
 
-    protected static ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
+    public static ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
         ModelLayerLocation modelLayerLocation = new ModelLayerLocation(location, "main");
         layerDefinitions.put(modelLayerLocation, layerDefinition);
         /*if (!ModelLayersAccessor.getAllModels().add(modelLayerLocation)) {
@@ -38,19 +38,19 @@ public class ForbicModRenderers {
         return layerDefinitions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().get()));
     }
 
-    protected static <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
         BlockEntityRendererRegistry.INSTANCE.register(type, provider);
     }
 
-    protected static void registerBlockColorHandler(BlockColor color, Block... blocks) {
+    public static void registerBlockColorHandler(BlockColor color, Block... blocks) {
         ColorProviderRegistry.BLOCK.register(color, blocks);
     }
 
-    protected static void registerItemColorHandler(ItemColor color, ItemLike... items) {
+    public static void registerItemColorHandler(ItemColor color, ItemLike... items) {
         ColorProviderRegistry.ITEM.register(color, items);
     }
 
-    protected static void setBlockRenderType(Block block, RenderType renderType) {
+    public static void setBlockRenderType(Block block, RenderType renderType) {
         BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
     }
 }

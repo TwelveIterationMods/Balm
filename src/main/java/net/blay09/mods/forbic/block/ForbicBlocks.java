@@ -15,29 +15,29 @@ import net.minecraft.world.level.material.Material;
 import java.util.function.Supplier;
 
 public class ForbicBlocks {
-    protected static BlockBehaviour.Properties blockProperties(Material material) {
+    public static BlockBehaviour.Properties blockProperties(Material material) {
         return FabricBlockSettings.of(material);
     }
 
-    protected static Item.Properties itemProperties(CreativeModeTab creativeModeTab) {
+    public static Item.Properties itemProperties(CreativeModeTab creativeModeTab) {
         return new FabricItemSettings().group(creativeModeTab);
     }
 
-    protected static DeferredObject<Block> registerBlock(Supplier<Block> supplier, ResourceLocation identifier) {
+    public static DeferredObject<Block> registerBlock(Supplier<Block> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> {
             Block block = supplier.get();
             return Registry.register(Registry.BLOCK, identifier, block);
         }).resolveImmediately();
     }
 
-    protected static DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier) {
+    public static DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> {
             Item item = supplier.get();
             return Registry.register(Registry.ITEM, identifier, item);
         }).resolveImmediately();
     }
 
-    protected static void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier) {
+    public static void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier) {
         registerBlock(blockSupplier, identifier);
         registerBlockItem(blockItemSupplier, identifier);
     }
