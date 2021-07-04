@@ -81,7 +81,7 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = 'forbic-fabric'
+			artifactId = project.archivesBaseName + '-fabric'
 
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
@@ -101,7 +101,7 @@ publishing {
 		// retrieving dependencies.
 		maven {
 			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/blay09/Forbic")
+			url = uri("https://maven.pkg.github.com/" + project.github_publish)
 			credentials {
 				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
 				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
