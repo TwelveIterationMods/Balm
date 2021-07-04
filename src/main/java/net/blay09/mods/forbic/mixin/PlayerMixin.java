@@ -13,12 +13,12 @@ public class PlayerMixin implements IForbicPlayer {
 
     private CompoundTag forbicData = new CompoundTag();
 
-    @Inject(method = "readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;F)V", at = @At("HEAD"))
+    @Inject(method = "readAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void readAdditionalSaveData(CompoundTag compound, CallbackInfo callbackInfo) {
         forbicData = compound.getCompound("ForbicData");
     }
 
-    @Inject(method = "addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;F)V", at = @At("HEAD"))
+    @Inject(method = "addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void addAdditionalSaveData(CompoundTag compound, CallbackInfo callbackInfo) {
         compound.put("ForbicData", forbicData);
     }
