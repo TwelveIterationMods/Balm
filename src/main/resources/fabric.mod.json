@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Forbic",
-  "description": "Abstraction Layer for mods wanting to support both Forge and Fabric",
+  "description": "Abstraction Layer (but not really)™ for Blay's multiplatform mods",
   "authors": [
     "BlayTheNinth"
   ],
@@ -14,7 +14,7 @@
     "issues": "https://github.com/blay09/Forbic/issues"
   },
 
-  "license": "MIT",
+  "license": "All Rights Reserved",
   "icon": "assets/forbic/icon.png",
 
   "environment": "*",
