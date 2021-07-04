@@ -46,9 +46,10 @@ body:
     attributes:
       label: Describe the Issue
       description: Be as thorough as possible and provide a step-by-step guide to reproduce the issue.
-  - type: textarea
+    validations:
+      required: true
+  - type: input
     id: logs
     attributes:
       label: Logs
-      description: If the game crashed, provide logs from the latest.log file here. If you post them on a site like pastebin, make sure they are set to not expire.
-      render: shell
+      description: If the game crashed, provide a link to the logs here. You can use a site like pastebin or gist to upload the latest.log content. Make sure they are set to not expire.
