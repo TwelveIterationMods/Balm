@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 
 public class ForbicScreens {
 
-    public AbstractWidget addRenderableWidget(Screen screen, AbstractWidget widget) {
+    public static AbstractWidget addRenderableWidget(Screen screen, AbstractWidget widget) {
         Screens.getButtons(screen).add(widget);
         return widget;
     }
