@@ -24,5 +24,5 @@ public interface ScreenAccessor {
     List<Widget> getRenderables();
 
     @Invoker
-    GuiEventListener callAddRenderableWidget(GuiEventListener guiEventListener);
+    <T extends GuiEventListener & Widget & NarratableEntry> T callAddRenderableWidget(T guiEventListener);
 }
