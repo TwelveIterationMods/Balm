@@ -61,3 +61,4 @@ jobs:
         env:
           GPR_USERNAME: github
           GPR_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GPR_BUILD_NUMBER: ${{github.run_id}}
