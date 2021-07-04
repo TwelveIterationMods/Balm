@@ -81,7 +81,7 @@ jar {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId = project.archivesBaseName + '-fabric'
+			artifactId = project.archivesBaseName
 
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
