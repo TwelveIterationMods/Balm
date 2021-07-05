@@ -17,9 +17,5 @@ public class Forbic implements ModInitializer {
             CompoundTag forbicData = ((IForbicPlayer) oldPlayer).getForbicData();
             ((IForbicPlayer) newPlayer).setForbicData(forbicData);
         });
-
-        ForbicNetworking.registerClientboundPacket(new ResourceLocation("test", "asd"), SyncConfigMessage.class, (message, friendlyByteBuf) -> {
-        }, it -> null, (a, b) -> {
-        });
     }
 }
