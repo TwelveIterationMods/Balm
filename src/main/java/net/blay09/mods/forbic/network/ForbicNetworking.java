@@ -1,6 +1,5 @@
 package net.blay09.mods.forbic.network;
 
-import net.blay09.mods.forbic.client.ForbicClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -20,6 +19,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ForbicNetworking {
+
+    public static boolean isClient;
+
     private static final Map<Class<?>, ForbicMessageRegistration<?>> messagesByClass = new HashMap<>();
     private static final Map<ResourceLocation, ForbicMessageRegistration<?>> messagesByIdentifier = new HashMap<>();
 
@@ -73,10 +75,9 @@ public class ForbicNetworking {
         messagesByClass.put(clazz, messageRegistration);
         messagesByIdentifier.put(identifier, messageRegistration);
 
-        ClientPlayNetworking.registerGlobalReceiver(identifier, ((client, listener, buf, responseSender) -> {
-            T message = messageRegistration.getDecodeFunc().apply(buf);
-            client.execute(() -> handler.accept(ForbicClient.getClientPlayer(), message));
-        }));
+        if (isClient) {
+            ForbicClientNetworking.registerClientGlobalReceiver(identifier, handler, messageRegistration);
+        }
     }
 
     public static <T> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {

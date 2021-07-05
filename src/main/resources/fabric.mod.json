@@ -23,6 +23,7 @@
       "net.blay09.mods.forbic.Forbic"
     ],
     "client": [
+      "net.blay09.mods.forbic.client.ForbicClient"
     ]
   },
   "mixins": [
