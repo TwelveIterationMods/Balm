@@ -2,6 +2,7 @@ package net.blay09.mods.forbic.client;
 
 import net.blay09.mods.forbic.network.ForbicNetworking;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
@@ -12,6 +13,8 @@ public class ForbicClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ForbicNetworking.isClient = true;
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            ForbicNetworking.initializeClientHandlers();
+        });
     }
 }

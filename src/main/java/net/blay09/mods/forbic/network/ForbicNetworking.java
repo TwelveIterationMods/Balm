@@ -1,5 +1,6 @@
 package net.blay09.mods.forbic.network;
 
+import net.blay09.mods.forbic.client.ForbicClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -13,17 +14,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ForbicNetworking {
 
-    public static boolean isClient;
-
     private static final Map<Class<?>, ForbicMessageRegistration<?>> messagesByClass = new HashMap<>();
     private static final Map<ResourceLocation, ForbicMessageRegistration<?>> messagesByIdentifier = new HashMap<>();
+
+    private static final List<ForbicClientboundMessageRegistration<?>> clientMessageRegistrations = new ArrayList<>();
 
     public static void openGui(Player player, MenuProvider menuProvider) {
         player.openMenu(menuProvider);
@@ -70,14 +73,12 @@ public class ForbicNetworking {
     }
 
     public static <T> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
-        ForbicMessageRegistration<T> messageRegistration = new ForbicClientboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
+        ForbicClientboundMessageRegistration<T> messageRegistration = new ForbicClientboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
         messagesByIdentifier.put(identifier, messageRegistration);
 
-        if (isClient) {
-            ForbicClientNetworking.registerClientGlobalReceiver(identifier, handler, messageRegistration);
-        }
+        clientMessageRegistrations.add(messageRegistration);
     }
 
     public static <T> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
@@ -91,4 +92,18 @@ public class ForbicNetworking {
         }));
     }
 
+    public static void initializeClientHandlers() {
+        for (ForbicClientboundMessageRegistration<?> message : clientMessageRegistrations) {
+            registerClientHandler(message);
+        }
+    }
+
+    private static <T> void registerClientHandler(ForbicClientboundMessageRegistration<T> messageRegistration) {
+        ResourceLocation identifier = messageRegistration.getIdentifier();
+        BiConsumer<Player, T> handler = messageRegistration.getHandler();
+        ClientPlayNetworking.registerGlobalReceiver(identifier, ((client, listener, buf, responseSender) -> {
+            T message = messageRegistration.getDecodeFunc().apply(buf);
+            client.execute(() -> handler.accept(ForbicClient.getClientPlayer(), message));
+        }));
+    }
 }

@@ -1,8 +1,6 @@
 package net.blay09.mods.forbic;
 
 import net.blay09.mods.forbic.api.IForbicPlayer;
-import net.blay09.mods.forbic.mixin.PlayerMixin;
-import net.blay09.mods.forbic.network.ForbicClientNetworking;
 import net.blay09.mods.forbic.network.ForbicNetworking;
 import net.blay09.mods.forbic.network.SyncConfigMessage;
 import net.fabricmc.api.ModInitializer;
@@ -17,5 +15,7 @@ public class Forbic implements ModInitializer {
             CompoundTag forbicData = ((IForbicPlayer) oldPlayer).getForbicData();
             ((IForbicPlayer) newPlayer).setForbicData(forbicData);
         });
+
+        ForbicNetworking.registerClientboundPacket(new ResourceLocation("test", "test"), SyncConfigMessage.class, (a, b) -> {}, it -> null, (a, b) -> {});
     }
 }
