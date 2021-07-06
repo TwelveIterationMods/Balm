@@ -23,6 +23,9 @@ repositories {
 
 	// For ModMenu
 	// maven { url "https://maven.terraformersmc.com/releases/" }
+
+	// For CurseForge
+	maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
@@ -43,6 +46,7 @@ dependencies {
 	}
 
 	//modImplementation "com.terraformersmc:modmenu:2.0.2"
+	modImplementation "curse.maven:modmenu-308702:3348711"
 }
 
 processResources {
