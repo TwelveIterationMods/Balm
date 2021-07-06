@@ -22,4 +22,12 @@ public class ForbicKeybindings {
         return KeyBindingHelper.registerKeyBinding(new KeyMapping(name, type, keyCode, category));
     }
 
+    public static boolean isActiveAndMatches(KeyMapping keyMapping, int keyCode, int scanCode) {
+        return keyMapping.matches(keyCode, scanCode);
+    }
+
+    public static boolean isActiveAndWasPressed(KeyMapping keyMapping) {
+        return keyMapping.consumeClick();
+    }
+
 }
