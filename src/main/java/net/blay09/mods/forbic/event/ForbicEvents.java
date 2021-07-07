@@ -91,7 +91,7 @@ public class ForbicEvents {
         initializeScreenEvents();
     }
 
-    public static void onScreenMouseClick(ScreenMouseReleaseHandler handler) {
+    public static void onScreenMouseRelease(ScreenMouseReleaseHandler handler) {
         screenMouseReleaseHandlers.add(handler);
         initializeScreenEvents();
     }
