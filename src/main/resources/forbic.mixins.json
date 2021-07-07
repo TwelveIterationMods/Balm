@@ -14,7 +14,8 @@
     "EntityModelSetMixin",
     "EntityModelSetAccessor",
     "ModelLayersAccessor",
-    "AbstractClientPlayerMixin"
+    "AbstractClientPlayerMixin",
+    "ImageButtonAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
