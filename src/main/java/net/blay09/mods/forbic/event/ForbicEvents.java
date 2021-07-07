@@ -2,10 +2,13 @@ package net.blay09.mods.forbic.event;
 
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;
@@ -14,6 +17,9 @@ import java.util.List;
 public class ForbicEvents {
 
     private static final List<ScreenDrawnHandler> screenDrawnHandlers = new ArrayList<>();
+    private static final List<ScreenKeyPressedHandler> screenKeyPressedHandlers = new ArrayList<>();
+    private static final List<ScreenMouseClickHandler> screenMouseClickHandlers = new ArrayList<>();
+    private static final List<ScreenMouseReleaseHandler> screenMouseReleaseHandlers = new ArrayList<>();
     private static ScreenEvents.BeforeInit beforeInitListener = null;
 
     public static Event<FovUpdateHandler> FOV_UPDATE = EventFactory.createArrayBacked(FovUpdateHandler.class,
@@ -72,11 +78,41 @@ public class ForbicEvents {
 
     public static void onScreenDrawn(ScreenDrawnHandler handler) {
         screenDrawnHandlers.add(handler);
+        initializeScreenEvents();
+    }
 
+    public static void onScreenKeyPressed(ScreenKeyPressedHandler handler) {
+        screenKeyPressedHandlers.add(handler);
+        initializeScreenEvents();
+    }
+
+    public static void onScreenMouseClick(ScreenMouseClickHandler handler) {
+        screenMouseClickHandlers.add(handler);
+        initializeScreenEvents();
+    }
+
+    public static void onScreenMouseClick(ScreenMouseReleaseHandler handler) {
+        screenMouseReleaseHandlers.add(handler);
+        initializeScreenEvents();
+    }
+
+    private static void initializeScreenEvents() {
         if (beforeInitListener == null) {
             beforeInitListener = (client, screen, scaledWidth, scaledHeight) -> {
                 for (ScreenDrawnHandler drawnHandler : screenDrawnHandlers) {
                     ScreenEvents.afterRender(screen).register((drawnScreen, matrices, mouseX, mouseY, tickDelta) -> drawnHandler.handle(drawnScreen, matrices, mouseX, mouseY));
+                }
+
+                for (ScreenKeyPressedHandler keyPressedHandler : screenKeyPressedHandlers) {
+                    ScreenKeyboardEvents.afterKeyPress(screen).register(keyPressedHandler::handle);
+                }
+
+                for (ScreenMouseClickHandler mouseClickHandler : screenMouseClickHandlers) {
+                    ScreenMouseEvents.beforeMouseClick(screen).register(mouseClickHandler::handle);
+                }
+
+                for (ScreenMouseReleaseHandler mouseReleaseHandler : screenMouseReleaseHandlers) {
+                    ScreenMouseEvents.beforeMouseRelease(screen).register(mouseReleaseHandler::handle);
                 }
             };
             ScreenEvents.BEFORE_INIT.register(beforeInitListener);
