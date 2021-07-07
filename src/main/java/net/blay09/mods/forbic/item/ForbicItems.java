@@ -26,4 +26,8 @@ public class ForbicItems {
     public static CreativeModeTab createCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
         return FabricItemGroupBuilder.build(identifier, iconSupplier);
     }
+
+    public static ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        return new ItemStack(itemStack.getItem().getCraftingRemainingItem());
+    }
 }
