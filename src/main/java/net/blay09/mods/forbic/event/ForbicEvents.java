@@ -1,6 +1,7 @@
 package net.blay09.mods.forbic.event;
 
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
@@ -74,6 +75,10 @@ public class ForbicEvents {
 
     public static void onScreenInitialized(ScreenInitializedHandler handler) {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> handler.handle(screen));
+    }
+
+    public static void onClientStarted(ClientStartedHandler handler) {
+        ClientLifecycleEvents.CLIENT_STARTED.register(handler::handle);
     }
 
     public static void onScreenDrawn(ScreenDrawnHandler handler) {
