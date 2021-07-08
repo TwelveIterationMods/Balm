@@ -1,7 +1,10 @@
 package net.blay09.mods.forbic.network;
 
+import net.blay09.mods.forbic.config.ForbicConfig;
+import net.blay09.mods.forbic.config.ForbicConfigHolder;
 import net.blay09.mods.forbic.config.Synced;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -138,6 +141,22 @@ public class SyncConfigMessage<TData> {
                 throw new IllegalStateException(e);
             }
         }
+    }
+
+    public static <TMessage extends SyncConfigMessage<TData>, TData extends ForbicConfig> void register(ResourceLocation resourceLocation,
+                                                  Class<TMessage> messageClass,
+                                                  Function<TData, TMessage> messageFactory,
+                                                  Class<TData> dataClass,
+                                                  Supplier<TData> dataFactory) {
+        Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> ForbicConfig.getConfig(dataClass), dataFactory);
+        ForbicNetworking.registerServerboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
+            TData data = message.getData();
+            writeSyncedFields(buf, data);
+        }, buf -> {
+            TData data = copyFactory.get();
+            readSyncedFields(buf, data);
+            return messageFactory.apply(data);
+        }, ForbicConfigHolder::handleSync);
     }
 
 }
