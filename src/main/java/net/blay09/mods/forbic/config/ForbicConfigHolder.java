@@ -15,7 +15,7 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
 
     private static final AtomicReference<MinecraftServer> currentServer = new AtomicReference<>();
     private static final Map<Class<?>, ForbicConfig> activeConfigs = new HashMap<>();
-    private static final Map<Class<?>, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>>> syncPacketFactories = new HashMap<>();
+    private static final Map<Class<?>, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>>> syncMessageFactories = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends ForbicConfig> T getActive(Class<T> clazz) {
@@ -33,7 +33,7 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
     }
 
     public static <T extends ForbicConfig> Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> getConfigSyncMessageFactory(Class<T> clazz) {
-        return syncPacketFactories.get(clazz);
+        return syncMessageFactories.get(clazz);
     }
 
     public static <T extends ForbicConfig> void setActiveConfig(Class<T> clazz, T config) {
@@ -44,6 +44,15 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
     public static <T extends ForbicConfig> void handleSync(Player player, SyncConfigMessage<T> message) {
         T data = message.getData();
         setActiveConfig((Class<T>) data.getClass(), data);
+    }
+
+    public static <T extends ForbicConfig> void registerConfig(Class<T> clazz, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> syncMessageFactory) {
+        setActiveConfig(clazz, ForbicConfig.initialize(clazz));
+        registerSyncMessageFactory(clazz, syncMessageFactory);
+    }
+
+    private static void registerSyncMessageFactory(Class<?> clazz, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> syncMessageFactory) {
+        syncMessageFactories.put(clazz, syncMessageFactory);
     }
 
     public static void initialize() {
