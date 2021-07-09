@@ -46,9 +46,10 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
         setActiveConfig((Class<T>) data.getClass(), data);
     }
 
-    public static <T extends ForbicConfig> void registerConfig(Class<T> clazz, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> syncMessageFactory) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <T extends ForbicConfig> void registerConfig(Class<T> clazz, Function<ForbicConfig, SyncConfigMessage<T>> syncMessageFactory) {
         setActiveConfig(clazz, ForbicConfig.initialize(clazz));
-        registerSyncMessageFactory(clazz, syncMessageFactory);
+        registerSyncMessageFactory(clazz, (Function) syncMessageFactory);
     }
 
     private static void registerSyncMessageFactory(Class<?> clazz, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> syncMessageFactory) {
