@@ -2,13 +2,19 @@ package net.blay09.mods.forbic.event;
 
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +59,12 @@ public class ForbicEvents {
                     listener.handle(player, itemStack, craftMatrix);
                 }
             });
+
+    public static void onConnectedToServer(ConnectedToServerHandler handler) {
+        ClientPlayConnectionEvents.JOIN.register((handler1, sender, client) -> {
+            handler.handle(client);
+        });
+    }
 
     public static void onPlayerLogin(PlayerLoginHandler handler) {
         ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> handler.handle(listener.player));
