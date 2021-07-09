@@ -20,4 +20,7 @@ public class ForbicConfig implements ConfigData {
         return AutoConfig.getConfigHolder(clazz).getConfig();
     }
 
+    public static <T extends ForbicConfig> void saveConfig(Class<T> clazz) {
+        AutoConfig.getConfigHolder(clazz).save();
+    }
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ForbicConfigHolder<T extends ForbicConfig> {
@@ -71,4 +72,9 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
         });
     }
 
+    public static <T extends ForbicConfig> void updateConfig(Class<T> clazz, Consumer<T> consumer) {
+        T fallback = getFallback(clazz);
+        consumer.accept(fallback);
+        ForbicConfig.saveConfig(clazz);
+    }
 }
