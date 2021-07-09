@@ -15,7 +15,7 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
 
     private static final AtomicReference<MinecraftServer> currentServer = new AtomicReference<>();
     private static final Map<Class<?>, ForbicConfig> activeConfigs = new HashMap<>();
-    private static final Map<Class<?>, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>>> syncMessageFactories = new HashMap<>();
+    private static final Map<Class<?>, Function<?, ?>> syncMessageFactories = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T extends ForbicConfig> T getActive(Class<T> clazz) {
@@ -32,8 +32,9 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
         return (SyncConfigMessage<T>) factory.apply(getFallback(clazz));
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends ForbicConfig> Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> getConfigSyncMessageFactory(Class<T> clazz) {
-        return syncMessageFactories.get(clazz);
+        return (Function<ForbicConfig, SyncConfigMessage<ForbicConfig>>) syncMessageFactories.get(clazz);
     }
 
     public static <T extends ForbicConfig> void setActiveConfig(Class<T> clazz, T config) {
@@ -46,13 +47,12 @@ public class ForbicConfigHolder<T extends ForbicConfig> {
         setActiveConfig((Class<T>) data.getClass(), data);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T extends ForbicConfig> void registerConfig(Class<T> clazz, Function<ForbicConfig, SyncConfigMessage<T>> syncMessageFactory) {
+    public static <T extends ForbicConfig> void registerConfig(Class<T> clazz, Function<T, SyncConfigMessage<T>> syncMessageFactory) {
         setActiveConfig(clazz, ForbicConfig.initialize(clazz));
-        registerSyncMessageFactory(clazz, (Function) syncMessageFactory);
+        registerSyncMessageFactory(clazz, syncMessageFactory);
     }
 
-    private static void registerSyncMessageFactory(Class<?> clazz, Function<ForbicConfig, SyncConfigMessage<ForbicConfig>> syncMessageFactory) {
+    private static <T> void registerSyncMessageFactory(Class<T> clazz, Function<T, SyncConfigMessage<T>> syncMessageFactory) {
         syncMessageFactories.put(clazz, syncMessageFactory);
     }
 
