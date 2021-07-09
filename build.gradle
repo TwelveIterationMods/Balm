@@ -12,20 +12,14 @@ version = project.mod_version + "+" + buildNumber
 group = project.maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	// For CurseForge
+	maven { url "https://www.cursemaven.com" }
 
 	// For Cloth Config
 	maven { url "https://maven.shedaniel.me/" }
 
 	// For ModMenu
 	maven { url "https://maven.terraformersmc.com/releases/" }
-
-	// For CurseForge
-	maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
@@ -45,8 +39,8 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	modImplementation "com.terraformersmc:modmenu:2.0.2"
-	//modImplementation "curse.maven:modmenu-308702:3348711"
+	//modImplementation "com.terraformersmc:modmenu:2.0.2"
+	modImplementation "curse.maven:modmenu-308702:3348711"
 }
 
 processResources {
