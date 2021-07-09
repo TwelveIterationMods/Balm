@@ -9,8 +9,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.server.MinecraftServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +47,13 @@ public class ForbicEvents {
                 }
             });
 
+    public static Event<ItemCraftedHandler> ITEM_CRAFTED = EventFactory.createArrayBacked(ItemCraftedHandler.class,
+            (listeners) -> (player, itemStack, craftMatrix) -> {
+                for (ItemCraftedHandler listener : listeners) {
+                    listener.handle(player, itemStack, craftMatrix);
+                }
+            });
+
     public static void onPlayerLogin(PlayerLoginHandler handler) {
         ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> handler.handle(listener.player));
     }
@@ -63,6 +68,10 @@ public class ForbicEvents {
 
     public static void onConfigReloaded(ConfigReloadedHandler handler) {
         CONFIG_RELOADED.register(handler);
+    }
+
+    public static void onItemCrafted(ItemCraftedHandler handler) {
+        ITEM_CRAFTED.register(handler);
     }
 
     public static void onServerStarted(ServerStartedHandler handler) {

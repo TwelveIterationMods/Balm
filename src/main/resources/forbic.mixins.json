@@ -5,17 +5,18 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "LevelMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ResultSlotMixin"
   ],
   "client": [
-    "AbstractContainerScreenAccessor",
-    "ScreenAccessor",
-    "CheckboxAccessor",
-    "EntityModelSetMixin",
-    "EntityModelSetAccessor",
-    "ModelLayersAccessor",
     "AbstractClientPlayerMixin",
-    "ImageButtonAccessor"
+    "AbstractContainerScreenAccessor",
+    "CheckboxAccessor",
+    "EntityModelSetAccessor",
+    "EntityModelSetMixin",
+    "ImageButtonAccessor",
+    "ModelLayersAccessor",
+    "ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
