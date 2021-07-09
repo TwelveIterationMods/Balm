@@ -12,9 +12,10 @@ See [the license](LICENSE) for modpack permissions etc.
 
 #### Forge
 
-[![Versions](http://cf.way2muchnoise.eu/versions/_latest.svg)](https://minecraft.curseforge.com/projects/forbic-forge) 
-[![Downloads](http://cf.way2muchnoise.eu/full__downloads.svg)](https://minecraft.curseforge.com/projects/forbic-forge)
+[![Versions](http://cf.way2muchnoise.eu/versions/_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/forbic-forge) 
+[![Downloads](http://cf.way2muchnoise.eu/full__downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/forbic-forge)
 
 #### Fabric
 
-[![Versions](http://cf.way2muchnoise.eu/versions/500525_latest.svg)](https://minecraft.curseforge.com/projects/forbic-fabric) [![Downloads](http://cf.way2muchnoise.eu/full_500525_downloads.svg)](https://minecraft.curseforge.com/projects/forbic-fabric)
+[![Versions](http://cf.way2muchnoise.eu/versions/500525_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/forbic-fabric) 
+[![Downloads](http://cf.way2muchnoise.eu/full_500525_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/forbic-fabric)
