@@ -2,6 +2,7 @@ package net.blay09.mods.forbic.event;
 
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -68,6 +69,10 @@ public class ForbicEvents {
 
     public static void onPlayerLogin(PlayerLoginHandler handler) {
         ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> handler.handle(listener.player));
+    }
+
+    public static void onClientTicked(ClientTickedHandler handler) {
+        ClientTickEvents.END_CLIENT_TICK.register(handler::handle);
     }
 
     public static void onFovUpdate(FovUpdateHandler handler) {
