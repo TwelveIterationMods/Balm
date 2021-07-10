@@ -1,8 +1,11 @@
 package net.blay09.mods.forbic.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.blay09.mods.forbic.mixin.KeyMappingAccessor;
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 
 public class ForbicKeyBindings {
 
@@ -41,7 +44,8 @@ public class ForbicKeyBindings {
     }
 
     public static boolean isKeyDownIgnoreContext(KeyMapping keyMapping) {
-        return keyMapping.isDown();
+        InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
+        return keyMapping.isDown() || (key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
     }
 
 }
