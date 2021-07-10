@@ -16,7 +16,8 @@
     "EntityModelSetMixin",
     "ImageButtonAccessor",
     "ModelLayersAccessor",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "KeyMappingAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
