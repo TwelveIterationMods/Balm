@@ -1,6 +1,6 @@
 package net.blay09.mods.balm.mixin;
 
-import net.blay09.mods.balm.event.BalmEvents;
+import net.blay09.mods.balm.event.client.BalmClientEvents;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ public class AbstractClientPlayerMixin {
 
     @Inject(method = "getFieldOfViewModifier()F", at = @At("TAIL"), cancellable = true)
     private void getFieldOfViewModifier(CallbackInfoReturnable<Float> callbackInfo) {
-        Float override = BalmEvents.FOV_UPDATE.invoker().handle((LivingEntity) (Object) this);
+        Float override = BalmClientEvents.FOV_UPDATE.invoker().handle((LivingEntity) (Object) this);
         if (override != null) {
             callbackInfo.setReturnValue(override);
         }
