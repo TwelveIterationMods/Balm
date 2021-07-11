@@ -30,7 +30,7 @@ public class BalmConfigHolder<T extends BalmConfig> {
     @SuppressWarnings("unchecked")
     public static <T extends BalmConfig> SyncConfigMessage<T> getConfigSyncMessage(Class<T> clazz) {
         Function<BalmConfig, SyncConfigMessage<BalmConfig>> factory = getConfigSyncMessageFactory(clazz);
-        return (SyncConfigMessage<T>) factory.apply(getFallback(clazz));
+        return factory != null ? (SyncConfigMessage<T>) factory.apply(getFallback(clazz)) : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -50,7 +50,9 @@ public class BalmConfigHolder<T extends BalmConfig> {
 
     public static <T extends BalmConfig> void registerConfig(Class<T> clazz, Function<T, SyncConfigMessage<T>> syncMessageFactory) {
         setActiveConfig(clazz, BalmConfig.initialize(clazz));
-        registerSyncMessageFactory(clazz, syncMessageFactory);
+        if (syncMessageFactory != null) {
+            registerSyncMessageFactory(clazz, syncMessageFactory);
+        }
     }
 
     private static <T> void registerSyncMessageFactory(Class<T> clazz, Function<T, SyncConfigMessage<T>> syncMessageFactory) {
@@ -66,7 +68,10 @@ public class BalmConfigHolder<T extends BalmConfig> {
         BalmEvents.onConfigReloaded(() -> {
             if (currentServer.get() != null) {
                 for (BalmConfig config : activeConfigs.values()) {
-                    BalmNetworking.sendToAll(currentServer.get(), getConfigSyncMessage(config.getClass()));
+                    SyncConfigMessage<? extends BalmConfig> message = getConfigSyncMessage(config.getClass());
+                    if (message != null) {
+                        BalmNetworking.sendToAll(currentServer.get(), message);
+                    }
                 }
             }
         });
