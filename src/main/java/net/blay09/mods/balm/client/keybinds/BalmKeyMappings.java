@@ -28,6 +28,10 @@ public class BalmKeyMappings {
         return keyMapping.matches(keyCode, scanCode);
     }
 
+    public static boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
+        return type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode);
+    }
+
     public static boolean isActiveAndWasPressed(KeyMapping keyMapping) {
         return keyMapping.consumeClick();
     }
