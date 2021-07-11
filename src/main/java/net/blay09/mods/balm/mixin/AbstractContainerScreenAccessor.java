@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.mixin;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,4 +27,7 @@ public interface AbstractContainerScreenAccessor {
 
     @Invoker
     boolean callIsHovering(Slot slot, double mouseX, double mouseY);
+
+    @Invoker
+    void callRenderSlot(PoseStack poseStack, Slot slot);
 }
