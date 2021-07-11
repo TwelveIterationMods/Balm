@@ -3,11 +3,7 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [
-    "LevelMixin",
-    "PlayerMixin",
-    "ResultSlotMixin"
-  ],
+  "mixins": ["LevelMixin", "MouseHandlerAccessor", "PlayerMixin", "ResultSlotMixin"],
   "client": [
     "AbstractClientPlayerMixin",
     "AbstractContainerScreenAccessor",
@@ -15,9 +11,9 @@
     "EntityModelSetAccessor",
     "EntityModelSetMixin",
     "ImageButtonAccessor",
+    "KeyMappingAccessor",
     "ModelLayersAccessor",
-    "ScreenAccessor",
-    "KeyMappingAccessor"
+    "ScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
