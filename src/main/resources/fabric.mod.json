@@ -27,7 +27,7 @@
     ]
   },
   "mixins": [
-    "forbic.mixins.json"
+    "balm.mixins.json"
   ],
 
   "depends": {
