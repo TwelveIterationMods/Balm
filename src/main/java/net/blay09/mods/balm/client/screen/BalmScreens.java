@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
 public class BalmScreens {
-    public static <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void register(MenuType<? extends T> type, BalmScreenFactory<T, S> screenFactory) {
+    public static <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreen(MenuType<? extends T> type, BalmScreenFactory<T, S> screenFactory) {
         ScreenRegistry.register(type, screenFactory::create);
     }
 
