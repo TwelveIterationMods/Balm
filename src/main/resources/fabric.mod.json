@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "forbic-fabric",
+  "id": "balm-fabric",
   "version": "${version}",
 
-  "name": "Forbic",
+  "name": "Balm",
   "description": "Abstraction Layer (but not really)™ for Blay's multiplatform mods",
   "authors": [
     "BlayTheNinth"
   ],
   "contact": {
     "homepage": "https://blay09.net/",
-    "sources": "https://github.com/ModdingForBlockheads/Forbic",
-    "issues": "https://github.com/ModdingForBlockheads/Forbic/issues"
+    "sources": "https://github.com/ModdingForBlockheads/Balm",
+    "issues": "https://github.com/ModdingForBlockheads/Balm/issues"
   },
 
   "license": "All Rights Reserved",
