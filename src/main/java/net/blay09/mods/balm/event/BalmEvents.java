@@ -2,6 +2,7 @@ package net.blay09.mods.balm.event;
 
 
 import net.blay09.mods.balm.event.server.ServerStartedHandler;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -30,8 +31,22 @@ public class BalmEvents {
                 }
             });
 
+    public static Event<PlayerOpenMenuHandler> OPEN_MENU = EventFactory.createArrayBacked(PlayerOpenMenuHandler.class,
+            (listeners) -> (player, menu) -> {
+                for (PlayerOpenMenuHandler listener : listeners) {
+                    listener.handle(player, menu);
+                }
+            });
+
     public static void onPlayerLogin(PlayerLoginHandler handler) {
         ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> handler.handle(listener.player));
+    }
+
+    public static void onPlayerRespawn(PlayerRespawnHandler handler) {
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> handler.handle(oldPlayer, newPlayer));
+    }
+
+    public static void onPlayerOpenMenu(PlayerOpenMenuHandler handler) {
     }
 
     public static void onLivingDamage(LivingDamageHandler handler) {
