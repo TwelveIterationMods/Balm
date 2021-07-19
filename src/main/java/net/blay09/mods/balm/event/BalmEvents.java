@@ -6,7 +6,13 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BalmEvents {
 
@@ -67,6 +73,10 @@ public class BalmEvents {
 
     public static void onServerStopped(ServerStartedHandler handler) {
         ServerLifecycleEvents.SERVER_STOPPED.register(handler::handle);
+    }
+
+    public static void onBlockBroken(BlockBrokenHandler handler) {
+        PlayerBlockBreakEvents.AFTER.register(handler::handle);
     }
 
 }
