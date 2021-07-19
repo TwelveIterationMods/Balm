@@ -13,4 +13,8 @@ public class BalmPlayers {
     public static CompoundTag getPersistentData(Player player) {
         return ((IBalmPlayer) player).getBalmData();
     }
+
+    public static boolean isFakePlayer(Player player) {
+        return false;
+    }
 }
