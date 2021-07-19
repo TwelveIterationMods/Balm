@@ -48,7 +48,12 @@ public class BalmKeyMappings {
 
     public static boolean isKeyDownIgnoreContext(KeyMapping keyMapping) {
         InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
-        return keyMapping.isDown() || (key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
+        return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
+    }
+
+    public static boolean isActiveAndKeyDown(KeyMapping keyMapping) {
+        InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
+        return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
     }
 
 }
