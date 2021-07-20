@@ -6,17 +6,19 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BalmEvents {
+
+    private static final List<PlayerTickHandler> playerTickHandlers = new ArrayList<>();
+    private static ServerTickEvents.StartTick serverTickListener = null;
 
     public static Event<LivingDamageHandler> LIVING_DAMAGE = EventFactory.createArrayBacked(LivingDamageHandler.class,
             (listeners) -> (entity) -> {
@@ -83,6 +85,22 @@ public class BalmEvents {
 
     public static void onBlockBroken(BlockBrokenHandler handler) {
         PlayerBlockBreakEvents.AFTER.register(handler::handle);
+    }
+
+    public static void onPlayerTick(PlayerTickHandler handler) {
+        if (serverTickListener == null) {
+            serverTickListener = server -> {
+                for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                    for (PlayerTickHandler playerTickHandler : playerTickHandlers) {
+                        playerTickHandler.handle(player);
+                    }
+                }
+            };
+
+            ServerTickEvents.START_SERVER_TICK.register(serverTickListener);
+        }
+
+        playerTickHandlers.add(handler);
     }
 
 }
