@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -65,6 +67,10 @@ public class BalmEvents {
 
     public static void onItemCrafted(ItemCraftedHandler handler) {
         ITEM_CRAFTED.register(handler);
+    }
+
+    public static void onUseBlock(UseBlockHandler handler) {
+        UseBlockCallback.EVENT.register(handler::handle);
     }
 
     public static void onServerStarted(ServerStartedHandler handler) {
