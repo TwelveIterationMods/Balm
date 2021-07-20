@@ -21,7 +21,8 @@ public class BalmEventType<TEvent extends BalmEvent> {
         event.register(handler);
     }
 
-    public void invoke(TEvent eventData) {
+    public boolean invoke(TEvent eventData) {
         event.invoker().accept(eventData);
+        return !eventData.isCanceled();
     }
 }
