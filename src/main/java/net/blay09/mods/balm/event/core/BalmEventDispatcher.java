@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 import java.util.function.Function;
 
+@Deprecated
 public class BalmEventDispatcher<TEvent, THandler extends BalmEventHandler<TEvent>> {
 
     private final Event<THandler> event;
