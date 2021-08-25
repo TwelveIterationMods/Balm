@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.fabric;
 
+import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
@@ -29,6 +30,7 @@ public class FabricBalmRuntime implements BalmRuntime {
     private final BalmMenus menus = new FabricBalmMenus();
     private final BalmNetworking networking = new FabricBalmNetworking();
     private final BalmConfig config = new FabricBalmConfig();
+    private final BalmHooks hooks = new FabricBalmHooks();
 
     public FabricBalmRuntime() {
         FabricBalmCommonEvents.registerEvents(events);
@@ -72,6 +74,11 @@ public class FabricBalmRuntime implements BalmRuntime {
     @Override
     public BalmNetworking getNetworking() {
         return networking;
+    }
+
+    @Override
+    public BalmHooks getHooks() {
+        return hooks;
     }
 
     @Override

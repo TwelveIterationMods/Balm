@@ -51,4 +51,8 @@ public class Balm {
     public static BalmMenus getMenus() {
         return runtime.getMenus();
     }
+
+    public static BalmHooks getHooks() {
+        return runtime.getHooks();
+    }
 }

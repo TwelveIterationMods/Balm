@@ -18,5 +18,6 @@ public interface BalmRuntime {
     BalmItems getItems();
     BalmMenus getMenus();
     BalmNetworking getNetworking();
+    BalmHooks getHooks();
     boolean isModLoaded(String modId);
 }
