@@ -8,7 +8,7 @@ import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.minecraft.world.InteractionResult;
 
-public class FabricBalmConfig implements ConfigData, BalmConfig {
+public class FabricBalmConfig implements BalmConfig {
 
     @Override
     @SuppressWarnings("unchecked")
