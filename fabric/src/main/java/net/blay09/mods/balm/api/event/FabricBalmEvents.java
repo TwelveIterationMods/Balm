@@ -54,7 +54,7 @@ public class FabricBalmEvents implements BalmEvents {
         if (handler != null) {
             handler.accept(event);
         } else {
-            throw new UnsupportedOperationException("Event " + event.getClass().getSimpleName() + " can not be fired.");
+            fireEventHandlers(event);
         }
     }
 

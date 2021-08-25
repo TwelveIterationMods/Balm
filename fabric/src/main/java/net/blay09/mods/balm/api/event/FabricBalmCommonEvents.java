@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FabricBalmCommonEvents {
 
@@ -43,7 +44,7 @@ public class FabricBalmCommonEvents {
             playerTickStartHandlers.add(handler);
         });
 
-       events.registerTickEvent(TickType.ServerPlayer, TickPhase.End, (ServerPlayerTickHandler handler) -> {
+        events.registerTickEvent(TickType.ServerPlayer, TickPhase.End, (ServerPlayerTickHandler handler) -> {
             if (serverTickEndListener == null) {
                 serverTickEndListener = server -> {
                     for (ServerPlayer player : server.getPlayerList().getPlayers()) {
@@ -59,56 +60,42 @@ public class FabricBalmCommonEvents {
             playerTickEndHandlers.add(handler);
         });
 
-        events.registerEvent(ServerStartedEvent.class, () -> {
-            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                final ServerStartedEvent event = new ServerStartedEvent(server);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(ServerStartedEvent.class, () -> ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            final ServerStartedEvent event = new ServerStartedEvent(server);
+            events.fireEventHandlers(event);
+        }));
 
-        events.registerEvent(ServerStoppedEvent.class, () -> {
-            ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-                final ServerStoppedEvent event = new ServerStoppedEvent(server);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(ServerStoppedEvent.class, () -> ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            final ServerStoppedEvent event = new ServerStoppedEvent(server);
+            events.fireEventHandlers(event);
+        }));
 
-        events.registerEvent(UseBlockEvent.class, () -> {
-            UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-                final UseBlockEvent event = new UseBlockEvent(player, world, hand, hitResult);
-                events.fireEventHandlers(event);
-                return event.getResult();
-            });
-        });
+        events.registerEvent(UseBlockEvent.class, () -> UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            final UseBlockEvent event = new UseBlockEvent(player, world, hand, hitResult);
+            events.fireEventHandlers(event);
+            return event.getResult();
+        }));
 
-        events.registerEvent(PlayerLoginEvent.class, () -> {
-            ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
-                final PlayerLoginEvent event = new PlayerLoginEvent(listener.player);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(PlayerLoginEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+            final PlayerLoginEvent event = new PlayerLoginEvent(listener.player);
+            events.fireEventHandlers(event);
+        }));
 
-        events.registerEvent(BreakBlockEvent.Pre.class, () -> {
-            PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-                final BreakBlockEvent.Pre event = new BreakBlockEvent.Pre(world, player, pos, state, blockEntity);
-                events.fireEventHandlers(event);
-                return !event.isCanceled();
-            });
-        });
+        events.registerEvent(BreakBlockEvent.Pre.class, () -> PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+            final BreakBlockEvent.Pre event = new BreakBlockEvent.Pre(world, player, pos, state, blockEntity);
+            events.fireEventHandlers(event);
+            return !event.isCanceled();
+        }));
 
-        events.registerEvent(BreakBlockEvent.Post.class, () -> {
-            PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-                final BreakBlockEvent.Post event = new BreakBlockEvent.Post(world, player, pos, state, blockEntity);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(BreakBlockEvent.Post.class, () -> PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+            final BreakBlockEvent.Post event = new BreakBlockEvent.Post(world, player, pos, state, blockEntity);
+            events.fireEventHandlers(event);
+        }));
 
-        events.registerEvent(PlayerRespawnEvent.class, () -> {
-            ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-                final PlayerRespawnEvent event = new PlayerRespawnEvent(oldPlayer, newPlayer);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(PlayerRespawnEvent.class, () -> ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            final PlayerRespawnEvent event = new PlayerRespawnEvent(oldPlayer, newPlayer);
+            events.fireEventHandlers(event);
+        }));
     }
 
 }
