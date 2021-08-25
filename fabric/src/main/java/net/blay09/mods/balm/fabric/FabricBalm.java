@@ -6,7 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.nbt.CompoundTag;
 
-public class FabricBalmMod implements ModInitializer {
+public class FabricBalm implements ModInitializer {
 
     @Override
     public void onInitialize() {
