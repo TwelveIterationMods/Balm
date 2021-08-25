@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "balm-fabric",
+  "version": "${version}",
+
+  "name": "Balm",
+  "description": "Abstraction Layer (but not really)™ for Blay's multiplatform mods",
+  "authors": [
+    "BlayTheNinth"
+  ],
+  "contact": {
+    "homepage": "https://blay09.net/",
+    "sources": "https://github.com/ModdingForBlockheads/Balm",
+    "issues": "https://github.com/ModdingForBlockheads/Balm/issues"
+  },
+
+  "license": "All Rights Reserved",
+  "icon": "assets/balm/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.blay09.mods.balm.api.Balm"
+    ],
+    "client": [
+      "net.blay09.mods.balm.client.FabricBalmClient"
+    ]
+  },
+  "mixins": [
+    "balm.mixins.json"
+  ],
+
+  "depends": {
+    "cloth-config2": ">=5.0.34",
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/scGAfXC"
+      },
+      "badges": ["library"]
+    }
+  }
+}
