@@ -9,11 +9,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class BalmClient {
 
-    private static BalmClientRuntime runtime;
-
-    public static void __setupRuntime(BalmClientRuntime runtime) {
-        BalmClient.runtime = runtime;
-    }
+    private static final BalmClientRuntime runtime = BalmClientRuntimeFactory.create();
 
     public static Player getClientPlayer() {
         return Minecraft.getInstance().player;

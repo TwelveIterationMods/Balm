@@ -10,11 +10,7 @@ import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 
 public class Balm {
-    private static BalmRuntime runtime;
-
-    public static void __setupRuntime(BalmRuntime runtime) {
-        Balm.runtime = runtime;
-    }
+    private static final BalmRuntime runtime = BalmRuntimeFactory.create();
 
     public static boolean isModLoaded(String modId) {
         return runtime.isModLoaded(modId);
