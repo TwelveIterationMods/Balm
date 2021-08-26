@@ -6,14 +6,14 @@ import net.minecraft.client.gui.screens.Screen;
 
 public abstract class ScreenDrawEvent extends BalmEvent {
     private final Screen screen;
-    private final PoseStack matrixStack;
+    private final PoseStack poseStack;
     private final int mouseX;
     private final int mouseY;
     private final float tickDelta;
 
-    public ScreenDrawEvent(Screen screen, PoseStack matrixStack, int mouseX, int mouseY, float tickDelta) {
+    public ScreenDrawEvent(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
         this.screen = screen;
-        this.matrixStack = matrixStack;
+        this.poseStack = poseStack;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.tickDelta = tickDelta;
@@ -23,8 +23,8 @@ public abstract class ScreenDrawEvent extends BalmEvent {
         return screen;
     }
 
-    public PoseStack getMatrixStack() {
-        return matrixStack;
+    public PoseStack getPoseStack() {
+        return poseStack;
     }
 
     public int getMouseX() {
