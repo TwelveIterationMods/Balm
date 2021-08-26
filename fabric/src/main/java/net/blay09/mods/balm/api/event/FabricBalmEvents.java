@@ -15,7 +15,7 @@ public class FabricBalmEvents implements BalmEvents {
     private final Map<Class<?>, Runnable> eventInitializers = new HashMap<>();
     private final Map<Class<?>, Consumer<?>> eventDispatchers = new HashMap<>();
     private final Multimap<Class<?>, Consumer<?>> eventHandlers = ArrayListMultimap.create();
-    private final Table<TickType, TickPhase, Consumer<?>> tickEventInitializers = HashBasedTable.create();
+    private final Table<TickType<?>, TickPhase, Consumer<?>> tickEventInitializers = HashBasedTable.create();
 
     public void registerEvent(Class<?> eventClass, Runnable initializer) {
         registerEvent(eventClass, initializer, null);
@@ -60,12 +60,12 @@ public class FabricBalmEvents implements BalmEvents {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void onTickEvent(TickType type, TickPhase phase, Consumer<T> handler) {
+    public <T> void onTickEvent(TickType<T> type, TickPhase phase, Consumer<T> handler) {
         Consumer<Consumer<T>> initializer = (Consumer<Consumer<T>>) tickEventInitializers.get(type, phase);
         initializer.accept(handler);
     }
 
-    public <T> void registerTickEvent(TickType type, TickPhase phase, Consumer<T> initializer) {
+    public <T> void registerTickEvent(TickType<?> type, TickPhase phase, Consumer<T> initializer) {
         tickEventInitializers.put(type, phase, initializer);
     }
 
