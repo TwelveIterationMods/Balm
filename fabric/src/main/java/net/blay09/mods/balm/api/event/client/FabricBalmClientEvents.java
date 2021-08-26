@@ -71,15 +71,12 @@ public class FabricBalmClientEvents {
         }
     }
 
-
-    public static void registerClientTickEvents(FabricBalmEvents events) {
+    public static void registerEvents(FabricBalmEvents events) {
         events.registerTickEvent(TickType.Client, TickPhase.Start, (ClientTickHandler handler) -> ClientTickEvents.START_CLIENT_TICK.register(handler::handle));
         events.registerTickEvent(TickType.Client, TickPhase.End, (ClientTickHandler handler) -> ClientTickEvents.END_CLIENT_TICK.register(handler::handle));
         events.registerTickEvent(TickType.ClientLevel, TickPhase.Start, (ClientLevelTickHandler handler) -> ClientTickEvents.START_WORLD_TICK.register(handler::handle));
         events.registerTickEvent(TickType.ClientLevel, TickPhase.End, (ClientLevelTickHandler handler) -> ClientTickEvents.END_WORLD_TICK.register(handler::handle));
-    }
 
-    public static void registerClientEvents(FabricBalmEvents events) {
         events.registerEvent(ClientStartedEvent.class, () -> ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             final ClientStartedEvent event = new ClientStartedEvent(client);
             events.fireEventHandlers(event);
