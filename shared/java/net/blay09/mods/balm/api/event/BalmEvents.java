@@ -11,5 +11,5 @@ public interface BalmEvents {
 
     <T> void fireEvent(T event);
 
-    <T> void onTickEvent(TickType<T> type, TickPhase phase, Consumer<T> handler);
+    <T> void onTickEvent(TickType<T> type, TickPhase phase, T handler);
 }

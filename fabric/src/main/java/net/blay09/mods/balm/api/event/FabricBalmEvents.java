@@ -60,8 +60,8 @@ public class FabricBalmEvents implements BalmEvents {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void onTickEvent(TickType<T> type, TickPhase phase, Consumer<T> handler) {
-        Consumer<Consumer<T>> initializer = (Consumer<Consumer<T>>) tickEventInitializers.get(type, phase);
+    public <T> void onTickEvent(TickType<T> type, TickPhase phase, T handler) {
+        Consumer<T> initializer = (Consumer<T>) tickEventInitializers.get(type, phase);
         initializer.accept(handler);
     }
 
