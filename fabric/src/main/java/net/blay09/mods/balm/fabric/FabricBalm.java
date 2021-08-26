@@ -1,6 +1,5 @@
 package net.blay09.mods.balm.fabric;
 
-import net.blay09.mods.balm.api.config.BalmConfigHolder;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -14,7 +13,5 @@ public class FabricBalm implements ModInitializer {
             CompoundTag data = ((BalmPlayer) oldPlayer).getBalmData();
             ((BalmPlayer) newPlayer).setBalmData(data);
         });
-
-        BalmConfigHolder.initialize();
     }
 }

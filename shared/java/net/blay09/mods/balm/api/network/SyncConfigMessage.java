@@ -1,8 +1,7 @@
 package net.blay09.mods.balm.api.network;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.config.BalmConfig;
-import net.blay09.mods.balm.api.config.BalmConfigHolder;
+import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Synced;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -144,12 +143,12 @@ public class SyncConfigMessage<TData> {
         }
     }
 
-    public static <TMessage extends SyncConfigMessage<TData>, TData extends BalmConfig> void register(ResourceLocation resourceLocation,
-                                                                                                      Class<TMessage> messageClass,
-                                                                                                      Function<TData, TMessage> messageFactory,
-                                                                                                      Class<TData> dataClass,
-                                                                                                      Supplier<TData> dataFactory) {
-        Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getConfig(dataClass), dataFactory);
+    public static <TMessage extends SyncConfigMessage<TData>, TData extends BalmConfigData> void register(ResourceLocation resourceLocation,
+                                                                                                          Class<TMessage> messageClass,
+                                                                                                          Function<TData, TMessage> messageFactory,
+                                                                                                          Class<TData> dataClass,
+                                                                                                          Supplier<TData> dataFactory) {
+        Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getBackingConfig(dataClass), dataFactory);
         Balm.getNetworking().registerServerboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
             TData data = message.getData();
             writeSyncedFields(buf, data);
@@ -157,7 +156,7 @@ public class SyncConfigMessage<TData> {
             TData data = copyFactory.get();
             readSyncedFields(buf, data);
             return messageFactory.apply(data);
-        }, BalmConfigHolder::handleSync);
+        }, Balm.getConfig()::handleSync);
     }
 
 }
