@@ -21,7 +21,7 @@ public abstract class AbstractBalmConfig implements BalmConfig {
     private final Map<Class<?>, BalmConfigData> activeConfigs = new HashMap<>();
     private final Map<Class<?>, Function<?, ?>> syncMessageFactories = new HashMap<>();
 
-    public AbstractBalmConfig() {
+    public void initialize() {
         Balm.getEvents().onEvent(ServerStartedEvent.class, event -> currentServer.set(event.getServer()));
 
         Balm.getEvents().onEvent(ServerStoppedEvent.class, event -> currentServer.set(null));
