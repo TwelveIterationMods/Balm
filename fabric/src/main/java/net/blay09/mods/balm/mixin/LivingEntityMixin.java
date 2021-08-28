@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LivingEntityMixin {
     @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
     private void actuallyHurt(DamageSource damageSource, float damageAmount, CallbackInfo callbackInfo) {
-        Balm.getEvents().fireEvent(new LivingDamageEvent((LivingEntity) (Object) this));
+        Balm.getEvents().fireEvent(new LivingDamageEvent((LivingEntity) (Object) this, damageSource, damageAmount));
     }
 
     @Inject(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("HEAD"), cancellable = true)
