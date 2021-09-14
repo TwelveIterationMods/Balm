@@ -107,7 +107,7 @@ public class FabricBalmClientEvents {
 
         events.registerEvent(ScreenDrawEvent.Post.class, () -> {
             initializeScreenEvents();
-            screenDrawPostInitializers.add((scr) -> ScreenEvents.beforeRender(scr).register((screen, poseStack, mouseX, mouseY, tickDelta) -> {
+            screenDrawPostInitializers.add((scr) -> ScreenEvents.afterRender(scr).register((screen, poseStack, mouseX, mouseY, tickDelta) -> {
                 final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(screen, poseStack, mouseX, mouseY, tickDelta);
                 events.fireEventHandlers(event);
             }));

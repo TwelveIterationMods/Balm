@@ -11,177 +11,143 @@ import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenKeyEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenMouseEvent;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ForgeBalmClientEvents {
 
-    private static final List<Consumer<Screen>> screenDrawPreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenDrawPostInitializers = new ArrayList<>();
-
-    private static final List<Consumer<Screen>> screenMousePressPreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenMousePressPostInitializers = new ArrayList<>();
-
-    private static final List<Consumer<Screen>> screenMouseReleasePreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenMouseReleasePostInitializers = new ArrayList<>();
-
-    private static final List<Consumer<Screen>> screenMouseClickPreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenMouseClickPostInitializers = new ArrayList<>();
-
-    private static final List<Consumer<Screen>> screenKeyPressPreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenKeyPressPostInitializers = new ArrayList<>();
-
-    private static final List<Consumer<Screen>> screenKeyReleasePreInitializers = new ArrayList<>();
-    private static final List<Consumer<Screen>> screenKeyReleasePostInitializers = new ArrayList<>();
-
-    private static ScreenEvents.BeforeInit beforeInitListener = null;
-
-    private static void initializeScreenEvents() {
-        if (beforeInitListener == null) {
-            final List<List<Consumer<Screen>>> initializers = new ArrayList<>();
-
-            initializers.add(screenDrawPreInitializers);
-            initializers.add(screenDrawPostInitializers);
-
-            initializers.add(screenMousePressPreInitializers);
-            initializers.add(screenMousePressPostInitializers);
-
-            initializers.add(screenMouseReleasePreInitializers);
-            initializers.add(screenMouseReleasePostInitializers);
-
-            initializers.add(screenMouseClickPreInitializers);
-            initializers.add(screenMouseClickPostInitializers);
-
-            initializers.add(screenKeyPressPreInitializers);
-            initializers.add(screenKeyPressPostInitializers);
-
-            initializers.add(screenKeyReleasePreInitializers);
-            initializers.add(screenKeyReleasePostInitializers);
-
-            beforeInitListener = (client, scr, scaledWidth, scaledHeight) -> {
-                for (List<Consumer<Screen>> list : initializers) {
-                    for (Consumer<Screen> initializer : list) {
-                        initializer.accept(scr);
-                    }
-                }
-            };
-            ScreenEvents.BEFORE_INIT.register(beforeInitListener);
-        }
-    }
-
     public static void registerEvents(ForgeBalmEvents events) {
-        events.registerTickEvent(TickType.Client, TickPhase.Start, (ClientTickHandler handler) -> ClientTickEvents.START_CLIENT_TICK.register(handler::handle));
-        events.registerTickEvent(TickType.Client, TickPhase.End, (ClientTickHandler handler) -> ClientTickEvents.END_CLIENT_TICK.register(handler::handle));
-        events.registerTickEvent(TickType.ClientLevel, TickPhase.Start, (ClientLevelTickHandler handler) -> ClientTickEvents.START_WORLD_TICK.register(handler::handle));
-        events.registerTickEvent(TickType.ClientLevel, TickPhase.End, (ClientLevelTickHandler handler) -> ClientTickEvents.END_WORLD_TICK.register(handler::handle));
+        events.registerTickEvent(TickType.Client, TickPhase.Start, (ClientTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
+                if (orig.phase == TickEvent.Phase.START) {
+                    handler.handle(Minecraft.getInstance());
+                }
+            });
+        });
+        events.registerTickEvent(TickType.Client, TickPhase.End, (ClientTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
+                if (orig.phase == TickEvent.Phase.END) {
+                    handler.handle(Minecraft.getInstance());
+                }
+            });
+        });
+        events.registerTickEvent(TickType.ClientLevel, TickPhase.Start, (ClientLevelTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
+                if (orig.phase == TickEvent.Phase.START) {
+                    handler.handle(Minecraft.getInstance().level);
+                }
+            });
+        });
+        events.registerTickEvent(TickType.ClientLevel, TickPhase.End, (ClientLevelTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
+                if (orig.phase == TickEvent.Phase.END) {
+                    handler.handle(Minecraft.getInstance().level);
+                }
+            });
+        });
 
-        events.registerEvent(ClientStartedEvent.class, () -> ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            final ClientStartedEvent event = new ClientStartedEvent(client);
-            events.fireEventHandlers(event);
-        }));
+        events.registerEvent(ClientStartedEvent.class, () -> {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLLoadCompleteEvent orig) -> {
+                final ClientStartedEvent event = new ClientStartedEvent(Minecraft.getInstance());
+                events.fireEventHandlers(event);
+            });
+        });
 
-        events.registerEvent(ConnectedToServerEvent.class, () -> ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            final ConnectedToServerEvent event = new ConnectedToServerEvent(client);
-            events.fireEventHandlers(event);
-        }));
+        events.registerEvent(ConnectedToServerEvent.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggedInEvent orig) -> {
+                final ConnectedToServerEvent event = new ConnectedToServerEvent(Minecraft.getInstance());
+                events.fireEventHandlers(event);
+            });
+        });
 
-        events.registerEvent(ScreenInitEvent.Pre.class, () -> ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(screen);
-            events.fireEventHandlers(event);
-        }));
+        events.registerEvent(ScreenInitEvent.Pre.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((ScreenInitEvent.Pre orig) -> {
+                final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getScreen());
+                events.fireEventHandlers(event);
+            });
+        });
 
-        events.registerEvent(ScreenInitEvent.Post.class, () -> ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            final ScreenInitEvent.Post event = new ScreenInitEvent.Post(screen);
-            events.fireEventHandlers(event);
-        }));
+        events.registerEvent(ScreenInitEvent.Post.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((ScreenInitEvent.Post orig) -> {
+                final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getScreen());
+                events.fireEventHandlers(event);
+            });
+        });
 
         events.registerEvent(ScreenDrawEvent.Pre.class, () -> {
-            initializeScreenEvents();
-            screenDrawPreInitializers.add((scr) -> ScreenEvents.beforeRender(scr).register((screen, poseStack, mouseX, mouseY, tickDelta) -> {
-                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(screen, poseStack, mouseX, mouseY, tickDelta);
+            MinecraftForge.EVENT_BUS.addListener((ScreenDrawEvent.Pre orig) -> {
+                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getTickDelta());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenDrawEvent.Post.class, () -> {
-            initializeScreenEvents();
-            screenDrawPostInitializers.add((scr) -> ScreenEvents.beforeRender(scr).register((screen, poseStack, mouseX, mouseY, tickDelta) -> {
-                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(screen, poseStack, mouseX, mouseY, tickDelta);
+            MinecraftForge.EVENT_BUS.addListener((ScreenDrawEvent.Post orig) -> {
+                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getTickDelta());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Pre.class, () -> {
-            initializeScreenEvents();
-            screenMouseClickPreInitializers.add((scr) -> ScreenMouseEvents.beforeMouseClick(scr).register((screen, mouseX, mouseY, button) -> {
-                final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(screen, mouseX, mouseY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.MouseClickedEvent.Pre orig) -> {
+                final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Post.class, () -> {
-            initializeScreenEvents();
-            screenMouseClickPostInitializers.add((scr) -> ScreenMouseEvents.afterMouseClick(scr).register((screen, mouseX, mouseY, button) -> {
-                final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(screen, mouseX, mouseY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.MouseClickedEvent.Post orig) -> {
+                final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Pre.class, () -> {
-            initializeScreenEvents();
-            screenMouseReleasePreInitializers.add((scr) -> ScreenMouseEvents.beforeMouseRelease(scr).register((screen, mouseX, mouseY, button) -> {
-                final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(screen, mouseX, mouseY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.MouseReleasedEvent.Pre orig) -> {
+                final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Post.class, () -> {
-            initializeScreenEvents();
-            screenMouseReleasePostInitializers.add((scr) -> ScreenMouseEvents.afterMouseRelease(scr).register((screen, mouseX, mouseY, button) -> {
-                final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(screen, mouseX, mouseY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.MouseReleasedEvent.Post orig) -> {
+                final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Pre.class, () -> {
-            initializeScreenEvents();
-            screenKeyPressPreInitializers.add((scr) -> ScreenKeyboardEvents.beforeKeyPress(scr).register((screen, KeyX, KeyY, button) -> {
-                final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(screen, KeyX, KeyY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.KeyboardKeyPressedEvent.Pre orig) -> {
+                final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Post.class, () -> {
-            initializeScreenEvents();
-            screenKeyPressPostInitializers.add((scr) -> ScreenKeyboardEvents.afterKeyPress(scr).register((screen, KeyX, KeyY, button) -> {
-                final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(screen, KeyX, KeyY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.KeyboardKeyPressedEvent.Post orig) -> {
+                final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Pre.class, () -> {
-            initializeScreenEvents();
-            screenKeyReleasePreInitializers.add((scr) -> ScreenKeyboardEvents.beforeKeyRelease(scr).register((screen, KeyX, KeyY, button) -> {
-                final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(screen, KeyX, KeyY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.KeyboardKeyReleasedEvent.Pre orig) -> {
+                final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Post.class, () -> {
-            initializeScreenEvents();
-            screenKeyReleasePostInitializers.add((scr) -> ScreenKeyboardEvents.afterKeyRelease(scr).register((screen, KeyX, KeyY, button) -> {
-                final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(screen, KeyX, KeyY, button);
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
+                final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(event);
-            }));
+            });
         });
     }
 
