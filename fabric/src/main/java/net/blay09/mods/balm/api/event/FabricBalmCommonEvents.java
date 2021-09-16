@@ -72,7 +72,7 @@ public class FabricBalmCommonEvents {
         events.registerEvent(UseBlockEvent.class, () -> UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             final UseBlockEvent event = new UseBlockEvent(player, world, hand, hitResult);
             events.fireEventHandlers(event);
-            return event.getResult();
+            return event.getInteractionResult();
         }));
 
         events.registerEvent(PlayerLoginEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {

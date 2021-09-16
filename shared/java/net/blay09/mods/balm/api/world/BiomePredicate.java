@@ -5,5 +5,5 @@ import net.minecraft.world.level.biome.Biome;
 
 @FunctionalInterface
 public interface BiomePredicate {
-    boolean test(ResourceLocation name, Biome.ClimateSettings climate, Biome.BiomeCategory category);
+    boolean test(ResourceLocation name, Biome.BiomeCategory category, Biome.Precipitation precipitation, float temperature, float downfall);
 }

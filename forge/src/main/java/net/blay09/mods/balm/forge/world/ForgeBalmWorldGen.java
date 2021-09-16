@@ -72,7 +72,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     @SubscribeEvent
     public void onBiomeLoading(BiomeLoadingEvent event) {
         for (BiomeModification biomeModification : biomeModifications) {
-            if (biomeModification.getBiomePredicate().test(event.getName(), event.getClimate(), event.getCategory())) {
+            if (biomeModification.getBiomePredicate().test(event.getName(), event.getCategory(), event.getClimate().precipitation, event.getClimate().temperature, event.getClimate().downfall)) {
                 ConfiguredFeature<?, ?> configuredFeature = BuiltinRegistries.CONFIGURED_FEATURE.get(biomeModification.getConfiguredFeatureKey());
                 if (configuredFeature != null) {
                     event.getGeneration().addFeature(biomeModification.getStep(), configuredFeature);
