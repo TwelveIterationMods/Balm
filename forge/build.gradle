@@ -14,7 +14,7 @@ apply plugin: "org.spongepowered.mixin"
 apply plugin: 'maven-publish'
 
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
-version = project.mod_version + "+" + buildNumber
+version = project.mod_version + "." + buildNumber
 group = project.maven_group
 archivesBaseName = project.mod_id
 
