@@ -40,11 +40,11 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     @Override
     public void balmSync() {
         if (level != null && !level.isClientSide) {
-            sync();
+            // TODO sync();
         }
     }
 
-    @Override
+    /* TODO @Override
     public void fromClientTag(CompoundTag tag) {
         balmFromClientTag(tag);
     }
@@ -52,5 +52,5 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         return balmToClientTag(tag);
-    }
+    }*/
 }

@@ -22,9 +22,6 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
     private final BalmKeyMappings keyMappings = new ForgeBalmKeyMappings();
 
     public ForgeBalmClientRuntime() {
-        MinecraftForge.EVENT_BUS.register(renderers);
-        MinecraftForge.EVENT_BUS.register(textures);
-
         ForgeBalmClientEvents.registerEvents(((ForgeBalmEvents) Balm.getEvents()));
     }
 

@@ -36,7 +36,7 @@ public class UseBlockEvent extends BalmEvent {
         return hitResult;
     }
 
-    public InteractionResult getResult() {
+    public InteractionResult getInteractionResult() {
         return result;
     }
 

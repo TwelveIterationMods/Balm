@@ -86,7 +86,7 @@ public class ForgeBalmCommonEvents {
                 final UseBlockEvent event = new UseBlockEvent(orig.getPlayer(), orig.getWorld(), orig.getHand(), orig.getHitVec());
                 events.fireEventHandlers(event);
                 if (event.isCanceled()) {
-                    orig.setCancellationResult(event.getResult());
+                    orig.setCancellationResult(event.getInteractionResult());
                     orig.setCanceled(true);
                 }
             });

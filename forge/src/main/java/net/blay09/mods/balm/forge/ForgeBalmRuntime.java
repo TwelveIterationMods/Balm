@@ -34,8 +34,6 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmHooks hooks = new ForgeBalmHooks();
 
     public ForgeBalmRuntime() {
-        MinecraftForge.EVENT_BUS.register(worldGen);
-
         ForgeBalmCommonEvents.registerEvents(events);
     }
 

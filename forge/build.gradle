@@ -27,7 +27,7 @@ minecraft {
         client {
             workingDirectory project.file('run')
 
-			arg "-mixin.config=mixins.balm.json"
+			arg "-mixin.config=balm.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -49,7 +49,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-			arg "-mixin.config=mixins.balm.json"
+			arg "-mixin.config=balm.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -73,7 +73,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-			arg "-mixin.config=mixins.balm.json"
+			arg "-mixin.config=balm.mixins.json"
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -127,7 +127,7 @@ jar {
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "BlayTheNinth",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-				"MixinConfigs": "mixins.balm.json"
+				"MixinConfigs": "balm.mixins.json"
         ])
     }
 }

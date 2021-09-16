@@ -3,6 +3,7 @@ package net.blay09.mods.balm.forge.client.rendering;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -29,6 +30,10 @@ public class ForgeBalmTextures implements BalmTextures {
     }
 
     private final List<TextureRegistration> textures = new ArrayList<>();
+
+    public ForgeBalmTextures() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     @Override
     public void addSprite(ResourceLocation atlas, ResourceLocation location) {

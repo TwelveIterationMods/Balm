@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class ForgeBalmRenderers implements BalmRenderers {
     private final Map<ModelLayerLocation, Supplier<LayerDefinition>> layerDefinitions = new HashMap<>();
     private final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
     private final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
+
+    public ForgeBalmRenderers() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     @Override
     public ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {

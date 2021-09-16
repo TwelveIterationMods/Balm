@@ -2,18 +2,19 @@ package net.blay09.mods.balm.forge.world;
 
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -22,10 +23,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ForgeBalmWorldGen implements BalmWorldGen {
+
+    public ForgeBalmWorldGen() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     @Override
     public <T extends Feature<?>> DeferredObject<T> registerFeature(Supplier<T> supplier, ResourceLocation identifier) {
@@ -60,7 +64,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
 
     @Override
-    public void addFeatureToBiomes(Predicate<Biome> biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier) {
+    public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier) {
         ResourceKey<ConfiguredFeature<?, ?>> resourceKey = ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, configuredFeatureIdentifier);
         biomeModifications.add(new BiomeModification(biomePredicate, step, resourceKey));
     }
@@ -68,10 +72,11 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     @SubscribeEvent
     public void onBiomeLoading(BiomeLoadingEvent event) {
         for (BiomeModification biomeModification : biomeModifications) {
-            // TODO can't check predicate, as we do not have a Biome yet in Forge. need to refactor that part
-            ConfiguredFeature<?, ?> configuredFeature = BuiltinRegistries.CONFIGURED_FEATURE.get(biomeModification.getConfiguredFeatureKey());
-            if (configuredFeature != null) {
-                event.getGeneration().addFeature(biomeModification.getStep(), configuredFeature);
+            if (biomeModification.getBiomePredicate().test(event.getName(), event.getClimate(), event.getCategory())) {
+                ConfiguredFeature<?, ?> configuredFeature = BuiltinRegistries.CONFIGURED_FEATURE.get(biomeModification.getConfiguredFeatureKey());
+                if (configuredFeature != null) {
+                    event.getGeneration().addFeature(biomeModification.getStep(), configuredFeature);
+                }
             }
         }
     }
