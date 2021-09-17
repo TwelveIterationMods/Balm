@@ -14,6 +14,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             String path = parentPath + field.getName();
             if (String.class.isAssignableFrom(type)) {
                 builder.define(path, (String) defaultValue);
+            } else if (List.class.isAssignableFrom(type)) {
+                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> true);
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
@@ -75,7 +78,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
         for (Field field : fields) {
             String path = parentPath + field.getName();
             Class<?> type = field.getType();
-            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type)) {
+            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
                 field.set(instance, config.getConfigData().get(path));
             } else {
                 readConfigValues(path + ".", field.get(instance), config);
@@ -97,7 +100,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             String path = parentPath + field.getName();
             Class<?> type = field.getType();
             Object value = field.get(instance);
-            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type)) {
+            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
                 config.getConfigData().set(path, value);
             } else {
                 writeConfigValues(path + ".", config, field.get(instance));
