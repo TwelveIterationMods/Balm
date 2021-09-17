@@ -44,7 +44,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
             T configuredFeature = supplier.get();
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, identifier, configuredFeature);
             return configuredFeature;
-        }).resolveImmediately();
+        });
     }
 
     @Override
