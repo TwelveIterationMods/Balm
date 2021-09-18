@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
+import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
@@ -19,8 +20,12 @@ import net.blay09.mods.balm.forge.item.ForgeBalmItems;
 import net.blay09.mods.balm.forge.menu.ForgeBalmMenus;
 import net.blay09.mods.balm.forge.network.ForgeBalmNetworking;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 
 public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmWorldGen worldGen = new ForgeBalmWorldGen();
@@ -85,5 +90,13 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public boolean isModLoaded(String modId) {
         return ModList.get().isLoaded(modId);
+    }
+
+    @Override
+    public void initialize(String modId) {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        for (DeferredRegister<?> deferredRegister : DeferredRegisters.getByModId(modId)) {
+            deferredRegister.register(modEventBus);
+        }
     }
 }

@@ -20,4 +20,5 @@ public interface BalmRuntime {
     BalmNetworking getNetworking();
     BalmHooks getHooks();
     boolean isModLoaded(String modId);
+    void initialize(String modId);
 }

@@ -6,8 +6,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import java.util.Collection;
+
 public class DeferredRegisters {
-    // TODO these are not yet registered to the mod event buses
     private static final Table<IForgeRegistry<?>, String, DeferredRegister<?>> deferredRegisters = HashBasedTable.create();
 
     @SuppressWarnings("unchecked")
@@ -19,5 +20,9 @@ public class DeferredRegisters {
         }
 
         return (DeferredRegister<T>) register;
+    }
+
+    public static Collection<DeferredRegister<?>> getByModId(String modId) {
+        return deferredRegisters.column(modId).values();
     }
 }

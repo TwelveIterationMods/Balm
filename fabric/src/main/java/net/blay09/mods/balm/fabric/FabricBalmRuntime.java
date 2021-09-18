@@ -85,4 +85,8 @@ public class FabricBalmRuntime implements BalmRuntime {
     public boolean isModLoaded(String modId) {
         return FabricLoader.getInstance().isModLoaded(modId);
     }
+
+    @Override
+    public void initialize(String modId) {
+    }
 }

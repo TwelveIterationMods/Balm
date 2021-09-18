@@ -12,6 +12,10 @@ import net.blay09.mods.balm.api.world.BalmWorldGen;
 public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeFactory.create();
 
+    public static void initialize(String modId) {
+        runtime.initialize(modId);
+    }
+
     public static boolean isModLoaded(String modId) {
         return runtime.isModLoaded(modId);
     }
