@@ -3,11 +3,18 @@ package net.blay09.mods.balm.api.block.entity;
 import net.blay09.mods.balm.api.block.BalmBlockEntityContract;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
     public BalmBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
@@ -40,17 +47,44 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     @Override
     public void balmSync() {
         if (level != null && !level.isClientSide) {
-            // TODO sync();
+            List<? extends Player> playerList = level.players();
+            ClientboundBlockEntityDataPacket updatePacket = getUpdatePacket();
+            if (updatePacket == null) {
+                return;
+            }
+
+            for (Object obj : playerList) {
+                ServerPlayer player = (ServerPlayer) obj;
+                if (Math.hypot(player.getX() - worldPosition.getX() + 0.5, player.getZ() - worldPosition.getZ() + 0.5) < 64) {
+                    player.connection.send(updatePacket);
+                }
+            }
         }
     }
 
-    /* TODO @Override
-    public void fromClientTag(CompoundTag tag) {
-        balmFromClientTag(tag);
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        return balmToClientTag(tag);
-    }*/
+    public CompoundTag getUpdateTag() {
+        return balmToClientTag(new CompoundTag());
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+
+        balmFromClientTag(pkt.getTag());
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+
+        balmFromClientTag(tag);
+    }
+
 }
