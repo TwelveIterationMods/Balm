@@ -11,6 +11,10 @@ public class BalmClient {
 
     private static final BalmClientRuntime runtime = BalmClientRuntimeFactory.create();
 
+    public static void initialize(String modId) {
+        runtime.initialize(modId);
+    }
+
     public static Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }

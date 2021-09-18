@@ -12,7 +12,7 @@ import net.blay09.mods.balm.forge.client.rendering.ForgeBalmRenderers;
 import net.blay09.mods.balm.forge.client.rendering.ForgeBalmTextures;
 import net.blay09.mods.balm.forge.client.screen.ForgeBalmScreens;
 import net.blay09.mods.balm.forge.event.ForgeBalmClientEvents;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ForgeBalmClientRuntime implements BalmClientRuntime {
 
@@ -43,5 +43,10 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
     @Override
     public BalmKeyMappings getKeyMappings() {
         return keyMappings;
+    }
+
+    @Override
+    public void initialize(String modId) {
+        FMLJavaModLoadingContext.get().getModEventBus().register(renderers);
     }
 }

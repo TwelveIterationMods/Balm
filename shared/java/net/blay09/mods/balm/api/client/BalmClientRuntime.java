@@ -10,4 +10,5 @@ public interface BalmClientRuntime {
     BalmTextures getTextures();
     BalmScreens getScreens();
     BalmKeyMappings getKeyMappings();
+    void initialize(String modId);
 }

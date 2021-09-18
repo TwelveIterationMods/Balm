@@ -7,7 +7,6 @@
   "client": [
     "AbstractContainerScreenAccessor",
     "CheckboxAccessor",
-    "EntityModelSetAccessor",
     "ImageButtonAccessor",
     "KeyMappingAccessor",
     "ModelLayersAccessor",

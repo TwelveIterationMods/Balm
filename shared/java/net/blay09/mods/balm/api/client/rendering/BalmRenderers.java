@@ -18,8 +18,6 @@ import java.util.function.Supplier;
 public interface BalmRenderers {
     ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition);
 
-    Map<ModelLayerLocation, LayerDefinition> createRoots();
-
     <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider);
 
     void registerBlockColorHandler(BlockColor color, Block... blocks);

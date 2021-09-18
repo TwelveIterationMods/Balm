@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class ForgeBalmRenderers implements BalmRenderers {
 
@@ -46,12 +45,9 @@ public class ForgeBalmRenderers implements BalmRenderers {
     }
 
     private final Map<ModelLayerLocation, Supplier<LayerDefinition>> layerDefinitions = new HashMap<>();
+    private final Map<BlockEntityType<BlockEntity>, BlockEntityRendererProvider<BlockEntity>> blockEntityRenderers = new HashMap<>();
     private final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
     private final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
-
-    public ForgeBalmRenderers() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @Override
     public ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
@@ -61,13 +57,9 @@ public class ForgeBalmRenderers implements BalmRenderers {
     }
 
     @Override
-    public Map<ModelLayerLocation, LayerDefinition> createRoots() {
-        return layerDefinitions.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().get()));
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
-        BlockEntityRenderers.register(type, provider);
+        blockEntityRenderers.put(((BlockEntityType<BlockEntity>) type), (BlockEntityRendererProvider<BlockEntity>) provider);
     }
 
     @Override
@@ -83,6 +75,20 @@ public class ForgeBalmRenderers implements BalmRenderers {
     @Override
     public void setBlockRenderType(Block block, RenderType renderType) {
         ItemBlockRenderTypes.setRenderLayer(block, renderType);
+    }
+
+    @SubscribeEvent
+    public void initRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        for (Map.Entry<BlockEntityType<BlockEntity>, BlockEntityRendererProvider<BlockEntity>> entry : blockEntityRenderers.entrySet()) {
+            event.registerBlockEntityRenderer(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @SubscribeEvent
+    public void initLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        for (Map.Entry<ModelLayerLocation, Supplier<LayerDefinition>> entry : layerDefinitions.entrySet()) {
+            event.registerLayerDefinition(entry.getKey(), entry.getValue());
+        }
     }
 
     @SubscribeEvent

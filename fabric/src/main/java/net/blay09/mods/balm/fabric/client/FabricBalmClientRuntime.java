@@ -44,4 +44,8 @@ public class FabricBalmClientRuntime implements BalmClientRuntime {
     public BalmKeyMappings getKeyMappings() {
         return keyMappings;
     }
+
+    @Override
+    public void initialize(String modId) {
+    }
 }
