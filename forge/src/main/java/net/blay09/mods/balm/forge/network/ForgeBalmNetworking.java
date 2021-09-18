@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.forge.network;
 
+import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.network.ClientboundMessageRegistration;
 import net.blay09.mods.balm.api.network.MessageRegistration;
@@ -119,8 +120,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                ServerPlayer player = context.getSender();
-                handler.accept(player, message);
+                handler.accept(BalmClient.getClientPlayer(), message);
             });
         });
     }
