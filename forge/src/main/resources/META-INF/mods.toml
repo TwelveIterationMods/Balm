@@ -3,7 +3,7 @@ loaderVersion="[37,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/ModdingForBlockheads/Balm/issues"
 [[mods]]
-modId="balmforge"
+modId="balm"
 version="${file.jarVersion}"
 displayName="Balm"
 displayURL="https://blay09.net/"
@@ -13,13 +13,13 @@ authors="BlayTheNinth"
 description='''
 Abstraction Layer (but not really)™ for Blay's multiplatform mods
 '''
-[[dependencies.balmforge]]
+[[dependencies.balm]]
     modId="forge"
     mandatory=true
     versionRange="[37,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.balmforge]]
+[[dependencies.balm]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.17.1,1.18)"
