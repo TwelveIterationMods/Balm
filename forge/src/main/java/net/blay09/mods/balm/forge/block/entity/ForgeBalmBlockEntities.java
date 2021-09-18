@@ -19,7 +19,7 @@ public class ForgeBalmBlockEntities implements BalmBlockEntities {
     public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Block... blocks) {
         DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITIES, identifier.getNamespace());
         RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> BlockEntityType.Builder.of(factory, blocks).build(null));
-        return new DeferredObject<>(identifier, registryObject);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class ForgeBalmBlockEntities implements BalmBlockEntities {
             Block[] resolvedBlocks = Arrays.stream(blocks).map(DeferredObject::get).toArray(Block[]::new);
             return BlockEntityType.Builder.of(factory, resolvedBlocks).build(null);
         });
-        return new DeferredObject<>(identifier, registryObject);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 }

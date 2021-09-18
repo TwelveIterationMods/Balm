@@ -23,7 +23,7 @@ public class ForgeBalmItems implements BalmItems {
     public DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier) {
         DeferredRegister<Item> register = DeferredRegisters.get(ForgeRegistries.ITEMS, identifier.getNamespace());
         RegistryObject<Item> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override

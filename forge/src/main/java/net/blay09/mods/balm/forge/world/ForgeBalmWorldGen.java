@@ -35,7 +35,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     public <T extends Feature<?>> DeferredObject<T> registerFeature(Supplier<T> supplier, ResourceLocation identifier) {
         DeferredRegister<Feature<?>> register = DeferredRegisters.get(ForgeRegistries.FEATURES, identifier.getNamespace());
         RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     public <T extends FeatureDecorator<?>> DeferredObject<T> registerDecorator(Supplier<T> supplier, ResourceLocation identifier) {
         DeferredRegister<FeatureDecorator<?>> register = DeferredRegisters.get(ForgeRegistries.DECORATORS, identifier.getNamespace());
         RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override
