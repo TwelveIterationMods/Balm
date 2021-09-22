@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge.network;
 
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.network.ClientboundMessageRegistration;
 import net.blay09.mods.balm.api.network.MessageRegistration;
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
@@ -33,7 +35,13 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
-        player.openMenu(menuProvider);
+        if (player instanceof ServerPlayer) {
+            if (menuProvider instanceof BalmMenuProvider) {
+                NetworkHooks.openGui((ServerPlayer) player, menuProvider, buf -> ((BalmMenuProvider) menuProvider).writeScreenOpeningData((ServerPlayer) player, buf));
+            } else {
+                NetworkHooks.openGui((ServerPlayer) player, menuProvider);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
