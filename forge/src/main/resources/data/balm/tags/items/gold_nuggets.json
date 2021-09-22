@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    {"id":"#c:gold_nuggets", "required": false},
+    "minecraft:gold_nugget"
+  ]
+}
