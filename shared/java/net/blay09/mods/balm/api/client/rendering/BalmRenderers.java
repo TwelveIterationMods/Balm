@@ -12,17 +12,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 public interface BalmRenderers {
     ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition);
 
-    <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider);
+    <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<? super T> provider);
 
-    void registerBlockColorHandler(BlockColor color, Block... blocks);
+    void registerBlockColorHandler(BlockColor color, Supplier<Block[]> blocks);
 
-    void registerItemColorHandler(ItemColor color, ItemLike... items);
+    void registerItemColorHandler(ItemColor color, Supplier<ItemLike[]> items);
 
-    void setBlockRenderType(Block block, RenderType renderType);
+    void setBlockRenderType(Supplier<Block> block, RenderType renderType);
 }

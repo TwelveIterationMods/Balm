@@ -36,22 +36,22 @@ public class FabricBalmRenderers implements BalmRenderers {
     }
 
     @Override
-    public <T extends BlockEntity> void registerBlockEntityRenderer(BlockEntityType<T> type, BlockEntityRendererProvider<? super T> provider) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, provider);
+    public <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<? super T> provider) {
+        BlockEntityRendererRegistry.INSTANCE.register(type.get(), provider);
     }
 
     @Override
-    public void registerBlockColorHandler(BlockColor color, Block... blocks) {
-        ColorProviderRegistry.BLOCK.register(color, blocks);
+    public void registerBlockColorHandler(BlockColor color, Supplier<Block[]> blocks) {
+        ColorProviderRegistry.BLOCK.register(color, blocks.get());
     }
 
     @Override
-    public void registerItemColorHandler(ItemColor color, ItemLike... items) {
-        ColorProviderRegistry.ITEM.register(color, items);
+    public void registerItemColorHandler(ItemColor color, Supplier<ItemLike[]> items) {
+        ColorProviderRegistry.ITEM.register(color, items.get());
     }
 
     @Override
-    public void setBlockRenderType(Block block, RenderType renderType) {
-        BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
+    public void setBlockRenderType(Supplier<Block> block, RenderType renderType) {
+        BlockRenderLayerMap.INSTANCE.putBlock(block.get(), renderType);
     }
 }
