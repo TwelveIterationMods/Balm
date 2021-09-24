@@ -3,10 +3,7 @@ package net.blay09.mods.balm.forge.event;
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
-import net.blay09.mods.balm.api.event.client.ClientLevelTickHandler;
-import net.blay09.mods.balm.api.event.client.ClientStartedEvent;
-import net.blay09.mods.balm.api.event.client.ClientTickHandler;
-import net.blay09.mods.balm.api.event.client.ConnectedToServerEvent;
+import net.blay09.mods.balm.api.event.client.*;
 import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenKeyEvent;
@@ -14,6 +11,7 @@ import net.blay09.mods.balm.api.event.client.screen.ScreenMouseEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -147,6 +145,16 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
                 final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(event);
+            });
+        });
+
+        events.registerEvent(FovUpdateEvent.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((FOVUpdateEvent orig) -> {
+                final FovUpdateEvent event = new FovUpdateEvent(orig.getEntity());
+                events.fireEventHandlers(event);
+                if (event.getFov() != null) {
+                    orig.setNewfov(event.getFov());
+                }
             });
         });
     }
