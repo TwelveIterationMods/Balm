@@ -10,10 +10,12 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
+import java.util.function.Supplier;
+
 public class FabricBalmScreens implements BalmScreens {
     @Override
-    public <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreen(MenuType<? extends T> type, BalmScreenFactory<T, S> screenFactory) {
-        ScreenRegistry.register(type, screenFactory::create);
+    public <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreen(Supplier<MenuType<? extends T>> type, BalmScreenFactory<T, S> screenFactory) {
+        ScreenRegistry.register(type.get(), screenFactory::create);
     }
 
     @Override
