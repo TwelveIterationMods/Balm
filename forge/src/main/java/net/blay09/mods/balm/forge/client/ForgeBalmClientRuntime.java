@@ -48,5 +48,6 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
     @Override
     public void initialize(String modId) {
         FMLJavaModLoadingContext.get().getModEventBus().register(renderers);
+        FMLJavaModLoadingContext.get().getModEventBus().register(screens);
     }
 }
