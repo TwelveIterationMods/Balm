@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,14 @@ public class ForgeBalmScreens implements BalmScreens {
 
     private static class Registrations {
         public final List<Pair<Supplier<MenuType<?>>, BalmScreenFactory<?, ?>>> menuTypes = new ArrayList<>();
+
+        @SubscribeEvent
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public void setupClient(FMLClientSetupEvent event) {
+            for (Pair<Supplier<MenuType<?>>, BalmScreenFactory<?, ?>> entry : menuTypes) {
+                registerScreenImmediate(entry.getFirst()::get, (BalmScreenFactory) entry.getSecond()); // I hate Java generics.
+            }
+        }
     }
 
     private final Map<String, Registrations> registrations = new HashMap<>();
@@ -45,14 +54,6 @@ public class ForgeBalmScreens implements BalmScreens {
     @Override
     public <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreen(Supplier<MenuType<? extends T>> type, BalmScreenFactory<T, S> screenFactory) {
         getActiveRegistrations().menuTypes.add(Pair.of(type::get, screenFactory));
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void setupClient(FMLClientSetupEvent event) {
-        for (Pair<Supplier<MenuType<?>>, BalmScreenFactory<?, ?>> entry : getActiveRegistrations().menuTypes) {
-            registerScreenImmediate(entry.getFirst()::get, (BalmScreenFactory) entry.getSecond()); // I hate Java generics.
-        }
     }
 
     private static <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreenImmediate(Supplier<MenuType<? extends T>> type, BalmScreenFactory<T, S> screenFactory) {
@@ -66,6 +67,10 @@ public class ForgeBalmScreens implements BalmScreens {
         accessor.getRenderables().add(widget);
         accessor.getNarratables().add(widget);
         return widget;
+    }
+
+    public void register() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
     }
 
     private Registrations getActiveRegistrations() {

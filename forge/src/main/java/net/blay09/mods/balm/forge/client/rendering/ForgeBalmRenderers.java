@@ -19,6 +19,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,41 @@ public class ForgeBalmRenderers implements BalmRenderers {
         public final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
         public final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
         public final List<Pair<Supplier<Block>, RenderType>> blockRenderTypes = new ArrayList<>();
+
+        @SubscribeEvent
+        public void setupClient(FMLClientSetupEvent event) {
+            for (Pair<Supplier<Block>, RenderType> entry : blockRenderTypes) {
+                ItemBlockRenderTypes.setRenderLayer(entry.getFirst().get(), entry.getSecond());
+            }
+        }
+
+        @SubscribeEvent
+        public void initRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            for (Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>> entry : blockEntityRenderers) {
+                event.registerBlockEntityRenderer(entry.getFirst().get(), entry.getSecond());
+            }
+        }
+
+        @SubscribeEvent
+        public void initLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+            for (Map.Entry<ModelLayerLocation, Supplier<LayerDefinition>> entry : layerDefinitions.entrySet()) {
+                event.registerLayerDefinition(entry.getKey(), entry.getValue());
+            }
+        }
+
+        @SubscribeEvent
+        public void initBlockColors(ColorHandlerEvent.Block event) {
+            for (ColorRegistration<BlockColor, Block> blockColor : blockColors) {
+                event.getBlockColors().register(blockColor.getColor(), blockColor.getObjects().get());
+            }
+        }
+
+        @SubscribeEvent
+        public void initItemColors(ColorHandlerEvent.Item event) {
+            for (ColorRegistration<ItemColor, ItemLike> itemColor : itemColors) {
+                event.getItemColors().register(itemColor.getColor(), itemColor.getObjects().get());
+            }
+        }
     }
 
     private final Map<String, Registrations> registrations = new HashMap<>();
@@ -84,39 +120,8 @@ public class ForgeBalmRenderers implements BalmRenderers {
         getActiveRegistrations().blockRenderTypes.add(Pair.of(block, renderType));
     }
 
-    @SubscribeEvent
-    public void setupClient(FMLClientSetupEvent event) {
-        for (Pair<Supplier<Block>, RenderType> entry : getActiveRegistrations().blockRenderTypes) {
-            ItemBlockRenderTypes.setRenderLayer(entry.getFirst().get(), entry.getSecond());
-        }
-    }
-
-    @SubscribeEvent
-    public void initRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        for (Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>> entry : getActiveRegistrations().blockEntityRenderers) {
-            event.registerBlockEntityRenderer(entry.getFirst().get(), entry.getSecond());
-        }
-    }
-
-    @SubscribeEvent
-    public void initLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        for (Map.Entry<ModelLayerLocation, Supplier<LayerDefinition>> entry : getActiveRegistrations().layerDefinitions.entrySet()) {
-            event.registerLayerDefinition(entry.getKey(), entry.getValue());
-        }
-    }
-
-    @SubscribeEvent
-    public void initBlockColors(ColorHandlerEvent.Block event) {
-        for (ColorRegistration<BlockColor, Block> blockColor : getActiveRegistrations().blockColors) {
-            event.getBlockColors().register(blockColor.getColor(), blockColor.getObjects().get());
-        }
-    }
-
-    @SubscribeEvent
-    public void initItemColors(ColorHandlerEvent.Item event) {
-        for (ColorRegistration<ItemColor, ItemLike> itemColor : getActiveRegistrations().itemColors) {
-            event.getItemColors().register(itemColor.getColor(), itemColor.getObjects().get());
-        }
+    public void register() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
     }
 
     private Registrations getActiveRegistrations() {
