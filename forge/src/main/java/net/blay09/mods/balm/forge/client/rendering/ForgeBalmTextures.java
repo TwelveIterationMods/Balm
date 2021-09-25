@@ -5,9 +5,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ForgeBalmTextures implements BalmTextures {
 
@@ -29,23 +33,31 @@ public class ForgeBalmTextures implements BalmTextures {
         }
     }
 
-    private final List<TextureRegistration> textures = new ArrayList<>();
+    private static class Registrations {
+        private final List<TextureRegistration> textures = new ArrayList<>();
 
-    public ForgeBalmTextures() {
-        MinecraftForge.EVENT_BUS.register(this);
+        @SubscribeEvent
+        public void registerIconsPre(TextureStitchEvent.Pre event) {
+            for (TextureRegistration texture : textures) {
+                if (event.getMap().location().equals(texture.getAtlas())) {
+                    event.addSprite(texture.getLocation());
+                }
+            }
+        }
     }
+
+    private final Map<String, Registrations> registrations = new HashMap<>();
 
     @Override
     public void addSprite(ResourceLocation atlas, ResourceLocation location) {
-        textures.add(new TextureRegistration(atlas, location));
+        getActiveRegistrations().textures.add(new TextureRegistration(atlas, location));
     }
 
-    @SubscribeEvent
-    public void registerIconsPre(TextureStitchEvent.Pre event) {
-        for (TextureRegistration texture : textures) {
-            if (event.getMap().location().equals(texture.getAtlas())) {
-                event.addSprite(texture.getLocation());
-            }
-        }
+    public void register() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    }
+
+    private Registrations getActiveRegistrations() {
+        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
     }
 }
