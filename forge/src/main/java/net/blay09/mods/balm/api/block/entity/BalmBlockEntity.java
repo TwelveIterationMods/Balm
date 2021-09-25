@@ -70,7 +70,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
 
     @Override
     public CompoundTag getUpdateTag() {
-        return balmToClientTag(new CompoundTag());
+        return balmToClientTag(super.getUpdateTag());
     }
 
     @Override
