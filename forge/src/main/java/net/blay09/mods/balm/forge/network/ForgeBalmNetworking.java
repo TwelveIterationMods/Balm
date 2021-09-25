@@ -108,6 +108,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
                 ServerPlayer player = context.getSender();
                 handler.accept(player, message);
             });
+            context.setPacketHandled(true);
         });
     }
 
@@ -130,6 +131,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
             context.enqueueWork(() -> {
                 handler.accept(BalmClient.getClientPlayer(), message);
             });
+            context.setPacketHandled(true);
         });
     }
 
