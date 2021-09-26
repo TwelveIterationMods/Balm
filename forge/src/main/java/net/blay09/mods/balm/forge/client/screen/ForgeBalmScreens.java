@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class ForgeBalmScreens implements BalmScreens {
@@ -49,7 +50,7 @@ public class ForgeBalmScreens implements BalmScreens {
         }
     }
 
-    private final Map<String, Registrations> registrations = new HashMap<>();
+    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
     public <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreen(Supplier<MenuType<? extends T>> type, BalmScreenFactory<T, S> screenFactory) {

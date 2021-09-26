@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ForgeBalmTextures implements BalmTextures {
 
@@ -46,7 +47,7 @@ public class ForgeBalmTextures implements BalmTextures {
         }
     }
 
-    private final Map<String, Registrations> registrations = new HashMap<>();
+    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
     public void addSprite(ResourceLocation atlas, ResourceLocation location) {

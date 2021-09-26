@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class ForgeBalmRenderers implements BalmRenderers {
@@ -90,7 +91,7 @@ public class ForgeBalmRenderers implements BalmRenderers {
         }
     }
 
-    private final Map<String, Registrations> registrations = new HashMap<>();
+    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
     public ModelLayerLocation registerModel(ResourceLocation location, Supplier<LayerDefinition> layerDefinition) {
