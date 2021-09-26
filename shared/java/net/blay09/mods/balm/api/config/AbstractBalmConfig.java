@@ -5,11 +5,14 @@ import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
+import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -89,8 +92,16 @@ public abstract class AbstractBalmConfig implements BalmConfig {
 
     @Override
     public <T extends BalmConfigData> void updateConfig(Class<T> clazz, Consumer<T> consumer) {
-        T fallback = getBackingConfig(clazz);
-        consumer.accept(fallback);
+        T backingConfig = getBackingConfig(clazz);
+        consumer.accept(backingConfig);
         Balm.getConfig().saveBackingConfig(clazz);
+
+        // If active config does not match backing config, apply changes to the active config as well
+        // This assumes that the client-side does not use updateConfig to change server-side configs, as that would result in a desync
+        T activeConfig = getActive(clazz);
+        if (activeConfig != backingConfig) {
+            consumer.accept(getActive(clazz));
+        }
     }
+
 }
