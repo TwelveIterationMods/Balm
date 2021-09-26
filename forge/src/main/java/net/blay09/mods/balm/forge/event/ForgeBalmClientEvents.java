@@ -65,29 +65,29 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenInitEvent.Pre.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((ScreenInitEvent.Pre orig) -> {
-                final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getScreen());
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.InitGuiEvent.Pre orig) -> {
+                final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getGui());
                 events.fireEventHandlers(event);
             });
         });
 
         events.registerEvent(ScreenInitEvent.Post.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((ScreenInitEvent.Post orig) -> {
-                final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getScreen());
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.InitGuiEvent.Post orig) -> {
+                final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getGui());
                 events.fireEventHandlers(event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Pre.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((ScreenDrawEvent.Pre orig) -> {
-                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getTickDelta());
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.DrawScreenEvent.Pre orig) -> {
+                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getGui(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY(), orig.getRenderPartialTicks());
                 events.fireEventHandlers(event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Post.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((ScreenDrawEvent.Post orig) -> {
-                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getTickDelta());
+            MinecraftForge.EVENT_BUS.addListener((GuiScreenEvent.DrawScreenEvent.Post orig) -> {
+                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getGui(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY(), orig.getRenderPartialTicks());
                 events.fireEventHandlers(event);
             });
         });
