@@ -21,6 +21,8 @@ import net.blay09.mods.balm.fabric.network.FabricBalmNetworking;
 import net.blay09.mods.balm.fabric.world.FabricBalmWorldGen;
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class FabricBalmRuntime implements BalmRuntime {
     private final BalmWorldGen worldGen = new FabricBalmWorldGen();
     private final BalmBlocks blocks = new FabricBalmBlocks();
@@ -88,5 +90,16 @@ public class FabricBalmRuntime implements BalmRuntime {
 
     @Override
     public void initialize(String modId) {
+    }
+
+    @Override
+    public void initializeIfLoaded(String modId, String className) {
+        if (isModLoaded(modId)) {
+            try {
+                Class.forName(className).getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

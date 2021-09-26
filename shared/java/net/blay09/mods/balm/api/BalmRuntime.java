@@ -21,4 +21,5 @@ public interface BalmRuntime {
     BalmHooks getHooks();
     boolean isModLoaded(String modId);
     void initialize(String modId);
+    void initializeIfLoaded(String modId, String className);
 }

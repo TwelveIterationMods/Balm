@@ -20,6 +20,10 @@ public class Balm {
         return runtime.isModLoaded(modId);
     }
 
+    public static void initializeIfLoaded(String modId, String className) {
+        runtime.initializeIfLoaded(modId, className);
+    }
+
     public static BalmEvents getEvents() {
         return runtime.getEvents();
     }
