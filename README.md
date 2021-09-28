@@ -12,8 +12,8 @@ See [the license](LICENSE) for modpack permissions etc.
 
 #### Forge
 
-[![Versions](http://cf.way2muchnoise.eu/versions/_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/balm-forge) 
-[![Downloads](http://cf.way2muchnoise.eu/full__downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/balm-forge)
+[![Versions](http://cf.way2muchnoise.eu/versions/531761_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/balm) 
+[![Downloads](http://cf.way2muchnoise.eu/full_531761_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/balm)
 
 #### Fabric
 
