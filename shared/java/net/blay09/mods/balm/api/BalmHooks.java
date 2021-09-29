@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -36,4 +37,6 @@ public interface BalmHooks {
     boolean isFakePlayer(Player player);
 
     ItemStack getCraftingRemainingItem(ItemStack itemStack);
+
+    DyeColor getColor(ItemStack itemStack);
 }
