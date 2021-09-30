@@ -41,4 +41,6 @@ public interface BalmHooks {
     DyeColor getColor(ItemStack itemStack);
 
     boolean canItemsStack(ItemStack first, ItemStack second);
+
+    int getBurnTime(ItemStack itemStack);
 }

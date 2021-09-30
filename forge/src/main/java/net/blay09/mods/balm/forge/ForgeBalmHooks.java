@@ -8,7 +8,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -63,5 +66,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public boolean canItemsStack(ItemStack first, ItemStack second) {
         return ItemHandlerHelper.canItemStacksStack(first, second);
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack) {
+        return ForgeHooks.getBurnTime(itemStack, RecipeType.SMELTING);
     }
 }
