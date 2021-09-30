@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
 
@@ -57,5 +58,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public DyeColor getColor(ItemStack itemStack) {
         return DyeColor.getColor(itemStack);
+    }
+
+    @Override
+    public boolean canItemsStack(ItemStack first, ItemStack second) {
+        return ItemHandlerHelper.canItemStacksStack(first, second);
     }
 }

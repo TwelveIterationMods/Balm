@@ -8,15 +8,15 @@ import net.minecraft.world.level.Level;
 
 public class ContainerUtils {
     public static ItemStack extractItem(Container container, int slot, int amount, boolean simulate) {
-        return ItemStack.EMPTY;
+        return ItemStack.EMPTY; // TODO
     }
 
     public static ItemStack insertItem(Container container, int slot, ItemStack itemStack, boolean simulate) {
-        return itemStack;
+        return itemStack; // TODO
     }
 
     public static ItemStack insertItemStacked(Container container, ItemStack itemStack, boolean simulate) {
-        return itemStack;
+        return itemStack; // TODO
     }
 
     public static void dropItems(Container container, Level level, BlockPos pos) {
@@ -29,5 +29,15 @@ public class ContainerUtils {
             }
         }
         container.clearContent();
+    }
+
+    public static ItemStack copyStackWithSize(ItemStack itemStack, int size) {
+        if (size == 0) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack copy = itemStack.copy();
+        copy.setCount(size);
+        return copy;
     }
 }

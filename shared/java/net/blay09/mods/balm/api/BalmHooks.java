@@ -39,4 +39,6 @@ public interface BalmHooks {
     ItemStack getCraftingRemainingItem(ItemStack itemStack);
 
     DyeColor getColor(ItemStack itemStack);
+
+    boolean canItemsStack(ItemStack first, ItemStack second);
 }

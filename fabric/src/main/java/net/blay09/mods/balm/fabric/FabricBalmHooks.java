@@ -52,4 +52,9 @@ public class FabricBalmHooks implements BalmHooks {
 
         return null;
     }
+
+    @Override
+    public boolean canItemsStack(ItemStack first, ItemStack second) {
+        return !first.isEmpty() && first.sameItem(second) && first.hasTag() == second.hasTag() && (!first.hasTag() || first.getTag().equals(second.getTag()));
+    }
 }
