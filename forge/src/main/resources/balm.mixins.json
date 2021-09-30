@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_16",
+  "refmap": "balm.refmap.json",
   "mixins": ["MouseHandlerAccessor", "SlotAccessor"],
   "client": [
     "AbstractContainerScreenAccessor",
