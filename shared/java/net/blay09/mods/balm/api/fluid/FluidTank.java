@@ -26,10 +26,10 @@ public class FluidTank {
     }
 
     public FluidTank(int maxExtract, int capacity, int maxReceive, int amount) {
-        this.amount = Math.max(0, Math.min(capacity, amount));
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
+        this.amount = Math.max(0, Math.min(capacity, amount));
     }
 
     public int fill(Fluid fluid, int maxFill, boolean simulate) {
