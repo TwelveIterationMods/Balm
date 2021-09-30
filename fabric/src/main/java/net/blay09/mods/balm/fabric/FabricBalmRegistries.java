@@ -1,8 +1,10 @@
 package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmRegistries;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -36,5 +38,10 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public Fluid getFluid(ResourceLocation key) {
         return Registry.FLUID.get(key);
+    }
+
+    @Override
+    public Tag<Item> getItemTag(ResourceLocation key) {
+        return TagRegistry.item(key);
     }
 }
