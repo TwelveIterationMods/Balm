@@ -2,6 +2,7 @@ package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
@@ -56,5 +58,10 @@ public class FabricBalmHooks implements BalmHooks {
     @Override
     public boolean canItemsStack(ItemStack first, ItemStack second) {
         return !first.isEmpty() && first.sameItem(second) && first.hasTag() == second.hasTag() && (!first.hasTag() || first.getTag().equals(second.getTag()));
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack) {
+        return FuelRegistry.INSTANCE.get(itemStack.getItem());
     }
 }
