@@ -19,6 +19,7 @@ public interface BalmRuntime {
     BalmMenus getMenus();
     BalmNetworking getNetworking();
     BalmHooks getHooks();
+    BalmRegistries getRegistries();
     boolean isModLoaded(String modId);
     void initialize(String modId);
     void initializeIfLoaded(String modId, String className);

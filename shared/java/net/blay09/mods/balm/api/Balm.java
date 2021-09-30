@@ -59,4 +59,8 @@ public class Balm {
     public static BalmHooks getHooks() {
         return runtime.getHooks();
     }
+
+    public static BalmRegistries getRegistries() {
+        return runtime.getRegistries();
+    }
 }

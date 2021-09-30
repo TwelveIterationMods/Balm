@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge;
 
 import net.blay09.mods.balm.api.BalmHooks;
+import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
@@ -39,6 +40,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmNetworking networking = new ForgeBalmNetworking();
     private final BalmConfig config = new ForgeBalmConfig();
     private final BalmHooks hooks = new ForgeBalmHooks();
+    private final BalmRegistries registries = new ForgeBalmRegistries();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -89,6 +91,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public BalmHooks getHooks() {
         return hooks;
+    }
+
+    @Override
+    public BalmRegistries getRegistries() {
+        return registries;
     }
 
     @Override
