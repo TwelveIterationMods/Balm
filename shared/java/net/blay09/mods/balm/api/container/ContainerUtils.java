@@ -11,7 +11,7 @@ public class ContainerUtils {
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack insertItem(Container container, ItemStack itemStack, boolean simulate) {
+    public static ItemStack insertItem(Container container, int slot, ItemStack itemStack, boolean simulate) {
         return itemStack;
     }
 

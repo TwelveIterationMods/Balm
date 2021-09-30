@@ -5,12 +5,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public interface BalmContainerProvider {
     Container getContainer();
 
-    default Container getContainer(@Nullable Direction side) {
+    default Container getContainer(Direction side) {
         return getContainer();
     }
 
@@ -24,9 +23,9 @@ public interface BalmContainerProvider {
         return ContainerUtils.extractItem(container, slot, amount, simulate);
     }
 
-    default ItemStack insertItem(ItemStack itemStack, boolean simulate) {
+    default ItemStack insertItem(ItemStack itemStack, int slot, boolean simulate) {
         Container container = getContainer();
-        return ContainerUtils.insertItem(container, itemStack, simulate);
+        return ContainerUtils.insertItem(container, slot, itemStack, simulate);
     }
 
     default ItemStack insertItemStacked(ItemStack itemStack, boolean simulate) {

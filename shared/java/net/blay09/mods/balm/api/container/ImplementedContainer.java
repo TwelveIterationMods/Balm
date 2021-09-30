@@ -75,6 +75,7 @@ public interface ImplementedContainer extends Container {
         if (!result.isEmpty()) {
             setChanged();
         }
+        slotChanged(slot);
         return result;
     }
 
@@ -85,7 +86,9 @@ public interface ImplementedContainer extends Container {
      */
     @Override
     default ItemStack removeItemNoUpdate(int slot) {
-        return ContainerHelper.takeItem(getItems(), slot);
+        ItemStack itemStack = ContainerHelper.takeItem(getItems(), slot);
+        slotChanged(slot);
+        return itemStack;
     }
 
     /**
@@ -102,6 +105,7 @@ public interface ImplementedContainer extends Container {
         if (stack.getCount() > getMaxStackSize()) {
             stack.setCount(getMaxStackSize());
         }
+        slotChanged(slot);
     }
 
     /**
@@ -110,6 +114,9 @@ public interface ImplementedContainer extends Container {
     @Override
     default void clearContent() {
         getItems().clear();
+        for (int i = 0; i < getItems().size(); i++) {
+            slotChanged(i);
+        }
     }
 
     /**
@@ -119,6 +126,10 @@ public interface ImplementedContainer extends Container {
      */
     @Override
     default void setChanged() {
+        // Override if you want behavior.
+    }
+
+    default void slotChanged(int slot) {
         // Override if you want behavior.
     }
 
@@ -134,12 +145,10 @@ public interface ImplementedContainer extends Container {
         int size = Math.max(minimumSize, tag.contains("Size", Tag.TAG_INT) ? tag.getInt("Size") : minimumSize);
         NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
         ListTag itemTags = tag.getList("Items", Tag.TAG_COMPOUND);
-        for (int i = 0; i < itemTags.size(); i++)
-        {
+        for (int i = 0; i < itemTags.size(); i++) {
             CompoundTag itemTag = itemTags.getCompound(i);
             int slot = itemTag.getInt("Slot");
-            if (slot >= 0 && slot < items.size())
-            {
+            if (slot >= 0 && slot < items.size()) {
                 items.set(slot, ItemStack.of(itemTag));
             }
         }
@@ -149,10 +158,8 @@ public interface ImplementedContainer extends Container {
     default CompoundTag serializeInventory() {
         NonNullList<ItemStack> items = getItems();
         ListTag itemTags = new ListTag();
-        for (int i = 0; i < items.size(); i++)
-        {
-            if (!items.get(i).isEmpty())
-            {
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.get(i).isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 items.get(i).save(itemTag);
