@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 
 public class Balm {
@@ -62,5 +63,9 @@ public class Balm {
 
     public static BalmRegistries getRegistries() {
         return runtime.getRegistries();
+    }
+
+    public static BalmSounds getSounds() {
+        return runtime.getSounds();
     }
 }
