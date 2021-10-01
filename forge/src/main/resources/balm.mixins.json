@@ -4,9 +4,10 @@
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_16",
   "refmap": "balm.refmap.json",
-  "mixins": ["MouseHandlerAccessor", "SlotAccessor"],
+  "mixins": ["SlotAccessor"],
   "client": [
     "AbstractContainerScreenAccessor",
+    "MouseHandlerAccessor",
     "CheckboxAccessor",
     "ImageButtonAccessor",
     "KeyMappingAccessor",
