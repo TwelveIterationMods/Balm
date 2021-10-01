@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 
 public interface BalmRuntime {
@@ -20,6 +21,7 @@ public interface BalmRuntime {
     BalmNetworking getNetworking();
     BalmHooks getHooks();
     BalmRegistries getRegistries();
+    BalmSounds getSounds();
     boolean isModLoaded(String modId);
     void initialize(String modId);
     void initializeIfLoaded(String modId, String className);
