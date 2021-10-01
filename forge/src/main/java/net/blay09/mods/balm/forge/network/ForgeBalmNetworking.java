@@ -14,14 +14,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -30,8 +29,6 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
     private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new HashMap<>();
     private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new HashMap<>();
-
-    private static final List<ClientboundMessageRegistration<?>> clientMessageRegistrations = new ArrayList<>();
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
@@ -91,7 +88,18 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByClass.put(clazz, messageRegistration);
         messagesByIdentifier.put(identifier, messageRegistration);
 
-        clientMessageRegistrations.add(messageRegistration);
+        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
+            NetworkEvent.Context context = contextSupplier.get();
+            if (context.getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
+                return;
+            }
+
+            context.enqueueWork(() -> {
+                handler.accept(BalmClient.getClientPlayer(), message);
+            });
+            context.setPacketHandled(true);
+        });
     }
 
     @Override
@@ -107,29 +115,6 @@ public class ForgeBalmNetworking implements BalmNetworking {
             context.enqueueWork(() -> {
                 ServerPlayer player = context.getSender();
                 handler.accept(player, message);
-            });
-            context.setPacketHandled(true);
-        });
-    }
-
-    public static void initializeClientHandlers() {
-        for (ClientboundMessageRegistration<?> message : clientMessageRegistrations) {
-            registerClientHandler(message);
-        }
-    }
-
-    private static <T> void registerClientHandler(ClientboundMessageRegistration<T> messageRegistration) {
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-        Class<T> clazz = messageRegistration.getClazz();
-        BiConsumer<T, FriendlyByteBuf> encodeFunc = messageRegistration.getEncodeFunc();
-        Function<FriendlyByteBuf, T> decodeFunc = messageRegistration.getDecodeFunc();
-        BiConsumer<Player, T> handler = messageRegistration.getHandler();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
-            NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> {
-                handler.accept(BalmClient.getClientPlayer(), message);
             });
             context.setPacketHandled(true);
         });
