@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -55,6 +56,18 @@ public class FabricBalmNetworking implements BalmNetworking {
         FriendlyByteBuf buf = PacketByteBufs.create();
         messageRegistration.getEncodeFunc().accept(message, buf);
         for (ServerPlayer player : PlayerLookup.tracking(world, pos)) {
+            ServerPlayNetworking.send(player, identifier, buf);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> void sendToTracking(Entity entity, T message) {
+        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        ResourceLocation identifier = messageRegistration.getIdentifier();
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        messageRegistration.getEncodeFunc().accept(message, buf);
+        for (ServerPlayer player : PlayerLookup.tracking(entity)) {
             ServerPlayNetworking.send(player, identifier, buf);
         }
     }

@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fmllegacy.network.NetworkDirection;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
@@ -59,6 +60,16 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> void sendToTracking(Entity entity, T message) {
+        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        ResourceLocation identifier = messageRegistration.getIdentifier();
+
+        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
 
     @SuppressWarnings("unchecked")
