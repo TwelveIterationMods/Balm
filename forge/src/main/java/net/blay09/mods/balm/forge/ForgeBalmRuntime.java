@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.config.BalmConfig;
+import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
@@ -15,7 +16,9 @@ import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.forge.block.ForgeBalmBlocks;
 import net.blay09.mods.balm.forge.block.entity.ForgeBalmBlockEntities;
+import net.blay09.mods.balm.forge.client.rendering.ForgeBalmRenderers;
 import net.blay09.mods.balm.forge.config.ForgeBalmConfig;
+import net.blay09.mods.balm.forge.entity.ForgeBalmEntities;
 import net.blay09.mods.balm.forge.event.ForgeBalmCommonEvents;
 import net.blay09.mods.balm.forge.item.ForgeBalmItems;
 import net.blay09.mods.balm.forge.menu.ForgeBalmMenus;
@@ -44,6 +47,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmHooks hooks = new ForgeBalmHooks();
     private final BalmRegistries registries = new ForgeBalmRegistries();
     private final BalmSounds sounds = new ForgeBalmSounds();
+    private final BalmEntities entities = new ForgeBalmEntities();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -107,6 +111,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     }
 
     @Override
+    public BalmEntities getEntities() {
+        return entities;
+    }
+
+    @Override
     public boolean isModLoaded(String modId) {
         return ModList.get().isLoaded(modId);
     }
@@ -117,6 +126,8 @@ public class ForgeBalmRuntime implements BalmRuntime {
         for (DeferredRegister<?> deferredRegister : DeferredRegisters.getByModId(modId)) {
             deferredRegister.register(modEventBus);
         }
+
+        ((ForgeBalmEntities) entities).register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLLoadCompleteEvent event) -> initializeAddons());
     }
