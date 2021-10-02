@@ -15,10 +15,15 @@ import java.util.function.Function;
 
 public interface BalmNetworking {
     void openGui(Player player, MenuProvider menuProvider);
+
     <T> void sendTo(Player player, T message);
+
     <T> void sendToTracking(ServerLevel world, BlockPos pos, T message);
+
     <T> void sendToTracking(Entity entity, T message);
+
     <T> void sendToAll(MinecraftServer server, T message);
+
     <T> void sendToServer(T message);
 
     <T> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler);

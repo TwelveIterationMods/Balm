@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge.event;
 
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
+import net.blay09.mods.balm.api.event.RecipesUpdatedEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.*;
@@ -9,7 +10,6 @@ import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenKeyEvent;
 import net.blay09.mods.balm.api.event.client.screen.ScreenMouseEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -155,6 +155,13 @@ public class ForgeBalmClientEvents {
                 if (event.getFov() != null) {
                     orig.setNewfov(event.getFov());
                 }
+            });
+        });
+
+        events.registerEvent(RecipesUpdatedEvent.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.RecipesUpdatedEvent orig) -> {
+                final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager());
+                events.fireEventHandlers(event);
             });
         });
     }

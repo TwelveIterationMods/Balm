@@ -176,6 +176,8 @@ public class FabricBalmClientEvents {
                 events.fireEventHandlers(event);
             }));
         });
+
+        // TODO RecipesUpdatedEvent
     }
 
 }
