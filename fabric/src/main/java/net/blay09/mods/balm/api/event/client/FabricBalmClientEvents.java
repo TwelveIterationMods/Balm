@@ -178,6 +178,7 @@ public class FabricBalmClientEvents {
         });
 
         // TODO RecipesUpdatedEvent
+        // TODO ItemTooltipEvent
     }
 
 }

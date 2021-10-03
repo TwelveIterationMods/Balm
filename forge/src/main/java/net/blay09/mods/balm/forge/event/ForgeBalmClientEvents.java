@@ -1,7 +1,7 @@
 package net.blay09.mods.balm.forge.event;
 
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
-import net.blay09.mods.balm.api.event.RecipesUpdatedEvent;
+import net.blay09.mods.balm.api.event.client.RecipesUpdatedEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.*;
@@ -161,6 +161,13 @@ public class ForgeBalmClientEvents {
         events.registerEvent(RecipesUpdatedEvent.class, () -> {
             MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.client.event.RecipesUpdatedEvent orig) -> {
                 final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager());
+                events.fireEventHandlers(event);
+            });
+        });
+
+        events.registerEvent(ItemTooltipEvent.class, () -> {
+            MinecraftForge.EVENT_BUS.addListener((net.minecraftforge.event.entity.player.ItemTooltipEvent orig) -> {
+                final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getPlayer(), orig.getToolTip(), orig.getFlags());
                 events.fireEventHandlers(event);
             });
         });
