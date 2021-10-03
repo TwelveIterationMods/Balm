@@ -3,6 +3,7 @@ package net.blay09.mods.balm.api;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.config.BalmConfig;
+import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
@@ -67,5 +68,9 @@ public class Balm {
 
     public static BalmSounds getSounds() {
         return runtime.getSounds();
+    }
+
+    public static BalmEntities getEntities() {
+        return runtime.getEntities();
     }
 }
