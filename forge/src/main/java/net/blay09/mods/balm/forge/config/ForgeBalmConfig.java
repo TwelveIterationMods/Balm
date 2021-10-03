@@ -11,8 +11,10 @@ import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -158,4 +160,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
         }
     }
 
+    @Override
+    public File getConfigDir() {
+        return FMLPaths.CONFIGDIR.get().toFile();
+    }
 }

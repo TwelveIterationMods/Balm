@@ -7,7 +7,10 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
+
+import java.io.File;
 
 public class FabricBalmConfig extends AbstractBalmConfig {
 
@@ -28,5 +31,10 @@ public class FabricBalmConfig extends AbstractBalmConfig {
     @Override
     public <T extends BalmConfigData> void saveBackingConfig(Class<T> clazz) {
         AutoConfig.getConfigHolder(clazz).save();
+    }
+
+    @Override
+    public File getConfigDir() {
+        return new File(Minecraft.getInstance().gameDirectory, "config");
     }
 }
