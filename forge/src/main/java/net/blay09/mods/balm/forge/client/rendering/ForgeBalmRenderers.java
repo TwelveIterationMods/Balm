@@ -9,7 +9,10 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -51,6 +54,7 @@ public class ForgeBalmRenderers implements BalmRenderers {
     private static class Registrations {
         public final Map<ModelLayerLocation, Supplier<LayerDefinition>> layerDefinitions = new HashMap<>();
         public final List<Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>>> blockEntityRenderers = new ArrayList<>();
+        public final List<Pair<Supplier<EntityType<?>>, EntityRendererProvider<Entity>>> entityRenderers = new ArrayList<>();
         public final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
         public final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
         public final List<Pair<Supplier<Block>, RenderType>> blockRenderTypes = new ArrayList<>();
@@ -66,6 +70,10 @@ public class ForgeBalmRenderers implements BalmRenderers {
         public void initRenderers(EntityRenderersEvent.RegisterRenderers event) {
             for (Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>> entry : blockEntityRenderers) {
                 event.registerBlockEntityRenderer(entry.getFirst().get(), entry.getSecond());
+            }
+
+            for (Pair<Supplier<EntityType<?>>, EntityRendererProvider<Entity>> entry : entityRenderers) {
+                event.registerEntityRenderer(entry.getFirst().get(), entry.getSecond());
             }
         }
 
@@ -98,6 +106,12 @@ public class ForgeBalmRenderers implements BalmRenderers {
         ModelLayerLocation modelLayerLocation = new ModelLayerLocation(location, "main");
         getActiveRegistrations().layerDefinitions.put(modelLayerLocation, layerDefinition);
         return modelLayerLocation;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<? super T> provider) {
+        getActiveRegistrations().entityRenderers.add(Pair.of(type::get, (EntityRendererProvider<Entity>) provider));
     }
 
     @Override
