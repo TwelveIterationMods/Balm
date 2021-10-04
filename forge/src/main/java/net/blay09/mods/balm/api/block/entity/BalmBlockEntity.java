@@ -5,8 +5,8 @@ import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.block.BalmBlockEntityContract;
-import net.blay09.mods.balm.api.container.BalmContainerProvider;
-import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
+import net.blay09.mods.balm.api.fluid.FluidTank;
+import net.blay09.mods.balm.api.provider.BalmProvider;
 import net.blay09.mods.balm.api.provider.BalmProviderHolder;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.minecraft.core.BlockPos;
@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,6 +24,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,23 +115,30 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (!capabilitiesInitialized) {
             List<BalmProviderHolder> providers = new ArrayList<>();
-            if (this instanceof BalmProviderHolder providerHolder) {
-                providers.add(providerHolder);
-            }
             balmBuildProviders(providers);
 
             ForgeBalmProviders forgeProviders = (ForgeBalmProviders) Balm.getProviders();
             for (BalmProviderHolder providerHolder : providers) {
-                for (Object provider : providerHolder.getProviders()) {
-                    Capability<?> capability = forgeProviders.getCapability(provider.getClass());
-                    capabilities.put(capability, LazyOptional.of(() -> provider));
+                for (BalmProvider<?> provider : providerHolder.getProviders()) {
+                    Capability<?> capability = forgeProviders.getCapability(provider.getProviderClass());
+                    capabilities.put(capability, LazyOptional.of(provider::getInstance));
+
+                    if (provider.getProviderClass() == Container.class) {
+                        capabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
+                    }
+                    // TODO Fluid Handlers
                 }
 
-                for (Pair<Direction, Object> pair : providerHolder.getSidedProviders()) {
+                for (Pair<Direction, BalmProvider<?>> pair : providerHolder.getSidedProviders()) {
                     Direction direction = pair.getFirst();
-                    Object provider = pair.getSecond();
-                    Capability<?> capability = forgeProviders.getCapability(provider.getClass());
-                    sidedCapabilities.put(capability, direction, LazyOptional.of(() -> provider));
+                    BalmProvider<?> provider = pair.getSecond();
+                    Capability<?> capability = forgeProviders.getCapability(provider.getProviderClass());
+                    sidedCapabilities.put(capability, direction, LazyOptional.of(provider::getInstance));
+
+                    if (provider.getProviderClass() == Container.class) {
+                        sidedCapabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
+                    }
+                    // TODO Fluid Handlers
                 }
             }
             capabilitiesInitialized = true;

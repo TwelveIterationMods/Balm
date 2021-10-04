@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public interface BalmContainerProvider extends BalmProviderHolder {
+public interface BalmContainerProvider {
     Container getContainer();
 
     default Container getContainer(Direction side) {
@@ -38,27 +38,5 @@ public interface BalmContainerProvider extends BalmProviderHolder {
     default ItemStack insertItemStacked(ItemStack itemStack, boolean simulate) {
         Container container = getContainer();
         return ContainerUtils.insertItemStacked(container, itemStack, simulate);
-    }
-
-    @Override
-    default List<Object> getProviders() {
-        Container container = getContainer();
-        if (container != null) {
-            return Lists.newArrayList(container);
-        }
-
-        return Collections.emptyList();
-    }
-
-    @Override
-    default List<Pair<Direction, Object>> getSidedProviders() {
-        List<Pair<Direction, Object>> providers = new ArrayList<>();
-        for (Direction direction : Direction.values()) {
-            Container container = getContainer(direction);
-            if (container != null) {
-                providers.add(Pair.of(direction, container));
-            }
-        }
-        return providers;
     }
 }
