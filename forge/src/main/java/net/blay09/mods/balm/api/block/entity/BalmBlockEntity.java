@@ -143,14 +143,4 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
         }
         return result != null ? result.cast() : super.getCapability(cap, side);
     }
-
-    @Override
-    public void balmBuildProviders(List<BalmProviderHolder> providers) {
-        if (this instanceof BalmContainerProvider containerProvider) {
-            providers.add(containerProvider);
-        }
-        if (this instanceof BalmFluidTankProvider fluidTankProvider) {
-            providers.add(fluidTankProvider);
-        }
-    }
 }

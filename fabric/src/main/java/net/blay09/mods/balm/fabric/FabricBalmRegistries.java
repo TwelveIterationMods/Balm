@@ -8,6 +8,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class FabricBalmRegistries implements BalmRegistries {
     @Override
@@ -43,5 +44,15 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public Tag<Item> getItemTag(ResourceLocation key) {
         return TagRegistry.item(key);
+    }
+
+    @Override
+    public void enableMilkFluid() {
+        // TODO
+    }
+
+    @Override
+    public Fluid getMilkFluid() {
+        return Fluids.LAVA; // TODO
     }
 }
