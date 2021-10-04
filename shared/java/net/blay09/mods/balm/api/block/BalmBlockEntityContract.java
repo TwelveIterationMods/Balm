@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public interface BalmBlockEntityContract {
+public interface BalmBlockEntityContract extends BalmProviderHolder {
     AABB balmGetRenderBoundingBox();
 
     void balmOnLoad();
@@ -28,9 +28,8 @@ public interface BalmBlockEntityContract {
     void balmSync();
 
     default void balmBuildProviders(List<BalmProviderHolder> providers) {
-        if (this instanceof BalmProviderHolder providerHolder) {
-            providers.add(providerHolder);
-        }
+        providers.add(this);
+
         if (this instanceof BalmContainerProvider containerProvider) {
             providers.add(new BalmProviderHolder() {
                 @Override
