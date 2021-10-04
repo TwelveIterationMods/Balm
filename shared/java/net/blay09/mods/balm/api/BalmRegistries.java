@@ -20,4 +20,8 @@ public interface BalmRegistries {
     Fluid getFluid(ResourceLocation key);
 
     Tag<Item> getItemTag(ResourceLocation key);
+
+    void enableMilkFluid();
+
+    Fluid getMilkFluid();
 }

@@ -1,12 +1,19 @@
 package net.blay09.mods.balm.api.container;
 
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+import net.blay09.mods.balm.api.provider.BalmProviderHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public interface BalmContainerProvider {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public interface BalmContainerProvider extends BalmProviderHolder {
     Container getContainer();
 
     default Container getContainer(Direction side) {
@@ -31,5 +38,27 @@ public interface BalmContainerProvider {
     default ItemStack insertItemStacked(ItemStack itemStack, boolean simulate) {
         Container container = getContainer();
         return ContainerUtils.insertItemStacked(container, itemStack, simulate);
+    }
+
+    @Override
+    default List<Object> getProviders() {
+        Container container = getContainer();
+        if (container != null) {
+            return Lists.newArrayList(container);
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    default List<Pair<Direction, Object>> getSidedProviders() {
+        List<Pair<Direction, Object>> providers = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            Container container = getContainer(direction);
+            if (container != null) {
+                providers.add(Pair.of(direction, container));
+            }
+        }
+        return providers;
     }
 }

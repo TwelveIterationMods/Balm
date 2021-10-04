@@ -7,6 +7,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ForgeBalmRegistries implements BalmRegistries {
@@ -43,5 +44,15 @@ public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public Tag<Item> getItemTag(ResourceLocation key) {
         return ItemTags.bind(key.toString());
+    }
+
+    @Override
+    public void enableMilkFluid() {
+        ForgeMod.enableMilkFluid();
+    }
+
+    @Override
+    public Fluid getMilkFluid() {
+        return ForgeMod.MILK.get();
     }
 }

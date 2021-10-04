@@ -8,6 +8,7 @@ import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 
@@ -72,5 +73,9 @@ public class Balm {
 
     public static BalmEntities getEntities() {
         return runtime.getEntities();
+    }
+
+    public static BalmProviders getProviders() {
+        return runtime.getProviders();
     }
 }

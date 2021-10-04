@@ -12,17 +12,18 @@ import net.blay09.mods.balm.api.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
+import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.forge.block.ForgeBalmBlocks;
 import net.blay09.mods.balm.forge.block.entity.ForgeBalmBlockEntities;
-import net.blay09.mods.balm.forge.client.rendering.ForgeBalmRenderers;
 import net.blay09.mods.balm.forge.config.ForgeBalmConfig;
 import net.blay09.mods.balm.forge.entity.ForgeBalmEntities;
 import net.blay09.mods.balm.forge.event.ForgeBalmCommonEvents;
 import net.blay09.mods.balm.forge.item.ForgeBalmItems;
 import net.blay09.mods.balm.forge.menu.ForgeBalmMenus;
 import net.blay09.mods.balm.forge.network.ForgeBalmNetworking;
+import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.blay09.mods.balm.forge.sound.ForgeBalmSounds;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -48,6 +49,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmRegistries registries = new ForgeBalmRegistries();
     private final BalmSounds sounds = new ForgeBalmSounds();
     private final BalmEntities entities = new ForgeBalmEntities();
+    private final BalmProviders providers = new ForgeBalmProviders();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -113,6 +115,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public BalmEntities getEntities() {
         return entities;
+    }
+
+    @Override
+    public BalmProviders getProviders() {
+        return providers;
     }
 
     @Override
