@@ -127,6 +127,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
                         capabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
                     }
                     // TODO Fluid Handlers
+                    // TODO Energy Handlers
                 }
 
                 for (Pair<Direction, BalmProvider<?>> pair : providerHolder.getSidedProviders()) {
@@ -139,6 +140,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
                         sidedCapabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
                     }
                     // TODO Fluid Handlers
+                    // TODO Energy Handlers
                 }
             }
             capabilitiesInitialized = true;
