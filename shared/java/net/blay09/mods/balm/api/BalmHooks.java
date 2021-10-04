@@ -2,6 +2,7 @@ package net.blay09.mods.balm.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -43,4 +44,6 @@ public interface BalmHooks {
     boolean canItemsStack(ItemStack first, ItemStack second);
 
     int getBurnTime(ItemStack itemStack);
+
+    void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix);
 }

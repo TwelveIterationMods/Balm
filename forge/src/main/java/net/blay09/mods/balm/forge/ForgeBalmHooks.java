@@ -3,6 +3,7 @@ package net.blay09.mods.balm.forge;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
@@ -71,5 +73,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public int getBurnTime(ItemStack itemStack) {
         return ForgeHooks.getBurnTime(itemStack, RecipeType.SMELTING);
+    }
+
+    @Override
+    public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
+        BasicEventHooks.firePlayerCraftingEvent(player, crafted, craftMatrix);
     }
 }

@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
@@ -63,5 +64,10 @@ public class FabricBalmHooks implements BalmHooks {
     @Override
     public int getBurnTime(ItemStack itemStack) {
         return FuelRegistry.INSTANCE.get(itemStack.getItem());
+    }
+
+    @Override
+    public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
+        // TODO
     }
 }
