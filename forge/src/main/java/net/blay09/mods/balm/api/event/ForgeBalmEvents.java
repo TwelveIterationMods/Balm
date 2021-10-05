@@ -42,7 +42,7 @@ public class ForgeBalmEvents implements BalmEvents {
     public <T> void onEvent(Class<T> eventClass, Consumer<T> handler, EventPriority priority) {
         Runnable initializer = eventInitializers.remove(eventClass);
         if (initializer != null) {
-            initializer.run();
+            initializer.run(); // TODO does not take prio into account yet
         }
 
         eventHandlers.put(eventClass, handler);

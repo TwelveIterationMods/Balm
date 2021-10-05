@@ -1,6 +1,8 @@
 package net.blay09.mods.balm.api.event;
 
 
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -9,6 +11,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.ServerResources;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
@@ -95,6 +98,9 @@ public class FabricBalmCommonEvents {
             final PlayerRespawnEvent event = new PlayerRespawnEvent(oldPlayer, newPlayer);
             events.fireEventHandlers(event);
         }));
-    }
 
+        events.registerEvent(ServerReloadedEvent.class, () -> {
+
+        });
+    }
 }

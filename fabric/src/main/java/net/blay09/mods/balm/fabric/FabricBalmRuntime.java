@@ -26,9 +26,15 @@ import net.blay09.mods.balm.fabric.network.FabricBalmNetworking;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.blay09.mods.balm.fabric.sound.FabricBalmSounds;
 import net.blay09.mods.balm.fabric.world.FabricBalmWorldGen;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Consumer;
 
 public class FabricBalmRuntime implements BalmRuntime {
     private final BalmWorldGen worldGen = new FabricBalmWorldGen();
@@ -132,5 +138,20 @@ public class FabricBalmRuntime implements BalmRuntime {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+            @Override
+            public void onResourceManagerReload(ResourceManager resourceManager) {
+                reloadListener.accept(resourceManager);
+            }
+
+            @Override
+            public ResourceLocation getFabricId() {
+                return identifier;
+            }
+        });
     }
 }
