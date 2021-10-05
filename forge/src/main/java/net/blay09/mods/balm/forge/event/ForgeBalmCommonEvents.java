@@ -68,14 +68,14 @@ public class ForgeBalmCommonEvents {
         });
 
         events.registerEvent(ServerStartedEvent.class, () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLServerStartedEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener((FMLServerStartedEvent orig) -> {
                 final ServerStartedEvent event = new ServerStartedEvent(orig.getServer());
                 events.fireEventHandlers(event);
             });
         });
 
         events.registerEvent(ServerStoppedEvent.class, () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLServerStoppedEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener((FMLServerStoppedEvent orig) -> {
                 final ServerStoppedEvent event = new ServerStoppedEvent(orig.getServer());
                 events.fireEventHandlers(event);
             });
