@@ -8,7 +8,6 @@ import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.EventPriority;
 import net.blay09.mods.balm.api.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
@@ -27,10 +26,8 @@ import net.blay09.mods.balm.forge.network.ForgeBalmNetworking;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.blay09.mods.balm.forge.sound.ForgeBalmSounds;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,7 +39,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmWorldGen worldGen = new ForgeBalmWorldGen();
@@ -165,17 +162,9 @@ public class ForgeBalmRuntime implements BalmRuntime {
     }
 
     @Override
-    public void addServerReloadListener(ResourceLocation identifier, Function<ServerResources, PreparableReloadListener> supplier, EventPriority priority) {
-        net.minecraftforge.eventbus.api.EventPriority forgePriority = switch (priority) {
-            case Lowest -> net.minecraftforge.eventbus.api.EventPriority.LOWEST;
-            case Low -> net.minecraftforge.eventbus.api.EventPriority.LOW;
-            case Normal -> net.minecraftforge.eventbus.api.EventPriority.NORMAL;
-            case High -> net.minecraftforge.eventbus.api.EventPriority.HIGH;
-            case Highest -> net.minecraftforge.eventbus.api.EventPriority.HIGHEST;
-        };
-        MinecraftForge.EVENT_BUS.addListener(forgePriority, (AddReloadListenerEvent event) -> {
-            PreparableReloadListener reloadListener = supplier.apply(event.getDataPackRegistries());
-            event.addListener(reloadListener);
+    public void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
+            event.addListener((ResourceManagerReloadListener) reloadListener::accept);
         });
     }
 
