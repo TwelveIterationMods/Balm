@@ -26,9 +26,12 @@ public class ForgeBalmProviders implements BalmProviders {
         return blockEntity.getCapability(capability, direction).resolve().orElse(null);
     }
 
+    public <T> void register(Class<T> clazz, CapabilityToken<T> token) {
+        capabilities.put(clazz, CapabilityManager.get(token));
+    }
+
     @SuppressWarnings("unchecked")
     public <T> Capability<T> getCapability(Class<T> clazz) {
-        return (Capability<T>) capabilities.computeIfAbsent(clazz, it -> CapabilityManager.get(new CapabilityToken<T>() {
-        }));
+        return (Capability<T>) capabilities.get(clazz);
     }
 }
