@@ -8,7 +8,11 @@ public class DeferredObject<T> {
     private final ResourceLocation identifier;
     private final Supplier<T> supplier;
     private final Supplier<Boolean> canResolveFunc;
-    private T object;
+    protected T object;
+
+    protected DeferredObject(ResourceLocation identifier) {
+        this(identifier, () -> null, () -> false);
+    }
 
     public DeferredObject(ResourceLocation identifier, Supplier<T> supplier) {
         this(identifier, supplier, () -> false);
@@ -18,6 +22,10 @@ public class DeferredObject<T> {
         this.identifier = identifier;
         this.supplier = supplier;
         this.canResolveFunc = canResolveFunc;
+    }
+
+    protected void set(T object) {
+        this.object = object;
     }
 
     public T resolve() {
