@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FabricBalmModels implements BalmModels { // TODO
     @Override
@@ -36,7 +37,7 @@ public class FabricBalmModels implements BalmModels { // TODO
     }
 
     @Override
-    public void overrideModel(DeferredObject<Block> block, DeferredObject<BakedModel> model) {
+    public void overrideModel(Supplier<Block> block, Supplier<BakedModel> model) {
 
     }
 }

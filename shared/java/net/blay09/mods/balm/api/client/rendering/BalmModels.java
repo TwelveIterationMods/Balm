@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface BalmModels {
     DeferredObject<BakedModel> loadModel(ResourceLocation identifier);
@@ -22,5 +23,9 @@ public interface BalmModels {
 
     DeferredObject<BakedModel> retexture(ResourceLocation identifier, Map<String, String> textureMap);
 
-    void overrideModel(DeferredObject<Block> block, DeferredObject<BakedModel> model);
+    default void overrideModel(Block block, Supplier<BakedModel> model) {
+        overrideModel(() -> block, model);
+    }
+
+    void overrideModel(Supplier<Block> block, Supplier<BakedModel> model);
 }

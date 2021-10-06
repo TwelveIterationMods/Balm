@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ForgeBalmModels implements BalmModels {
 
@@ -43,7 +44,7 @@ public class ForgeBalmModels implements BalmModels {
 
     private static class Registrations {
         public final List<DeferredModel> modelsToBake = new ArrayList<>();
-        public final List<Pair<DeferredObject<Block>, DeferredObject<BakedModel>>> overrides = new ArrayList<>();
+        public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
 
         @SubscribeEvent
         public void onBakeModels(ModelBakeEvent event) {
@@ -51,7 +52,7 @@ public class ForgeBalmModels implements BalmModels {
                 deferredModel.resolveAndSet(event.getModelLoader(), event.getModelRegistry());
             }
 
-            for (Pair<DeferredObject<Block>, DeferredObject<BakedModel>> override : overrides) {
+            for (Pair<Supplier<Block>, Supplier<BakedModel>> override : overrides) {
                 Block block = override.getFirst().get();
                 BakedModel bakedModel = override.getSecond().get();
                 block.getStateDefinition().getPossibleStates().forEach((state) -> {
@@ -117,7 +118,7 @@ public class ForgeBalmModels implements BalmModels {
     }
 
     @Override
-    public void overrideModel(DeferredObject<Block> block, DeferredObject<BakedModel> model) {
+    public void overrideModel(Supplier<Block> block, Supplier<BakedModel> model) {
         getActiveRegistrations().overrides.add(Pair.of(block, model));
     }
 
