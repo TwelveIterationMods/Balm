@@ -12,6 +12,7 @@ import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.function.Consumer;
@@ -29,6 +30,10 @@ public class Balm {
 
     public static void initializeIfLoaded(String modId, String className) {
         runtime.initializeIfLoaded(modId, className);
+    }
+
+    public static void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
+        runtime.addServerReloadListener(identifier, reloadListener);
     }
 
     public static void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {

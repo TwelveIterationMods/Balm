@@ -53,5 +53,6 @@ public interface BalmRuntime {
 
     void initializeIfLoaded(String modId, String className);
 
+    void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener);
     void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener);
 }

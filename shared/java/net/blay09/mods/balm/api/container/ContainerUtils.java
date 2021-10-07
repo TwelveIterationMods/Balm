@@ -11,12 +11,70 @@ public class ContainerUtils {
         return ItemStack.EMPTY; // TODO
     }
 
+    public static ItemStack insertItem(Container container, ItemStack itemStack, boolean simulate) {
+        if (container == null || itemStack.isEmpty()) {
+            return itemStack;
+        }
+
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            itemStack = insertItem(container, i, itemStack, simulate);
+            if (itemStack.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        return itemStack;
+    }
+
     public static ItemStack insertItem(Container container, int slot, ItemStack itemStack, boolean simulate) {
-        return itemStack; // TODO
+        if (container == null || itemStack.isEmpty()) {
+            return itemStack;
+        }
+
+        // TODO
+
+        return itemStack;
     }
 
     public static ItemStack insertItemStacked(Container container, ItemStack itemStack, boolean simulate) {
-        return itemStack; // TODO
+        if (container == null || itemStack.isEmpty()) {
+            return itemStack;
+        }
+
+        if (!itemStack.isStackable()) {
+            return insertItem(container, itemStack, simulate);
+        }
+
+        int firstEmptySlot = -1;
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack slotStack = container.getItem(i);
+            if (slotStack.isEmpty() && firstEmptySlot == -1) {
+                firstEmptySlot = i;
+                continue;
+            }
+
+            if (slotStack.isStackable() && slotStack.sameItemStackIgnoreDurability(itemStack)) {
+                itemStack = insertItem(container, i, itemStack, simulate);
+            }
+
+            if (itemStack.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        if (firstEmptySlot != -1) {
+            for (int i = firstEmptySlot; i < container.getContainerSize(); i++) {
+                if (container.getItem(i).isEmpty()) {
+                    itemStack = insertItem(container, i, itemStack, simulate);
+
+                    if (itemStack.isEmpty()) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            }
+        }
+
+        return itemStack;
     }
 
     public static void dropItems(Container container, Level level, BlockPos pos) {

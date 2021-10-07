@@ -162,6 +162,13 @@ public class ForgeBalmRuntime implements BalmRuntime {
     }
 
     @Override
+    public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
+            event.addListener(reloadListener);
+        });
+    }
+
+    @Override
     public void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
         MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
             event.addListener((ResourceManagerReloadListener) reloadListener::accept);

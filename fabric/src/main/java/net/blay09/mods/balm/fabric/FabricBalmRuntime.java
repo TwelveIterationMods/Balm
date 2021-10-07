@@ -26,14 +26,19 @@ import net.blay09.mods.balm.fabric.network.FabricBalmNetworking;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.blay09.mods.balm.fabric.sound.FabricBalmSounds;
 import net.blay09.mods.balm.fabric.world.FabricBalmWorldGen;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 public class FabricBalmRuntime implements BalmRuntime {
@@ -138,6 +143,21 @@ public class FabricBalmRuntime implements BalmRuntime {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
+            @Override
+            public ResourceLocation getFabricId() {
+                return identifier;
+            }
+
+            @Override
+            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
+                return reloadListener.reload(preparationBarrier, resourceManager, profilerFiller, profilerFiller2, executor, executor2);
+            }
+        });
     }
 
     @Override
