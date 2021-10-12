@@ -67,24 +67,24 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(ServerStartedEvent.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((FMLServerStartedEvent orig) -> {
+        events.registerEvent(ServerStartedEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FMLServerStartedEvent orig) -> {
                 final ServerStartedEvent event = new ServerStartedEvent(orig.getServer());
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(ServerStoppedEvent.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((FMLServerStoppedEvent orig) -> {
+        events.registerEvent(ServerStoppedEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FMLServerStoppedEvent orig) -> {
                 final ServerStoppedEvent event = new ServerStoppedEvent(orig.getServer());
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(UseBlockEvent.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((PlayerInteractEvent.RightClickBlock orig) -> {
+        events.registerEvent(UseBlockEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerInteractEvent.RightClickBlock orig) -> {
                 final UseBlockEvent event = new UseBlockEvent(orig.getPlayer(), orig.getWorld(), orig.getHand(), orig.getHitVec());
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCancellationResult(event.getInteractionResult());
                     orig.setCanceled(true);
@@ -92,35 +92,36 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerLoginEvent.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent orig) -> {
+        events.registerEvent(PlayerLoginEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerLoggedInEvent orig) -> {
                 final PlayerLoginEvent event = new PlayerLoginEvent((ServerPlayer) orig.getPlayer());
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(BreakBlockEvent.Pre.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((BlockEvent.BreakEvent orig) -> {
+        events.registerEvent(BreakBlockEvent.Pre.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.BreakEvent orig) -> {
                 BlockEntity blockEntity = orig.getWorld().getBlockEntity(orig.getPos());
                 final BreakBlockEvent.Pre event = new BreakBlockEvent.Pre((Level) orig.getWorld(), orig.getPlayer(), orig.getPos(), orig.getState(), blockEntity);
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
                 orig.setCanceled(event.isCanceled());
             });
         });
 
-        events.registerEvent(BreakBlockEvent.Post.class, () -> {
+        // TODO in this case should probably fuck the common event and use platform specific code, don't wanna deal with weird bugs stemming from this
+        events.registerEvent(BreakBlockEvent.Post.class, priority -> {
             // Forge has no PostBreakBlock event, so just use EventPriority lowest to run as late as possible. This will definitely be fine. :)
             MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (BlockEvent.BreakEvent orig) -> {
                 BlockEntity blockEntity = orig.getWorld().getBlockEntity(orig.getPos());
                 final BreakBlockEvent.Post event = new BreakBlockEvent.Post((Level) orig.getWorld(), orig.getPlayer(), orig.getPos(), orig.getState(), blockEntity);
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(PlayerRespawnEvent.class, () -> {
-            MinecraftForge.EVENT_BUS.addListener((PlayerEvent.PlayerRespawnEvent orig) -> {
+        events.registerEvent(PlayerRespawnEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerRespawnEvent orig) -> {
                 final PlayerRespawnEvent event = new PlayerRespawnEvent(((ServerPlayer) orig.getPlayer()), (ServerPlayer) orig.getPlayer());
-                events.fireEventHandlers(event);
+                events.fireEventHandlers(priority, event);
             });
         });
     }

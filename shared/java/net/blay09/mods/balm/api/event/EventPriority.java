@@ -5,5 +5,7 @@ public enum EventPriority {
     Low,
     Normal,
     High,
-    Highest
+    Highest;
+
+    public static EventPriority[] values = EventPriority.values();
 }

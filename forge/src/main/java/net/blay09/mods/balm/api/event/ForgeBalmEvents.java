@@ -1,36 +1,39 @@
 package net.blay09.mods.balm.api.event;
 
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class ForgeBalmEvents implements BalmEvents {
 
-    private final Map<Class<?>, Runnable> eventInitializers = new HashMap<>();
+    private final Table<Class<?>, EventPriority, Consumer<EventPriority>> eventInitializers = HashBasedTable.create();
     private final Map<Class<?>, Consumer<?>> eventDispatchers = new HashMap<>();
-    private final Multimap<Class<?>, Consumer<?>> eventHandlers = ArrayListMultimap.create();
+    private final Table<Class<?>, EventPriority, List<Consumer<?>>> eventHandlers = HashBasedTable.create();
     private final Table<TickType<?>, TickPhase, Consumer<?>> tickEventInitializers = HashBasedTable.create();
 
-    public void registerEvent(Class<?> eventClass, Runnable initializer) {
+    public void registerEvent(Class<?> eventClass, Consumer<EventPriority> initializer) {
         registerEvent(eventClass, initializer, null);
     }
 
-    public void registerEvent(Class<?> eventClass, Runnable initializer, @Nullable Consumer<?> dispatcher) {
-        eventInitializers.put(eventClass, initializer);
+    public void registerEvent(Class<?> eventClass, Consumer<EventPriority> initializer, @Nullable Consumer<?> dispatcher) {
+        for (EventPriority priority : EventPriority.values()) {
+            eventInitializers.put(eventClass, priority, initializer);
+        }
+
         if (dispatcher != null) {
             eventDispatchers.put(eventClass, dispatcher);
         }
     }
 
-    public <T> void fireEventHandlers(T event) {
-        eventHandlers.get(event.getClass()).forEach(handler -> fireEventHandler(handler, event));
+    public <T> void fireEventHandlers(EventPriority priority, T event) {
+        eventHandlers.get(event.getClass(), priority).forEach(handler -> fireEventHandler(handler, event));
     }
 
     @SuppressWarnings("unchecked")
@@ -40,12 +43,17 @@ public class ForgeBalmEvents implements BalmEvents {
 
     @Override
     public <T> void onEvent(Class<T> eventClass, Consumer<T> handler, EventPriority priority) {
-        Runnable initializer = eventInitializers.remove(eventClass);
+        Consumer<EventPriority> initializer = eventInitializers.remove(eventClass, priority);
         if (initializer != null) {
-            initializer.run(); // TODO does not take prio into account yet
+            initializer.accept(priority);
         }
 
-        eventHandlers.put(eventClass, handler);
+        List<Consumer<?>> consumers = eventHandlers.get(eventClass, priority);
+        if (consumers == null) {
+            consumers = new ArrayList<>();
+            eventHandlers.put(eventClass, priority, consumers);
+        }
+        consumers.add(handler);
     }
 
     @Override
@@ -55,7 +63,9 @@ public class ForgeBalmEvents implements BalmEvents {
         if (handler != null) {
             handler.accept(event);
         } else {
-            fireEventHandlers(event);
+            for (EventPriority priority : EventPriority.values) {
+                fireEventHandlers(priority, event);
+            }
         }
     }
 
@@ -70,4 +80,13 @@ public class ForgeBalmEvents implements BalmEvents {
         tickEventInitializers.put(type, phase, initializer);
     }
 
+    public static net.minecraftforge.eventbus.api.EventPriority toForge(EventPriority priority) {
+        return switch (priority) {
+            case Lowest -> net.minecraftforge.eventbus.api.EventPriority.LOWEST;
+            case Low -> net.minecraftforge.eventbus.api.EventPriority.LOW;
+            case Normal -> net.minecraftforge.eventbus.api.EventPriority.NORMAL;
+            case High -> net.minecraftforge.eventbus.api.EventPriority.HIGH;
+            case Highest -> net.minecraftforge.eventbus.api.EventPriority.HIGHEST;
+        };
+    }
 }
