@@ -8,8 +8,8 @@ import net.minecraft.world.level.material.Fluids;
 
 public class FluidTank {
     private final int capacity;
-    private final int maxReceive;
-    private final int maxExtract;
+    private final int maxFill;
+    private final int maxDrain;
     private Fluid fluid = Fluids.EMPTY;
     private int amount;
 
@@ -21,19 +21,19 @@ public class FluidTank {
         this(maxTransfer, capacity, maxTransfer, 0);
     }
 
-    public FluidTank(int capacity, int maxReceive, int maxExtract) {
-        this(maxExtract, capacity, maxReceive, 0);
+    public FluidTank(int capacity, int maxFill, int maxDrain) {
+        this(maxDrain, capacity, maxFill, 0);
     }
 
-    public FluidTank(int maxExtract, int capacity, int maxReceive, int amount) {
+    public FluidTank(int maxDrain, int capacity, int maxFill, int amount) {
         this.capacity = capacity;
-        this.maxReceive = maxReceive;
-        this.maxExtract = maxExtract;
+        this.maxFill = maxFill;
+        this.maxDrain = maxDrain;
         this.amount = Math.max(0, Math.min(capacity, amount));
     }
 
     public int fill(Fluid fluid, int maxFill, boolean simulate) {
-        if (!canReceive(fluid)) {
+        if (!canFill(fluid)) {
             return 0;
         }
 
@@ -41,7 +41,7 @@ public class FluidTank {
             this.fluid = fluid;
         }
 
-        int filled = Math.min(capacity - amount, Math.min(maxReceive, maxFill));
+        int filled = Math.min(capacity - amount, Math.min(this.maxFill, maxFill));
         if (!simulate) {
             amount += filled;
         }
@@ -49,11 +49,11 @@ public class FluidTank {
     }
 
     public int drain(Fluid fluid, int maxDrain, boolean simulate) {
-        if (!canExtract(fluid)) {
+        if (!canDrain(fluid)) {
             return 0;
         }
 
-        int drained = Math.min(amount, Math.min(this.maxExtract, maxDrain));
+        int drained = Math.min(amount, Math.min(this.maxDrain, maxDrain));
         if (!simulate) {
             amount -= drained;
         }
@@ -77,12 +77,12 @@ public class FluidTank {
         return capacity;
     }
 
-    public boolean canExtract(Fluid fluid) {
-        return (this.fluid.isSame(fluid) || this.fluid.isSame(Fluids.EMPTY)) && maxExtract > 0;
+    public boolean canDrain(Fluid fluid) {
+        return (this.fluid.isSame(fluid) || this.fluid.isSame(Fluids.EMPTY)) && maxDrain > 0;
     }
 
-    public boolean canReceive(Fluid fluid) {
-        return (this.fluid.isSame(fluid) || this.fluid.isSame(Fluids.EMPTY)) && maxReceive > 0;
+    public boolean canFill(Fluid fluid) {
+        return (this.fluid.isSame(fluid) || this.fluid.isSame(Fluids.EMPTY)) && maxFill > 0;
     }
 
     public CompoundTag serialize() {

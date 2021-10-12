@@ -5,8 +5,8 @@ import net.minecraft.nbt.IntTag;
 public class EnergyStorage {
 
     private final int capacity;
-    private final int maxReceive;
-    private final int maxExtract;
+    private final int maxFill;
+    private final int maxDrain;
     private int energy;
 
     public EnergyStorage(int capacity) {
@@ -17,23 +17,23 @@ public class EnergyStorage {
         this(maxTransfer, capacity, maxTransfer, 0);
     }
 
-    public EnergyStorage(int capacity, int maxReceive, int maxExtract) {
-        this(maxExtract, capacity, maxReceive, 0);
+    public EnergyStorage(int capacity, int maxFill, int maxDrain) {
+        this(maxDrain, capacity, maxFill, 0);
     }
 
-    public EnergyStorage(int maxExtract, int capacity, int maxReceive, int amount) {
+    public EnergyStorage(int maxDrain, int capacity, int maxFill, int amount) {
         this.capacity = capacity;
-        this.maxReceive = maxReceive;
-        this.maxExtract = maxExtract;
+        this.maxFill = maxFill;
+        this.maxDrain = maxDrain;
         this.energy = Math.max(0, Math.min(capacity, amount));
     }
 
     public int fill(int maxFill, boolean simulate) {
-        if (!canReceive()) {
+        if (!canFill()) {
             return 0;
         }
 
-        int filled = Math.min(capacity - energy, Math.min(maxReceive, maxFill));
+        int filled = Math.min(capacity - energy, Math.min(this.maxFill, maxFill));
         if (!simulate) {
             energy += filled;
         }
@@ -41,11 +41,11 @@ public class EnergyStorage {
     }
 
     public int drain(int maxDrain, boolean simulate) {
-        if (!canExtract()) {
+        if (!canDrain()) {
             return 0;
         }
 
-        int drained = Math.min(energy, Math.min(this.maxExtract, maxDrain));
+        int drained = Math.min(energy, Math.min(this.maxDrain, maxDrain));
         if (!simulate) {
             energy -= drained;
         }
@@ -64,12 +64,12 @@ public class EnergyStorage {
         return capacity;
     }
 
-    public boolean canExtract() {
-        return maxExtract > 0;
+    public boolean canDrain() {
+        return maxDrain > 0;
     }
 
-    public boolean canReceive() {
-        return maxReceive > 0;
+    public boolean canFill() {
+        return maxFill > 0;
     }
 
     public IntTag serialize() {

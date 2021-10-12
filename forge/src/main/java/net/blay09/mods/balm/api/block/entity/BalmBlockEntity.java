@@ -5,9 +5,12 @@ import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.block.BalmBlockEntityContract;
+import net.blay09.mods.balm.api.energy.EnergyStorage;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.api.provider.BalmProvider;
 import net.blay09.mods.balm.api.provider.BalmProviderHolder;
+import net.blay09.mods.balm.forge.energy.ForgeEnergyStorage;
+import net.blay09.mods.balm.forge.fluid.ForgeFluidTank;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +27,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +115,20 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
         balmFromClientTag(tag);
     }
 
+    private void addCapabilities(BalmProvider<?> provider, Map<Capability<?>, LazyOptional<?>> capabilities) {
+        ForgeBalmProviders forgeProviders = (ForgeBalmProviders) Balm.getProviders();
+        Capability<?> capability = forgeProviders.getCapability(provider.getProviderClass());
+        capabilities.put(capability, LazyOptional.of(provider::getInstance));
+
+        if (provider.getProviderClass() == Container.class) {
+            capabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
+        } else if(provider.getProviderClass() == FluidTank.class) {
+            capabilities.put(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, LazyOptional.of(() -> new ForgeFluidTank((FluidTank) provider.getInstance())));
+        } else if(provider.getProviderClass() == EnergyStorage.class) {
+            capabilities.put(CapabilityEnergy.ENERGY, LazyOptional.of(() -> new ForgeEnergyStorage((EnergyStorage) provider.getInstance())));
+        }
+    }
+
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -117,30 +136,16 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
             List<BalmProviderHolder> providers = new ArrayList<>();
             balmBuildProviders(providers);
 
-            ForgeBalmProviders forgeProviders = (ForgeBalmProviders) Balm.getProviders();
             for (BalmProviderHolder providerHolder : providers) {
                 for (BalmProvider<?> provider : providerHolder.getProviders()) {
-                    Capability<?> capability = forgeProviders.getCapability(provider.getProviderClass());
-                    capabilities.put(capability, LazyOptional.of(provider::getInstance));
-
-                    if (provider.getProviderClass() == Container.class) {
-                        capabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
-                    }
-                    // TODO Fluid Handlers
-                    // TODO Energy Handlers
+                    addCapabilities(provider, capabilities);
                 }
 
                 for (Pair<Direction, BalmProvider<?>> pair : providerHolder.getSidedProviders()) {
                     Direction direction = pair.getFirst();
                     BalmProvider<?> provider = pair.getSecond();
-                    Capability<?> capability = forgeProviders.getCapability(provider.getProviderClass());
-                    sidedCapabilities.put(capability, direction, LazyOptional.of(provider::getInstance));
-
-                    if (provider.getProviderClass() == Container.class) {
-                        sidedCapabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction, LazyOptional.of(() -> new InvWrapper((Container) provider.getInstance())));
-                    }
-                    // TODO Fluid Handlers
-                    // TODO Energy Handlers
+                    Map<Capability<?>, LazyOptional<?>> sidedCapabilities = this.sidedCapabilities.column(direction);
+                    addCapabilities(provider, sidedCapabilities);
                 }
             }
             capabilitiesInitialized = true;
