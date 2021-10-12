@@ -105,6 +105,7 @@ public interface ImplementedContainer extends Container {
         if (stack.getCount() > getMaxStackSize()) {
             stack.setCount(getMaxStackSize());
         }
+        setChanged();
         slotChanged(slot);
     }
 

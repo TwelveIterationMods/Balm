@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.api.container;
 
+import net.blay09.mods.balm.api.Balm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -8,7 +9,34 @@ import net.minecraft.world.level.Level;
 
 public class ContainerUtils {
     public static ItemStack extractItem(Container container, int slot, int amount, boolean simulate) {
-        return ItemStack.EMPTY; // TODO
+        if (amount == 0) {
+            return ItemStack.EMPTY;
+        }
+
+        if (slot < 0 || slot >= container.getContainerSize()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack existing = container.getItem(slot);
+        if (existing.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        int toExtract = Math.min(amount, existing.getMaxStackSize());
+        if (existing.getCount() <= toExtract) {
+            if (!simulate) {
+                container.setItem(slot, ItemStack.EMPTY);
+                return existing;
+            }
+
+            return existing.copy();
+        } else {
+            if (!simulate) {
+                container.setItem(slot, copyStackWithSize(existing, existing.getCount() - toExtract));
+            }
+
+            return copyStackWithSize(existing, toExtract);
+        }
     }
 
     public static ItemStack insertItem(Container container, ItemStack itemStack, boolean simulate) {
@@ -31,9 +59,35 @@ public class ContainerUtils {
             return itemStack;
         }
 
-        // TODO
+        if (slot < 0 || slot >= container.getContainerSize()) {
+            return ItemStack.EMPTY;
+        }
 
-        return itemStack;
+        ItemStack existing = container.getItem(slot);
+
+        int limit = Math.min(container.getMaxStackSize(), itemStack.getMaxStackSize());
+        if (!existing.isEmpty()) {
+            if (!Balm.getHooks().canItemsStack(itemStack, existing)) {
+                return itemStack;
+            }
+
+            limit -= existing.getCount();
+        }
+
+        if (limit <= 0) {
+            return itemStack;
+        }
+
+        boolean reachedLimit = itemStack.getCount() > limit;
+        if (!simulate) {
+            if (existing.isEmpty()) {
+                container.setItem(slot, reachedLimit ? copyStackWithSize(itemStack, limit) : itemStack);
+            } else {
+                existing.grow(reachedLimit ? limit : itemStack.getCount());
+            }
+        }
+
+        return reachedLimit ? copyStackWithSize(itemStack, itemStack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     public static ItemStack insertItemStacked(Container container, ItemStack itemStack, boolean simulate) {
