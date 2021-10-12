@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
@@ -12,9 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -78,5 +82,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
         BasicEventHooks.firePlayerCraftingEvent(player, crafted, craftMatrix);
+    }
+
+    @Override
+    public boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection());
     }
 }
