@@ -80,7 +80,9 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
         for (Field field : fields) {
             String path = parentPath + field.getName();
             Class<?> type = field.getType();
-            if (type.isPrimitive() || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
+            if (Integer.TYPE.isAssignableFrom(type)) {
+                field.set(instance, config.getConfigData().getInt(path));
+            } else if (type.isPrimitive() || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
                 field.set(instance, config.getConfigData().get(path));
             } else if (type.isEnum()) {
                 Enum<?> value = config.getConfigData().getEnum(path, (Class<Enum>) type);
