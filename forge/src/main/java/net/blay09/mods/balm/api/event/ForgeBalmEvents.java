@@ -33,7 +33,10 @@ public class ForgeBalmEvents implements BalmEvents {
     }
 
     public <T> void fireEventHandlers(EventPriority priority, T event) {
-        eventHandlers.get(event.getClass(), priority).forEach(handler -> fireEventHandler(handler, event));
+        List<Consumer<?>> handlers = eventHandlers.get(event.getClass(), priority);
+        if (handlers != null) {
+            handlers.forEach(handler -> fireEventHandler(handler, event));
+        }
     }
 
     @SuppressWarnings("unchecked")
