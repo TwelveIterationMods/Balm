@@ -56,7 +56,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
 
     @Override
     public AABB balmGetRenderBoundingBox() {
-        return AABB.unitCubeFromLowerCorner(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getY()));
+        return AABB.unitCubeFromLowerCorner(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
     }
 
     @Override
