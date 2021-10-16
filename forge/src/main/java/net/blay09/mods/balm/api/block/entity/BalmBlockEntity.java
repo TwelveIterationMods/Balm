@@ -60,6 +60,12 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        balmOnLoad();
+    }
+
+    @Override
     public void balmOnLoad() {
     }
 
