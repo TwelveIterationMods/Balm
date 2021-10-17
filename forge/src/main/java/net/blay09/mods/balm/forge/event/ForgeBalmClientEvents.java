@@ -9,6 +9,7 @@ import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -88,9 +89,16 @@ public class ForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(ScreenBackgroundDrawnEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.BackgroundDrawnEvent orig) -> {
-                final ScreenBackgroundDrawnEvent event = new ScreenBackgroundDrawnEvent(orig.getGui(), orig.getMatrixStack());
+        events.registerEvent(ContainerScreenDrawEvent.Background.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiContainerEvent.DrawBackground orig) -> {
+                final ContainerScreenDrawEvent.Background event = new ContainerScreenDrawEvent.Background(orig.getGuiContainer(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(ContainerScreenDrawEvent.Foreground.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiContainerEvent.DrawBackground orig) -> {
+                final ContainerScreenDrawEvent.Foreground event = new ContainerScreenDrawEvent.Foreground(orig.getGuiContainer(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
         });
