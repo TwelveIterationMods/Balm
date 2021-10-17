@@ -31,6 +31,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
     private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new HashMap<>();
     private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new HashMap<>();
 
+    private static int discriminator;
     private static NetworkEvent.Context replyContext;
 
     @Override
@@ -116,7 +117,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
+        channel.registerMessage(nextDiscriminator(), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             if (context.getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
                 return;
@@ -137,7 +138,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
+        channel.registerMessage(nextDiscriminator(), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
                 replyContext = context;
@@ -149,7 +150,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         });
     }
 
-    private static int discriminator(ResourceLocation location) {
-        return location.getPath().hashCode();
+    private static int nextDiscriminator() {
+        return discriminator++;
     }
 }
