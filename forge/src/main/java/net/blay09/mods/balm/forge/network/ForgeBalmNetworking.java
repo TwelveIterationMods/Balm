@@ -31,6 +31,8 @@ public class ForgeBalmNetworking implements BalmNetworking {
     private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new HashMap<>();
     private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new HashMap<>();
 
+    private static NetworkEvent.Context replyContext;
+
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer) {
@@ -40,6 +42,20 @@ public class ForgeBalmNetworking implements BalmNetworking {
                 NetworkHooks.openGui((ServerPlayer) player, menuProvider);
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> void reply(T message) {
+        if(replyContext == null) {
+            throw new IllegalStateException("No context to reply to");
+        }
+
+        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        ResourceLocation identifier = messageRegistration.getIdentifier();
+
+        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        channel.reply(message, replyContext);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,8 +140,10 @@ public class ForgeBalmNetworking implements BalmNetworking {
         channel.registerMessage(discriminator(identifier), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
+                replyContext = context;
                 ServerPlayer player = context.getSender();
                 handler.accept(player, message);
+                replyContext = null;
             });
             context.setPacketHandled(true);
         });

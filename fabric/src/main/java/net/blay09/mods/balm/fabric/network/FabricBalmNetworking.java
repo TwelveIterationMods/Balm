@@ -33,9 +33,20 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     private static final List<ClientboundMessageRegistration<?>> clientMessageRegistrations = new ArrayList<>();
 
+    private static Player replyPlayer;
+
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         player.openMenu(menuProvider);
+    }
+
+    @Override
+    public <T> void reply(T message) {
+        if (replyPlayer == null) {
+            throw new IllegalStateException("No player to reply to");
+        }
+
+        sendTo(replyPlayer, message);
     }
 
     @SuppressWarnings("unchecked")
@@ -112,7 +123,11 @@ public class FabricBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
         ServerPlayNetworking.registerGlobalReceiver(identifier, ((server, player, listener, buf, responseSender) -> {
             T message = messageRegistration.getDecodeFunc().apply(buf);
-            server.execute(() -> handler.accept(player, message));
+            server.execute(() -> {
+                replyPlayer = player;
+                handler.accept(player, message);
+                replyPlayer = null;
+            });
         }));
     }
 

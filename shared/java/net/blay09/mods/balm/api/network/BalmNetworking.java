@@ -16,6 +16,8 @@ import java.util.function.Function;
 public interface BalmNetworking {
     void openGui(Player player, MenuProvider menuProvider);
 
+    <T> void reply(T message);
+
     <T> void sendTo(Player player, T message);
 
     <T> void sendToTracking(ServerLevel world, BlockPos pos, T message);
