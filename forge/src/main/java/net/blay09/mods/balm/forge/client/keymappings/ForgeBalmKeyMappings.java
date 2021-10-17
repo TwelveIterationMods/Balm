@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.client.keymappings.KeyModifier;
 import net.blay09.mods.balm.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 public class ForgeBalmKeyMappings implements BalmKeyMappings {
@@ -27,14 +28,14 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, int keyCode, String category) {
-        KeyMapping keyMapping = new KeyMapping(name, InputConstants.Type.KEYSYM, keyCode, category);
+        KeyMapping keyMapping = new KeyMapping(name, toForge(conflictContext), toForge(modifier), InputConstants.Type.KEYSYM, keyCode, category);
         ClientRegistry.registerKeyBinding(keyMapping);
         return keyMapping;
     }
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category) {
-        KeyMapping keyMapping = new KeyMapping(name, type, keyCode, category);
+        KeyMapping keyMapping = new KeyMapping(name, toForge(conflictContext), toForge(modifier), type, keyCode, category);
         ClientRegistry.registerKeyBinding(keyMapping);
         return keyMapping;
     }
@@ -76,6 +77,23 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
     public boolean isActiveAndKeyDown(KeyMapping keyMapping) {
         InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
         return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
+    }
+
+    private static IKeyConflictContext toForge(KeyConflictContext context) {
+        return switch (context) {
+            case UNIVERSAL -> net.minecraftforge.client.settings.KeyConflictContext.UNIVERSAL;
+            case GUI -> net.minecraftforge.client.settings.KeyConflictContext.GUI;
+            case INGAME -> net.minecraftforge.client.settings.KeyConflictContext.IN_GAME;
+        };
+    }
+
+    private static net.minecraftforge.client.settings.KeyModifier toForge(KeyModifier modifier) {
+        return switch (modifier) {
+            case SHIFT -> net.minecraftforge.client.settings.KeyModifier.SHIFT;
+            case CONTROL -> net.minecraftforge.client.settings.KeyModifier.CONTROL;
+            case ALT -> net.minecraftforge.client.settings.KeyModifier.ALT;
+            default -> net.minecraftforge.client.settings.KeyModifier.NONE;
+        };
     }
 
 }
