@@ -122,12 +122,22 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
-            configData.put(clazz, readConfigValues(clazz, event.getConfig()));
+            T newConfigData = readConfigValues(clazz, event.getConfig());
+            configData.put(clazz, newConfigData);
+
+            if (getConfigSyncMessageFactory(clazz) == null) {
+                setActiveConfig(clazz, newConfigData);
+            }
         });
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Reloading event) -> {
             configs.put(clazz, event.getConfig());
-            configData.put(clazz, readConfigValues(clazz, event.getConfig()));
+            T newConfigData = readConfigValues(clazz, event.getConfig());
+            configData.put(clazz, newConfigData);
+
+            if (getConfigSyncMessageFactory(clazz) == null) {
+                setActiveConfig(clazz, newConfigData);
+            }
 
             Balm.getEvents().fireEvent(new ConfigReloadedEvent());
         });
