@@ -68,6 +68,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.InitGuiEvent.Pre orig) -> {
                 final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getGui());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -82,6 +85,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.DrawScreenEvent.Pre orig) -> {
                 final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getGui(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY(), orig.getRenderPartialTicks());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -96,6 +102,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseClickedEvent.Pre orig) -> {
                 final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -103,6 +112,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseClickedEvent.Post orig) -> {
                 final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -110,6 +122,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseReleasedEvent.Pre orig) -> {
                 final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -117,6 +132,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseReleasedEvent.Post orig) -> {
                 final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -124,6 +142,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyPressedEvent.Pre orig) -> {
                 final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -131,6 +152,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyPressedEvent.Post orig) -> {
                 final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -138,6 +162,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyReleasedEvent.Pre orig) -> {
                 final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
@@ -145,6 +172,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
                 final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 

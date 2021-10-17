@@ -104,7 +104,9 @@ public class ForgeBalmCommonEvents {
                 BlockEntity blockEntity = orig.getWorld().getBlockEntity(orig.getPos());
                 final BreakBlockEvent.Pre event = new BreakBlockEvent.Pre((Level) orig.getWorld(), orig.getPlayer(), orig.getPos(), orig.getState(), blockEntity);
                 events.fireEventHandlers(priority, event);
-                orig.setCanceled(event.isCanceled());
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
 
