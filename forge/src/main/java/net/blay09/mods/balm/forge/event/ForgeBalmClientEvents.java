@@ -5,10 +5,7 @@ import net.blay09.mods.balm.api.event.client.RecipesUpdatedEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.*;
-import net.blay09.mods.balm.api.event.client.screen.ScreenDrawEvent;
-import net.blay09.mods.balm.api.event.client.screen.ScreenInitEvent;
-import net.blay09.mods.balm.api.event.client.screen.ScreenKeyEvent;
-import net.blay09.mods.balm.api.event.client.screen.ScreenMouseEvent;
+import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -88,6 +85,13 @@ public class ForgeBalmClientEvents {
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }
+            });
+        });
+
+        events.registerEvent(ScreenBackgroundDrawnEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.BackgroundDrawnEvent orig) -> {
+                final ScreenBackgroundDrawnEvent event = new ScreenBackgroundDrawnEvent(orig.getGui(), orig.getMatrixStack());
+                events.fireEventHandlers(priority, event);
             });
         });
 

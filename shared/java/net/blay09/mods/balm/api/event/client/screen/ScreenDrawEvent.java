@@ -40,14 +40,14 @@ public abstract class ScreenDrawEvent extends BalmEvent {
     }
 
     public static class Pre extends ScreenDrawEvent {
-        public Pre(Screen screen, PoseStack matrixStack, int mouseX, int mouseY, float tickDelta) {
-            super(screen, matrixStack, mouseX, mouseY, tickDelta);
+        public Pre(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
+            super(screen, poseStack, mouseX, mouseY, tickDelta);
         }
     }
 
     public static class Post extends ScreenDrawEvent {
-        public Post(Screen screen, PoseStack matrixStack, int mouseX, int mouseY, float tickDelta) {
-            super(screen, matrixStack, mouseX, mouseY, tickDelta);
+        public Post(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
+            super(screen, poseStack, mouseX, mouseY, tickDelta);
         }
     }
 }
