@@ -126,6 +126,26 @@ public class ForgeBalmCommonEvents {
                 events.fireEventHandlers(priority, event);
             });
         });
+
+        events.registerEvent(LivingFallEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingFallEvent orig) -> {
+                final LivingFallEvent event = new LivingFallEvent(orig.getEntityLiving());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(LivingDamageEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingDamageEvent orig) -> {
+                final LivingDamageEvent event = new LivingDamageEvent(orig.getEntityLiving(), orig.getSource(), orig.getAmount());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
     }
 
 }
