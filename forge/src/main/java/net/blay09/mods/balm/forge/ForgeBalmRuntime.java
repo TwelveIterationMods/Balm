@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
+import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
@@ -17,6 +18,7 @@ import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.forge.block.ForgeBalmBlocks;
 import net.blay09.mods.balm.forge.block.entity.ForgeBalmBlockEntities;
+import net.blay09.mods.balm.forge.command.ForgeBalmCommands;
 import net.blay09.mods.balm.forge.config.ForgeBalmConfig;
 import net.blay09.mods.balm.forge.entity.ForgeBalmEntities;
 import net.blay09.mods.balm.forge.event.ForgeBalmCommonEvents;
@@ -55,6 +57,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmSounds sounds = new ForgeBalmSounds();
     private final BalmEntities entities = new ForgeBalmEntities();
     private final BalmProviders providers = new ForgeBalmProviders();
+    private final BalmCommands commands = new ForgeBalmCommands();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -125,6 +128,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public BalmProviders getProviders() {
         return providers;
+    }
+
+    @Override
+    public BalmCommands getCommands() {
+        return commands;
     }
 
     @Override
