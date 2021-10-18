@@ -12,8 +12,13 @@ public class BalmClient {
 
     private static final BalmClientRuntime runtime = BalmClientRuntimeFactory.create();
 
+    public static void initialize(String modId, Runnable initializer) {
+        runtime.initialize(modId, initializer);
+    }
+
+    @Deprecated
     public static void initialize(String modId) {
-        runtime.initialize(modId);
+        runtime.initialize(modId, () -> {});
     }
 
     public static Player getClientPlayer() {

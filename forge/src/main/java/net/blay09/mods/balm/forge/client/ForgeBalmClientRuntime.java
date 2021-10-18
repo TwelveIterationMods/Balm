@@ -53,10 +53,12 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
     }
 
     @Override
-    public void initialize(String modId) {
+    public void initialize(String modId, Runnable initializer) {
         ((ForgeBalmRenderers) renderers).register();
         ((ForgeBalmScreens) screens).register();
         ((ForgeBalmTextures) textures).register();
         ((ForgeBalmModels) models).register();
+
+        initializer.run();
     }
 }

@@ -21,8 +21,13 @@ import java.util.function.Consumer;
 public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeFactory.create();
 
+    @Deprecated
     public static void initialize(String modId) {
-        runtime.initialize(modId);
+        runtime.initialize(modId, () -> {});
+    }
+
+    public static void initialize(String modId, Runnable initializer) {
+        runtime.initialize(modId, initializer);
     }
 
     public static boolean isModLoaded(String modId) {

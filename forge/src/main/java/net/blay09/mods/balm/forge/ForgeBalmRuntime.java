@@ -141,15 +141,16 @@ public class ForgeBalmRuntime implements BalmRuntime {
     }
 
     @Override
-    public void initialize(String modId) {
+    public void initialize(String modId, Runnable initializer) {
+        ((ForgeBalmEntities) entities).register();
+
+        initializer.run();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener((FMLLoadCompleteEvent event) -> initializeAddons());
         for (DeferredRegister<?> deferredRegister : DeferredRegisters.getByModId(modId)) {
             deferredRegister.register(modEventBus);
         }
-
-        ((ForgeBalmEntities) entities).register();
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLLoadCompleteEvent event) -> initializeAddons());
     }
 
     @Override

@@ -12,5 +12,5 @@ public interface BalmClientRuntime {
     BalmScreens getScreens();
     BalmModels getModels();
     BalmKeyMappings getKeyMappings();
-    void initialize(String modId);
+    void initialize(String modId, Runnable initializer);
 }

@@ -52,7 +52,7 @@ public interface BalmRuntime {
 
     boolean isModLoaded(String modId);
 
-    void initialize(String modId);
+    void initialize(String modId, Runnable initializer);
 
     void initializeIfLoaded(String modId, String className);
 
