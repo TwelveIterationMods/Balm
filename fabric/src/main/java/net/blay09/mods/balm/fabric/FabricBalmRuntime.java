@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
+import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
@@ -18,6 +19,7 @@ import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.fabric.block.FabricBalmBlocks;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.fabric.block.entity.FabricBalmBlockEntities;
+import net.blay09.mods.balm.fabric.command.FabricBalmCommands;
 import net.blay09.mods.balm.fabric.config.FabricBalmConfig;
 import net.blay09.mods.balm.fabric.entity.FabricBalmEntities;
 import net.blay09.mods.balm.fabric.item.FabricBalmItems;
@@ -55,6 +57,7 @@ public class FabricBalmRuntime implements BalmRuntime {
     private final BalmSounds sounds = new FabricBalmSounds();
     private final BalmEntities entities = new FabricBalmEntities();
     private final BalmProviders providers = new FabricBalmProviders();
+    private final BalmCommands commands = new FabricBalmCommands();
 
     public FabricBalmRuntime() {
         FabricBalmCommonEvents.registerEvents(events);
@@ -123,6 +126,11 @@ public class FabricBalmRuntime implements BalmRuntime {
     @Override
     public BalmProviders getProviders() {
         return providers;
+    }
+
+    @Override
+    public BalmCommands getCommands() {
+        return commands;
     }
 
     @Override
