@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class BreakBlockEvent extends BalmEvent {
+public class BreakBlockEvent extends BalmEvent {
     private final Level level;
     private final Player player;
     private final BlockPos pos;
@@ -39,17 +39,5 @@ public abstract class BreakBlockEvent extends BalmEvent {
 
     public BlockEntity getBlockEntity() {
         return blockEntity;
-    }
-
-    public static class Pre extends BreakBlockEvent {
-        public Pre(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-            super(world, player, pos, state, blockEntity);
-        }
-    }
-
-    public static class Post extends BreakBlockEvent {
-        public Post(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-            super(world, player, pos, state, blockEntity);
-        }
     }
 }

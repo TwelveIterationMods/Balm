@@ -83,15 +83,10 @@ public class FabricBalmCommonEvents {
             events.fireEventHandlers(event);
         }));
 
-        events.registerEvent(BreakBlockEvent.Pre.class, () -> PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-            final BreakBlockEvent.Pre event = new BreakBlockEvent.Pre(world, player, pos, state, blockEntity);
+        events.registerEvent(BreakBlockEvent.class, () -> PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+            final BreakBlockEvent event = new BreakBlockEvent(world, player, pos, state, blockEntity);
             events.fireEventHandlers(event);
             return !event.isCanceled();
-        }));
-
-        events.registerEvent(BreakBlockEvent.Post.class, () -> PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-            final BreakBlockEvent.Post event = new BreakBlockEvent.Post(world, player, pos, state, blockEntity);
-            events.fireEventHandlers(event);
         }));
 
         events.registerEvent(PlayerRespawnEvent.class, () -> ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
