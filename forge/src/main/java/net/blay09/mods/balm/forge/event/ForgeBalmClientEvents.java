@@ -244,6 +244,13 @@ public class ForgeBalmClientEvents {
                 }
             });
         });
+
+        events.registerEvent(KeyInputEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.KeyInputEvent orig) -> {
+                final KeyInputEvent event = new KeyInputEvent(orig.getKey(), orig.getScanCode(), orig.getAction(), orig.getModifiers());
+                events.fireEventHandlers(priority, event);
+            });
+        });
     }
 
 }
