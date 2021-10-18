@@ -251,6 +251,16 @@ public class ForgeBalmClientEvents {
                 events.fireEventHandlers(priority, event);
             });
         });
+
+        events.registerEvent(BlockHighlightDrawEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (DrawSelectionEvent.HighlightBlock orig) -> {
+                final BlockHighlightDrawEvent event = new BlockHighlightDrawEvent(orig.getTarget(), orig.getMatrix(), orig.getBuffers(), orig.getInfo());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
     }
 
 }
