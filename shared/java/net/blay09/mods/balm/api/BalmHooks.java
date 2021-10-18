@@ -51,4 +51,6 @@ public interface BalmHooks {
     void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix);
 
     boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult);
+
+    boolean isShield(ItemStack itemStack);
 }

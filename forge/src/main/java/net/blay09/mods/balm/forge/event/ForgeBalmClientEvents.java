@@ -5,12 +5,10 @@ import net.blay09.mods.balm.api.event.client.RecipesUpdatedEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.*;
+import net.blay09.mods.balm.api.event.client.RenderHandEvent;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.GuiContainerEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -211,6 +209,39 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.player.ItemTooltipEvent orig) -> {
                 final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getPlayer(), orig.getToolTip(), orig.getFlags());
                 events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(PotionShiftEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.PotionShiftEvent orig) -> {
+                final PotionShiftEvent event = new PotionShiftEvent(orig.getGui());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(UseItemInputEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.ClickInputEvent orig) -> {
+                if (orig.isUseItem()) {
+                    final UseItemInputEvent event = new UseItemInputEvent(orig.getKeyBinding(), orig.getHand());
+                    events.fireEventHandlers(priority, event);
+                    if (event.isCanceled()) {
+                        orig.setSwingHand(false);
+                        orig.setCanceled(true);
+                    }
+                }
+            });
+        });
+
+        events.registerEvent(RenderHandEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.client.event.RenderHandEvent orig) -> {
+                final RenderHandEvent event = new RenderHandEvent(orig.getHand(), orig.getItemStack(), orig.getSwingProgress());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
             });
         });
     }

@@ -1,0 +1,24 @@
+package net.blay09.mods.balm.api.event.client;
+
+import net.blay09.mods.balm.api.event.BalmEvent;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.InteractionHand;
+
+public class UseItemInputEvent extends BalmEvent {
+
+    private final KeyMapping keyMapping;
+    private final InteractionHand hand;
+
+    public UseItemInputEvent(KeyMapping keyMapping, InteractionHand hand) {
+        this.keyMapping = keyMapping;
+        this.hand = hand;
+    }
+
+    public KeyMapping getKeyMapping() {
+        return keyMapping;
+    }
+
+    public InteractionHand getHand() {
+        return hand;
+    }
+}

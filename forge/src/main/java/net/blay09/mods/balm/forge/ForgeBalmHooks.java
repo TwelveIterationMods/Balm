@@ -12,10 +12,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidUtil;
@@ -87,5 +87,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         return FluidUtil.interactWithFluidHandler(player, hand, level, pos, hitResult.getDirection());
+    }
+
+    @Override
+    public boolean isShield(ItemStack itemStack) {
+        return itemStack.getItem().canPerformAction(itemStack, ToolActions.SHIELD_BLOCK);
     }
 }
