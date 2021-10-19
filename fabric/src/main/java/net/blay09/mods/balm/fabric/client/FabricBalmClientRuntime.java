@@ -54,6 +54,7 @@ public class FabricBalmClientRuntime implements BalmClientRuntime {
     }
 
     @Override
-    public void initialize(String modId) {
+    public void initialize(String modId, Runnable initializer) {
+        initializer.run();
     }
 }

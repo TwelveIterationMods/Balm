@@ -139,7 +139,8 @@ public class FabricBalmRuntime implements BalmRuntime {
     }
 
     @Override
-    public void initialize(String modId) {
+    public void initialize(String modId, Runnable initializer) {
+        initializer.run();
     }
 
     @Override
