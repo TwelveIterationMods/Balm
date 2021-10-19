@@ -128,6 +128,26 @@ public class ForgeBalmClientEvents {
             });
         });
 
+        events.registerEvent(ScreenMouseEvent.Drag.Pre.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseDragEvent.Pre orig) -> {
+                final ScreenMouseEvent.Drag.Pre event = new ScreenMouseEvent.Drag.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(ScreenMouseEvent.Drag.Post.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseDragEvent.Post orig) -> {
+                final ScreenMouseEvent.Drag.Post event = new ScreenMouseEvent.Drag.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
         events.registerEvent(ScreenMouseEvent.Release.Pre.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseReleasedEvent.Pre orig) -> {
                 final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
