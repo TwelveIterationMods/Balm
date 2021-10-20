@@ -92,6 +92,17 @@ public class ForgeBalmCommonEvents {
             });
         });
 
+        events.registerEvent(UseItemEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerInteractEvent.RightClickItem orig) -> {
+                final UseItemEvent event = new UseItemEvent(orig.getPlayer(), orig.getWorld(), orig.getHand());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCancellationResult(event.getInteractionResult());
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
         events.registerEvent(PlayerLoginEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerLoggedInEvent orig) -> {
                 final PlayerLoginEvent event = new PlayerLoginEvent((ServerPlayer) orig.getPlayer());
