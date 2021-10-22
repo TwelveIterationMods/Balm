@@ -10,6 +10,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Collection;
+
 public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Item item) {
@@ -24,6 +26,11 @@ public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Fluid fluid) {
         return fluid.getRegistryName();
+    }
+
+    @Override
+    public Collection<ResourceLocation> getItemKeys() {
+        return ForgeRegistries.ITEMS.getKeys();
     }
 
     @Override

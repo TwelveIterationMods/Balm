@@ -141,6 +141,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     }
 
     @Override
+    public String getModName(String modId) {
+        return ModList.get().getModContainerById(modId).map(it -> it.getModInfo().getDisplayName()).orElse(modId);
+    }
+
+    @Override
     public void initialize(String modId, Runnable initializer) {
         ((ForgeBalmEntities) entities).register();
 
@@ -172,16 +177,12 @@ public class ForgeBalmRuntime implements BalmRuntime {
 
     @Override
     public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
-        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
-            event.addListener(reloadListener);
-        });
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(reloadListener));
     }
 
     @Override
     public void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
-        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
-            event.addListener((ResourceManagerReloadListener) reloadListener::accept);
-        });
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener((ResourceManagerReloadListener) reloadListener::accept));
     }
 
 }

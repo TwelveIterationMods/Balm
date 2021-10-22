@@ -6,12 +6,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.Collection;
+
 public interface BalmRegistries {
     ResourceLocation getKey(Item item);
 
     ResourceLocation getKey(Block block);
 
     ResourceLocation getKey(Fluid fluid);
+
+    Collection<ResourceLocation> getItemKeys();
 
     Item getItem(ResourceLocation key);
 

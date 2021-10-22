@@ -34,6 +34,10 @@ public class Balm {
         return runtime.isModLoaded(modId);
     }
 
+    public static String getModName(String modId) {
+        return runtime.getModName(modId);
+    }
+
     public static void initializeIfLoaded(String modId, String className) {
         runtime.initializeIfLoaded(modId, className);
     }

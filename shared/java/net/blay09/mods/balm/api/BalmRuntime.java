@@ -6,7 +6,6 @@ import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.EventPriority;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
@@ -14,12 +13,10 @@ import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public interface BalmRuntime {
     BalmConfig getConfig();
@@ -51,6 +48,7 @@ public interface BalmRuntime {
     BalmCommands getCommands();
 
     boolean isModLoaded(String modId);
+    String getModName(String modId);
 
     void initialize(String modId, Runnable initializer);
 
