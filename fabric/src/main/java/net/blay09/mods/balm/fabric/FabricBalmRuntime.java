@@ -139,6 +139,11 @@ public class FabricBalmRuntime implements BalmRuntime {
     }
 
     @Override
+    public String getModName(String modId) {
+        return FabricLoader.getInstance().getModContainer(modId).map(it -> it.getMetadata().getName()).orElse(modId);
+    }
+
+    @Override
     public void initialize(String modId, Runnable initializer) {
         initializer.run();
     }
