@@ -3,6 +3,7 @@ package net.blay09.mods.balm.forge.config;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
+import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,6 +45,12 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             Class<?> type = field.getType();
             Object defaultValue = field.get(defaults);
             String path = parentPath + field.getName();
+
+            Comment comment = field.getAnnotation(Comment.class);
+            if (comment != null) {
+                builder.comment(comment.value());
+            }
+
             if (String.class.isAssignableFrom(type)) {
                 builder.define(path, (String) defaultValue);
             } else if (List.class.isAssignableFrom(type)) {
