@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.Collection;
+
 public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Item item) {
@@ -54,5 +56,10 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public Fluid getMilkFluid() {
         return Fluids.LAVA; // TODO
+    }
+
+    @Override
+    public Collection<ResourceLocation> getItemKeys() {
+        return Registry.ITEM.keySet();
     }
 }
