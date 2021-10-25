@@ -17,7 +17,7 @@ public class FabricBalmEntities implements BalmEntities {
     @Override
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
         return new DeferredObject<>(identifier, () -> {
-            EntityType<T> entityType = typeBuilder.build(null);
+            EntityType<T> entityType = typeBuilder.build(identifier.toString());
             return Registry.register(Registry.ENTITY_TYPE, identifier, entityType);
         }).resolveImmediately();
     }
@@ -25,7 +25,7 @@ public class FabricBalmEntities implements BalmEntities {
     @Override
     public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
         return new DeferredObject<>(identifier, () -> {
-            EntityType<T> entityType = typeBuilder.build(null);
+            EntityType<T> entityType = typeBuilder.build(identifier.toString());
             FabricDefaultAttributeRegistry.register(entityType, attributeBuilder.get());
             return Registry.register(Registry.ENTITY_TYPE, identifier, entityType);
         }).resolveImmediately();
