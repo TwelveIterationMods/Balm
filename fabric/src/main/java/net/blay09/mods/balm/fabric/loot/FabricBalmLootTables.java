@@ -7,6 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 public class FabricBalmLootTables implements BalmLootTables {
     @Override
     public void registerLootModifier(ResourceLocation identifier, BalmLootModifier modifier) {
-
+        // TODO
     }
 }
