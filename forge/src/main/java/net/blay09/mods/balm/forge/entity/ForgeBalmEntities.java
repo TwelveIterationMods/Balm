@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class ForgeBalmEntities implements BalmEntities {
 
@@ -44,12 +45,12 @@ public class ForgeBalmEntities implements BalmEntities {
     }
 
     @Override
-    public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, AttributeSupplier.Builder attributeBuilder) {
+    public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
         DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITIES, identifier.getNamespace());
         RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(null));
         return new DeferredObject<>(identifier, () -> {
             EntityType<T> entityType = registryObject.get();
-            getActiveRegistrations().attributeSuppliers.put(entityType, attributeBuilder.build());
+            getActiveRegistrations().attributeSuppliers.put(entityType, attributeBuilder.get().build());
             return entityType;
         }, registryObject::isPresent);
     }

@@ -10,6 +10,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
+import java.util.function.Supplier;
+
 public class FabricBalmEntities implements BalmEntities {
 
     @Override
@@ -21,10 +23,10 @@ public class FabricBalmEntities implements BalmEntities {
     }
 
     @Override
-    public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, AttributeSupplier.Builder attributeBuilder) {
+    public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
         return new DeferredObject<>(identifier, () -> {
             EntityType<T> entityType = typeBuilder.build(null);
-            FabricDefaultAttributeRegistry.register(entityType, attributeBuilder);
+            FabricDefaultAttributeRegistry.register(entityType, attributeBuilder.get());
             return Registry.register(Registry.ENTITY_TYPE, identifier, entityType);
         }).resolveImmediately();
     }
