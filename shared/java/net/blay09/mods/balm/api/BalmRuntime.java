@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
+import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
@@ -46,6 +47,8 @@ public interface BalmRuntime {
     BalmProviders getProviders();
 
     BalmCommands getCommands();
+
+    BalmLootTables getLootTables();
 
     boolean isModLoaded(String modId);
     String getModName(String modId);

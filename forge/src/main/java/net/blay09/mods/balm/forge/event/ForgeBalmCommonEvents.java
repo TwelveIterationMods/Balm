@@ -12,6 +12,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -144,6 +145,27 @@ public class ForgeBalmCommonEvents {
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(CropGrowEvent.Pre.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Pre orig) -> {
+                if (orig.getWorld() instanceof Level level) {
+                    final CropGrowEvent.Pre event = new CropGrowEvent.Pre(level, orig.getPos(), orig.getState());
+                    events.fireEventHandlers(priority, event);
+                    if (event.isCanceled()) {
+                        orig.setResult(Event.Result.DENY);
+                    }
+                }
+            });
+        });
+
+        events.registerEvent(CropGrowEvent.Post.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Post orig) -> {
+                if (orig.getWorld() instanceof Level level) {
+                    final CropGrowEvent.Post event = new CropGrowEvent.Post(level, orig.getPos(), orig.getState());
+                    events.fireEventHandlers(priority, event);
                 }
             });
         });
