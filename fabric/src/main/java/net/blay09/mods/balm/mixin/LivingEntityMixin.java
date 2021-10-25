@@ -37,8 +37,8 @@ public abstract class LivingEntityMixin {
     private boolean causeFallDamageHurt(LivingEntity entity, DamageSource damageSource, float damage) {
         LivingFallEvent event = currentFallEvent.get();
         float effectiveDamage = damage;
-        if (event != null) {
-            effectiveDamage = event.getFallDamage();
+        if (event != null && event.getFallDamageOverride() != null) {
+            effectiveDamage = event.getFallDamageOverride();
         }
         return entity.hurt(damageSource, effectiveDamage);
     }
