@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
+import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
@@ -104,5 +105,9 @@ public class Balm {
 
     public static BalmCommands getCommands() {
         return runtime.getCommands();
+    }
+
+    public static BalmLootTables getLootTables() {
+        return runtime.getLootTables();
     }
 }
