@@ -4,7 +4,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class LivingFallEvent extends BalmEvent {
     private final LivingEntity entity;
-    private float damageMultiplier = 1f;
+    private Float fallDamageOverride;
 
     public LivingFallEvent(LivingEntity entity) {
         this.entity = entity;
@@ -14,11 +14,11 @@ public class LivingFallEvent extends BalmEvent {
         return entity;
     }
 
-    public float getDamageMultiplier() {
-        return damageMultiplier;
+    public Float getFallDamageOverride() {
+        return fallDamageOverride;
     }
 
-    public void setDamageMultiplier(float damageMultiplier) {
-        this.damageMultiplier = damageMultiplier;
+    public void setFallDamageOverride(Float fallDamageOverride) {
+        this.fallDamageOverride = fallDamageOverride;
     }
 }

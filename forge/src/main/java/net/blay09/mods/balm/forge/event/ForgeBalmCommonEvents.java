@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,9 +14,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
@@ -133,6 +132,12 @@ public class ForgeBalmCommonEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingFallEvent orig) -> {
                 final LivingFallEvent event = new LivingFallEvent(orig.getEntityLiving());
                 events.fireEventHandlers(priority, event);
+
+                if (event.getFallDamageOverride() != null) {
+                    orig.setDamageMultiplier(0f);
+                    event.getEntity().hurt(DamageSource.FALL, event.getFallDamageOverride());
+                }
+
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }
