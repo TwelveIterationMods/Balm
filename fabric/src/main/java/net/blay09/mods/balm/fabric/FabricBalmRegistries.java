@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -41,6 +42,11 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public Fluid getFluid(ResourceLocation key) {
         return Registry.FLUID.get(key);
+    }
+
+    @Override
+    public MobEffect getMobEffect(ResourceLocation key) {
+        return Registry.MOB_EFFECT.get(key);
     }
 
     @Override
