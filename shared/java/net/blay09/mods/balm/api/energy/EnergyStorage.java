@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.api.energy;
 
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 
 public class EnergyStorage {
 
@@ -76,7 +77,12 @@ public class EnergyStorage {
         return IntTag.valueOf(energy);
     }
 
+    @Deprecated
     public void deserialize(IntTag tag) {
         energy = tag.getAsInt();
+    }
+
+    public void deserialize(Tag tag) {
+        energy = ((IntTag) tag).getAsInt();
     }
 }
