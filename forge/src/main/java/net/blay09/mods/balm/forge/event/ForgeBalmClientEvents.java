@@ -10,10 +10,13 @@ import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.Nullable;
 
 public class ForgeBalmClientEvents {
 
@@ -293,6 +296,58 @@ public class ForgeBalmClientEvents {
                 }
             });
         });
+
+        events.registerEvent(GuiDrawEvent.Pre.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Pre orig) -> {
+                GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
+                if (type != null) {
+                    final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getMatrixStack(), type);
+                    events.fireEventHandlers(priority, event);
+                    if (event.isCanceled()) {
+                        orig.setCanceled(true);
+                    }
+                }
+            });
+        });
+
+        events.registerEvent(GuiDrawEvent.Post.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Post orig) -> {
+                GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
+                if (type != null) {
+                    final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getMatrixStack(), type);
+                    events.fireEventHandlers(priority, event);
+                }
+            });
+        });
+    }
+
+    @Nullable
+    private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGameOverlayEvent orig) {
+        GuiDrawEvent.Element type = null;
+        IIngameOverlay overlay = null;
+        if (orig instanceof RenderGameOverlayEvent.PreLayer preLayer) {
+            overlay = preLayer.getOverlay();
+        } else if (orig instanceof RenderGameOverlayEvent.PostLayer postLayer) {
+            overlay = postLayer.getOverlay();
+        }
+
+        if(overlay != null) {
+            if (overlay == ForgeIngameGui.PLAYER_HEALTH_ELEMENT) {
+                type = GuiDrawEvent.Element.HEALTH;
+            }
+        } else {
+            type = switch (orig.getType()) {
+                case ALL -> GuiDrawEvent.Element.ALL;
+                case CHAT -> GuiDrawEvent.Element.CHAT;
+                case TEXT -> GuiDrawEvent.Element.TEXT;
+                case DEBUG -> GuiDrawEvent.Element.DEBUG;
+                case BOSSINFO -> GuiDrawEvent.Element.BOSS_INFO;
+                case PLAYER_LIST -> GuiDrawEvent.Element.PLAYER_LIST;
+                default -> null;
+            };
+        }
+
+        return type;
     }
 
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -201,7 +202,17 @@ public class ForgeBalmCommonEvents {
 
         events.registerEvent(TossItemEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ItemTossEvent orig) -> {
-                final TossItemEvent event = new TossItemEvent(orig.getPlayer());
+                final TossItemEvent event = new TossItemEvent(orig.getPlayer(), orig.getEntityItem());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setResult(Event.Result.DENY);
+                }
+            });
+        });
+
+        events.registerEvent(PlayerAttackEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (AttackEntityEvent orig) -> {
+                final PlayerAttackEvent event = new PlayerAttackEvent(orig.getPlayer(), orig.getTarget());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setResult(Event.Result.DENY);
