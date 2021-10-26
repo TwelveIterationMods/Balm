@@ -219,6 +219,29 @@ public class ForgeBalmCommonEvents {
                 }
             });
         });
+
+        events.registerEvent(LivingHealEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingHealEvent orig) -> {
+                final LivingHealEvent event = new LivingHealEvent(orig.getEntityLiving(), orig.getAmount());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setResult(Event.Result.DENY);
+                }
+            });
+        });
+
+        events.registerEvent(DigSpeedEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.BreakSpeed orig) -> {
+                final DigSpeedEvent event = new DigSpeedEvent(orig.getPlayer(), orig.getState(), orig.getOriginalSpeed());
+                events.fireEventHandlers(priority, event);
+                if(event.getSpeedOverride() != null) {
+                    orig.setNewSpeed(event.getSpeedOverride());
+                }
+                if (event.isCanceled()) {
+                    orig.setResult(Event.Result.DENY);
+                }
+            });
+        });
     }
 
 }
