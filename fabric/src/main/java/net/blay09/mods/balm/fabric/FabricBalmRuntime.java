@@ -16,6 +16,8 @@ import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
+import net.blay09.mods.balm.api.proxy.ProxyResolutionException;
+import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.fabric.block.FabricBalmBlocks;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
@@ -30,6 +32,8 @@ import net.blay09.mods.balm.fabric.network.FabricBalmNetworking;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.blay09.mods.balm.fabric.sound.FabricBalmSounds;
 import net.blay09.mods.balm.fabric.world.FabricBalmWorldGen;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -149,6 +153,22 @@ public class FabricBalmRuntime implements BalmRuntime {
     @Override
     public String getModName(String modId) {
         return FabricLoader.getInstance().getModContainer(modId).map(it -> it.getMetadata().getName()).orElse(modId);
+    }
+
+    @Override
+    public <T> SidedProxy<T> sidedProxy(String commonName, String clientName) {
+        SidedProxy<T> proxy = new SidedProxy<>(commonName, clientName);
+        try {
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                proxy.resolveClient();
+            } else {
+                proxy.resolveCommon();
+            }
+        } catch (ProxyResolutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return proxy;
     }
 
     @Override
