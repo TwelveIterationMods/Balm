@@ -35,6 +35,7 @@ public abstract class LivingEntityMixin {
     @Redirect(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     private boolean causeFallDamageHurt(LivingEntity entity, DamageSource damageSource, float damage) {
+        // TODO check how this behaves if there's multiple redirects
         LivingFallEvent event = currentFallEvent.get();
         float effectiveDamage = damage;
         if (event != null && event.getFallDamageOverride() != null) {

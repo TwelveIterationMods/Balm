@@ -11,6 +11,7 @@ import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
+import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
@@ -52,6 +53,7 @@ public interface BalmRuntime {
 
     boolean isModLoaded(String modId);
     String getModName(String modId);
+    <T> SidedProxy<T> sidedProxy(String commonName, String clientName);
 
     void initialize(String modId, Runnable initializer);
 

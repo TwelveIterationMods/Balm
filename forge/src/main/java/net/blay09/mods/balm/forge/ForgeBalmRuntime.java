@@ -15,6 +15,8 @@ import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
+import net.blay09.mods.balm.api.proxy.ProxyResolutionException;
+import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.forge.block.ForgeBalmBlocks;
@@ -32,12 +34,15 @@ import net.blay09.mods.balm.forge.sound.ForgeBalmSounds;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.*;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 
 import java.lang.reflect.InvocationTargetException;
@@ -171,6 +176,23 @@ public class ForgeBalmRuntime implements BalmRuntime {
         if (isModLoaded(modId)) {
             addonClasses.add(className);
         }
+    }
+
+    @Override
+    public <T> SidedProxy<T> sidedProxy(String commonName, String clientName) {
+        SidedProxy<T> proxy = new SidedProxy<>(commonName, clientName);
+        try {
+            if (FMLEnvironment.dist.isClient()) {
+
+                proxy.resolveClient();
+            } else {
+                proxy.resolveCommon();
+            }
+        } catch (ProxyResolutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return proxy;
     }
 
     private void initializeAddons() {

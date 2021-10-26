@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -46,6 +47,11 @@ public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public Fluid getFluid(ResourceLocation key) {
         return ForgeRegistries.FLUIDS.getValue(key);
+    }
+
+    @Override
+    public MobEffect getMobEffect(ResourceLocation key) {
+        return ForgeRegistries.MOB_EFFECTS.getValue(key);
     }
 
     @Override
