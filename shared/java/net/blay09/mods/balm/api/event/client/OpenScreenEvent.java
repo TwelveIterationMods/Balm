@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class OpenScreenEvent extends BalmEvent { // TODO
+public class OpenScreenEvent extends BalmEvent {
     private Screen screen;
 
     public OpenScreenEvent(Screen screen) {

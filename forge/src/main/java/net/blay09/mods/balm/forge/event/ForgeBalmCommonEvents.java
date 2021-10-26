@@ -10,9 +10,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
@@ -179,6 +181,30 @@ public class ForgeBalmCommonEvents {
                 if (orig.getWorld() instanceof Level level) {
                     final CropGrowEvent.Post event = new CropGrowEvent.Post(level, orig.getPos(), orig.getState());
                     events.fireEventHandlers(priority, event);
+                }
+            });
+        });
+
+        events.registerEvent(ChunkTrackingEvent.Start.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ChunkWatchEvent.Watch orig) -> {
+                final ChunkTrackingEvent.Start event = new ChunkTrackingEvent.Start(orig.getWorld(), orig.getPlayer(), orig.getPos());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(ChunkTrackingEvent.Stop.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ChunkWatchEvent.UnWatch orig) -> {
+                final ChunkTrackingEvent.Stop event = new ChunkTrackingEvent.Stop(orig.getWorld(), orig.getPlayer(), orig.getPos());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(TossItemEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ItemTossEvent orig) -> {
+                final TossItemEvent event = new TossItemEvent(orig.getPlayer());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setResult(Event.Result.DENY);
                 }
             });
         });
