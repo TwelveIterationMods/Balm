@@ -11,6 +11,7 @@ import net.blay09.mods.balm.api.loot.BalmLootTables;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
+import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,8 @@ public class Balm {
 
     @Deprecated
     public static void initialize(String modId) {
-        runtime.initialize(modId, () -> {});
+        runtime.initialize(modId, () -> {
+        });
     }
 
     public static void initialize(String modId, Runnable initializer) {
@@ -37,6 +39,10 @@ public class Balm {
 
     public static String getModName(String modId) {
         return runtime.getModName(modId);
+    }
+
+    public static <T> SidedProxy<T> sidedProxy(String commonName, String clientName) {
+        return runtime.sidedProxy(commonName, clientName);
     }
 
     public static void initializeIfLoaded(String modId, String className) {
