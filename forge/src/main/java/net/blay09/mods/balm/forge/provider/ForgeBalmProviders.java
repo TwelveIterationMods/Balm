@@ -2,6 +2,8 @@ package net.blay09.mods.balm.forge.provider;
 
 import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -24,6 +26,12 @@ public class ForgeBalmProviders implements BalmProviders {
     public <T> T getProvider(BlockEntity blockEntity, @Nullable Direction direction, Class<T> clazz) {
         Capability<T> capability = getCapability(clazz);
         return blockEntity.getCapability(capability, direction).resolve().orElse(null);
+    }
+
+    @Override
+    public <T> T getProvider(Entity entity, Class<T> clazz) {
+        Capability<T> capability = getCapability(clazz);
+        return entity.getCapability(capability).resolve().orElse(null);
     }
 
     public <T> void register(Class<T> clazz, CapabilityToken<T> token) {
