@@ -205,7 +205,7 @@ public class ForgeBalmCommonEvents {
                 final TossItemEvent event = new TossItemEvent(orig.getPlayer(), orig.getEntityItem());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.DENY);
+                    orig.setCanceled(true);
                 }
             });
         });
@@ -215,7 +215,7 @@ public class ForgeBalmCommonEvents {
                 final PlayerAttackEvent event = new PlayerAttackEvent(orig.getPlayer(), orig.getTarget());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.DENY);
+                    orig.setCanceled(true);
                 }
             });
         });
@@ -225,7 +225,7 @@ public class ForgeBalmCommonEvents {
                 final LivingHealEvent event = new LivingHealEvent(orig.getEntityLiving(), orig.getAmount());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.DENY);
+                    orig.setCanceled(true);
                 }
             });
         });
@@ -238,7 +238,7 @@ public class ForgeBalmCommonEvents {
                     orig.setNewSpeed(event.getSpeedOverride());
                 }
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.DENY);
+                    orig.setCanceled(true);
                 }
             });
         });
