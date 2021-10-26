@@ -110,6 +110,13 @@ public class ForgeBalmCommonEvents {
             });
         });
 
+        events.registerEvent(PlayerLogoutEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerLoggedOutEvent orig) -> {
+                final PlayerLogoutEvent event = new PlayerLogoutEvent((ServerPlayer) orig.getPlayer());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
         events.registerEvent(BreakBlockEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.BreakEvent orig) -> {
                 BlockEntity blockEntity = orig.getWorld().getBlockEntity(orig.getPos());
@@ -148,6 +155,7 @@ public class ForgeBalmCommonEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingDamageEvent orig) -> {
                 final LivingDamageEvent event = new LivingDamageEvent(orig.getEntityLiving(), orig.getSource(), orig.getAmount());
                 events.fireEventHandlers(priority, event);
+                orig.setAmount(event.getDamageAmount());
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }

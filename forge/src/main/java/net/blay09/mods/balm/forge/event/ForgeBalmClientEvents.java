@@ -8,6 +8,7 @@ import net.blay09.mods.balm.api.event.client.*;
 import net.blay09.mods.balm.api.event.client.RenderHandEvent;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -276,6 +277,17 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (DrawSelectionEvent.HighlightBlock orig) -> {
                 final BlockHighlightDrawEvent event = new BlockHighlightDrawEvent(orig.getTarget(), orig.getMatrix(), orig.getBuffers(), orig.getInfo());
                 events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(OpenScreenEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiOpenEvent orig) -> {
+                final OpenScreenEvent event = new OpenScreenEvent(orig.getGui());
+                events.fireEventHandlers(priority, event);
+                orig.setGui(event.getScreen());
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }
