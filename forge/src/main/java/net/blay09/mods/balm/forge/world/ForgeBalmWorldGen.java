@@ -17,15 +17,31 @@ import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class ForgeBalmWorldGen implements BalmWorldGen {
+
+    private static class Registrations {
+        public final List<DeferredObject<?>> configuredFeatures = new ArrayList<>();
+
+        @SubscribeEvent
+        public void commonSetup(FMLCommonSetupEvent event) {
+            configuredFeatures.forEach(DeferredObject::resolve);
+        }
+    }
+
+    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -40,11 +56,13 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends ConfiguredFeature<?, ?>> DeferredObject<T> registerConfiguredFeature(Supplier<T> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(identifier, () -> {
+        DeferredObject<T> deferredObject = new DeferredObject<>(identifier, () -> {
             T configuredFeature = supplier.get();
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, identifier, configuredFeature);
             return configuredFeature;
         });
+        getActiveRegistrations().configuredFeatures.add(deferredObject);
+        return deferredObject;
     }
 
     @Override
@@ -79,5 +97,13 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
                 }
             }
         }
+    }
+
+    public void register() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    }
+
+    private Registrations getActiveRegistrations() {
+        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
     }
 }

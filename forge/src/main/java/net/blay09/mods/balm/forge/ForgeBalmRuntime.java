@@ -161,6 +161,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public void initialize(String modId, Runnable initializer) {
         ((ForgeBalmEntities) entities).register();
+        ((ForgeBalmWorldGen) worldGen).register();
 
         initializer.run();
 
