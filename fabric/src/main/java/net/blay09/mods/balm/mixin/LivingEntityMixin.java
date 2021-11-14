@@ -19,11 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
-    @Shadow
-    protected abstract byte entityEventForEquipmentBreak(EquipmentSlot equipmentSlot);
-
-    @Shadow
-    private boolean effectsDirty;
     private static final ThreadLocal<LivingFallEvent> currentFallEvent = new ThreadLocal<>();
 
     @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
@@ -51,7 +46,7 @@ public abstract class LivingEntityMixin {
         return (int) effectiveDamage;
     }
 
-    @ModifyArg(method = "heal(F)V", at = @At("HEAD"))
+    @ModifyVariable(method = "heal(F)V", at = @At("HEAD"), argsOnly = true)
     private float modifyHealing(float heal) {
         LivingEntity entity = (LivingEntity) (Object) this;
         LivingHealEvent event = new LivingHealEvent(entity, heal);

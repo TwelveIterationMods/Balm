@@ -1,12 +1,17 @@
 package net.blay09.mods.balm.mixin;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
+import net.blay09.mods.balm.api.event.DigSpeedEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public class PlayerMixin implements BalmPlayer {
@@ -25,6 +30,19 @@ public class PlayerMixin implements BalmPlayer {
     @Inject(method = "addAdditionalSaveData(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void addAdditionalSaveData(CompoundTag compound, CallbackInfo callbackInfo) {
         compound.put("BalmData", balmData);
+    }
+
+    @Inject(method = "getDestroySpeed(Lnet/minecraft/world/level/block/state/BlockState;)F", at = @At("RETURN"), cancellable = true)
+    private void getDestroySpeed(BlockState state, CallbackInfoReturnable<Float> callbackInfo) {
+        Player player = (Player) (Object) this;
+        float digSpeed = callbackInfo.getReturnValueF();
+        DigSpeedEvent event = new DigSpeedEvent(player, state, digSpeed);
+        Balm.getEvents().fireEvent(event);
+        if (event.isCanceled()) {
+            callbackInfo.setReturnValue(-1f);
+        } else if (event.getSpeedOverride() != null) {
+            callbackInfo.setReturnValue(event.getSpeedOverride());
+        }
     }
 
     @Override
