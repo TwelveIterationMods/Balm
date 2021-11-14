@@ -120,9 +120,10 @@ public class FabricBalmClientEvents {
 
         events.registerEvent(ScreenMouseEvent.Click.Pre.class, () -> {
             initializeScreenEvents();
-            screenMouseClickPreInitializers.add((scr) -> ScreenMouseEvents.beforeMouseClick(scr).register((screen, mouseX, mouseY, button) -> {
+            screenMouseClickPreInitializers.add((scr) -> ScreenMouseEvents.allowMouseClick(scr).register((screen, mouseX, mouseY, button) -> {
                 final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(screen, mouseX, mouseY, button);
                 events.fireEventHandlers(event);
+                return !event.isCanceled();
             }));
         });
 
@@ -136,9 +137,10 @@ public class FabricBalmClientEvents {
 
         events.registerEvent(ScreenMouseEvent.Release.Pre.class, () -> {
             initializeScreenEvents();
-            screenMouseReleasePreInitializers.add((scr) -> ScreenMouseEvents.beforeMouseRelease(scr).register((screen, mouseX, mouseY, button) -> {
+            screenMouseReleasePreInitializers.add((scr) -> ScreenMouseEvents.allowMouseRelease(scr).register((screen, mouseX, mouseY, button) -> {
                 final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(screen, mouseX, mouseY, button);
                 events.fireEventHandlers(event);
+                return !event.isCanceled();
             }));
         });
 
@@ -152,9 +154,10 @@ public class FabricBalmClientEvents {
 
         events.registerEvent(ScreenKeyEvent.Press.Pre.class, () -> {
             initializeScreenEvents();
-            screenKeyPressPreInitializers.add((scr) -> ScreenKeyboardEvents.beforeKeyPress(scr).register((screen, KeyX, KeyY, button) -> {
+            screenKeyPressPreInitializers.add((scr) -> ScreenKeyboardEvents.allowKeyPress(scr).register((screen, KeyX, KeyY, button) -> {
                 final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(screen, KeyX, KeyY, button);
                 events.fireEventHandlers(event);
+                return !event.isCanceled();
             }));
         });
 
@@ -168,9 +171,10 @@ public class FabricBalmClientEvents {
 
         events.registerEvent(ScreenKeyEvent.Release.Pre.class, () -> {
             initializeScreenEvents();
-            screenKeyReleasePreInitializers.add((scr) -> ScreenKeyboardEvents.beforeKeyRelease(scr).register((screen, KeyX, KeyY, button) -> {
+            screenKeyReleasePreInitializers.add((scr) -> ScreenKeyboardEvents.allowKeyRelease(scr).register((screen, KeyX, KeyY, button) -> {
                 final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(screen, KeyX, KeyY, button);
                 events.fireEventHandlers(event);
+                return !event.isCanceled();
             }));
         });
 
@@ -182,12 +186,10 @@ public class FabricBalmClientEvents {
             }));
         });
 
-        events.registerEvent(ItemTooltipEvent.class, () -> {
-            ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-                final ItemTooltipEvent event = new ItemTooltipEvent(stack, Minecraft.getInstance().player, lines, context);
-                events.fireEventHandlers(event);
-            });
-        });
+        events.registerEvent(ItemTooltipEvent.class, () -> ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+            final ItemTooltipEvent event = new ItemTooltipEvent(stack, Minecraft.getInstance().player, lines, context);
+            events.fireEventHandlers(event);
+        }));
 
     }
 
