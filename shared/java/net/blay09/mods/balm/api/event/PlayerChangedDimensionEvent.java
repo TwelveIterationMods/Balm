@@ -1,21 +1,21 @@
 package net.blay09.mods.balm.api.event;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 public class PlayerChangedDimensionEvent extends BalmEvent {
-    private final Player player;
+    private final ServerPlayer player;
     private final ResourceKey<Level> fromDim;
     private final ResourceKey<Level> toDim;
 
-    public PlayerChangedDimensionEvent(Player player, ResourceKey<Level> fromDim, ResourceKey<Level> toDim) {
+    public PlayerChangedDimensionEvent(ServerPlayer player, ResourceKey<Level> fromDim, ResourceKey<Level> toDim) {
         this.player = player;
         this.fromDim = fromDim;
         this.toDim = toDim;
     }
 
-    public Player getPlayer() {
+    public ServerPlayer getPlayer() {
         return player;
     }
 
