@@ -189,7 +189,6 @@ public class FabricBalmClientEvents {
             });
         });
 
-        // TODO RecipesUpdatedEvent
     }
 
 }
