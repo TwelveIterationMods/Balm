@@ -3,7 +3,9 @@ package net.blay09.mods.balm.mixin;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.blay09.mods.balm.api.event.DigSpeedEvent;
+import net.blay09.mods.balm.api.event.PlayerAttackEvent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,6 +44,16 @@ public class PlayerMixin implements BalmPlayer {
             callbackInfo.setReturnValue(-1f);
         } else if (event.getSpeedOverride() != null) {
             callbackInfo.setReturnValue(event.getSpeedOverride());
+        }
+    }
+
+    @Inject(method = "attack(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"), cancellable = true)
+    private void attack(Entity entity, CallbackInfo callbackInfo) {
+        Player player = (Player) (Object) this;
+        PlayerAttackEvent event = new PlayerAttackEvent(player, entity);
+        Balm.getEvents().fireEvent(event);
+        if (event.isCanceled()) {
+            callbackInfo.cancel();
         }
     }
 
