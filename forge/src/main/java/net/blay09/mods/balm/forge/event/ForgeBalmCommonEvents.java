@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -234,7 +235,7 @@ public class ForgeBalmCommonEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.BreakSpeed orig) -> {
                 final DigSpeedEvent event = new DigSpeedEvent(orig.getPlayer(), orig.getState(), orig.getOriginalSpeed());
                 events.fireEventHandlers(priority, event);
-                if(event.getSpeedOverride() != null) {
+                if (event.getSpeedOverride() != null) {
                     orig.setNewSpeed(event.getSpeedOverride());
                 }
                 if (event.isCanceled()) {

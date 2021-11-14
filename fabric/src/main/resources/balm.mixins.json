@@ -12,7 +12,9 @@
     "MinecraftServerMixin",
     "MinecraftServerAccessor",
     "ServerPlayerMixin",
-    "ChunkMapMixin"
+    "ChunkMapMixin",
+    "CropBlockMixin",
+    "StemBlockMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
