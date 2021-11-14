@@ -339,7 +339,6 @@ public class ForgeBalmClientEvents {
             type = switch (orig.getType()) {
                 case ALL -> GuiDrawEvent.Element.ALL;
                 case CHAT -> GuiDrawEvent.Element.CHAT;
-                case TEXT -> GuiDrawEvent.Element.TEXT;
                 case DEBUG -> GuiDrawEvent.Element.DEBUG;
                 case BOSSINFO -> GuiDrawEvent.Element.BOSS_INFO;
                 case PLAYER_LIST -> GuiDrawEvent.Element.PLAYER_LIST;

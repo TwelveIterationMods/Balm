@@ -36,7 +36,9 @@
     "AbstractContainerScreenMixin",
     "GuiMixin",
     "DebugScreenOverlayMixin",
-    "PlayerTabOverlayMixin"
+    "PlayerTabOverlayMixin",
+    "ChatComponentMixin",
+    "BossHealthOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

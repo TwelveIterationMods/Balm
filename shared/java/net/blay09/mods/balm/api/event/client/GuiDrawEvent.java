@@ -10,7 +10,6 @@ public abstract class GuiDrawEvent extends BalmEvent {
         ALL,
         HEALTH,
         CHAT,
-        TEXT,
         DEBUG,
         BOSS_INFO,
         PLAYER_LIST
