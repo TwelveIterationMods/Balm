@@ -31,7 +31,8 @@
     "ClientPacketListenerMixin",
     "ItemInHandRendererMixin",
     "MinecraftMixin",
-    "KeyboardHandlerMixin"
+    "KeyboardHandlerMixin",
+    "LevelRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
