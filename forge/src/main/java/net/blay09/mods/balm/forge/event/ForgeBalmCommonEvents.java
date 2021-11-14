@@ -202,7 +202,7 @@ public class ForgeBalmCommonEvents {
 
         events.registerEvent(TossItemEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ItemTossEvent orig) -> {
-                final TossItemEvent event = new TossItemEvent(orig.getPlayer(), orig.getEntityItem());
+                final TossItemEvent event = new TossItemEvent(orig.getPlayer(), orig.getEntityItem().getItem());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);

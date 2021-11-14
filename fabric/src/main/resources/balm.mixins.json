@@ -11,7 +11,8 @@
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "MinecraftServerAccessor",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "ChunkMapMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
