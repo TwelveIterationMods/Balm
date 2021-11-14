@@ -30,7 +30,8 @@
     "EffectRenderingInventoryScreenMixin",
     "ClientPacketListenerMixin",
     "ItemInHandRendererMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "KeyboardHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
