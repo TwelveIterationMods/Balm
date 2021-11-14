@@ -3,7 +3,16 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_16",
-  "mixins": ["LevelMixin", "PlayerMixin", "ResultSlotMixin", "SlotAccessor", "LivingEntityMixin", "MinecraftServerMixin", "MinecraftServerAccessor", "ServerPlayerMixin"],
+  "mixins": [
+    "LevelMixin",
+    "PlayerMixin",
+    "ResultSlotMixin",
+    "SlotAccessor",
+    "LivingEntityMixin",
+    "MinecraftServerMixin",
+    "MinecraftServerAccessor",
+    "ServerPlayerMixin"
+  ],
   "client": [
     "AbstractClientPlayerMixin",
     "MouseHandlerAccessor",

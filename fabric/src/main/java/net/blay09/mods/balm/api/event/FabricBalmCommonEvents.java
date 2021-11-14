@@ -1,8 +1,6 @@
 package net.blay09.mods.balm.api.event;
 
 
-import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.server.ServerReloadedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -10,9 +8,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.ServerResources;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResultHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +77,21 @@ public class FabricBalmCommonEvents {
             return event.getInteractionResult();
         }));
 
+        events.registerEvent(UseItemEvent.class, () -> {
+            UseItemCallback.EVENT.register((player, world, hand) -> {
+                final UseItemEvent event = new UseItemEvent(player, world, hand);
+                events.fireEventHandlers(event);
+                return new InteractionResultHolder<>(event.getInteractionResult(), player.getItemInHand(hand));
+            });
+        });
+
         events.registerEvent(PlayerLoginEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
             final PlayerLoginEvent event = new PlayerLoginEvent(listener.player);
+            events.fireEventHandlers(event);
+        }));
+
+        events.registerEvent(PlayerLogoutEvent.class, () -> ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
+            final PlayerLogoutEvent event = new PlayerLogoutEvent(listener.player);
             events.fireEventHandlers(event);
         }));
 
@@ -93,9 +105,5 @@ public class FabricBalmCommonEvents {
             final PlayerRespawnEvent event = new PlayerRespawnEvent(oldPlayer, newPlayer);
             events.fireEventHandlers(event);
         }));
-
-        events.registerEvent(ServerReloadedEvent.class, () -> {
-
-        });
     }
 }

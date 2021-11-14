@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -32,15 +32,14 @@ public abstract class LivingEntityMixin {
         currentFallEvent.set(event);
     }
 
-    @Redirect(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean causeFallDamageHurt(LivingEntity entity, DamageSource damageSource, float damage) {
-        // TODO check how this behaves if there's multiple redirects
+    @ModifyVariable(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("STORE"), ordinal = 0)
+    private int modifyFallDamage(int damage) {
         LivingFallEvent event = currentFallEvent.get();
         float effectiveDamage = damage;
         if (event != null && event.getFallDamageOverride() != null) {
             effectiveDamage = event.getFallDamageOverride();
         }
-        return entity.hurt(damageSource, effectiveDamage);
+        return (int) effectiveDamage;
     }
+
 }
