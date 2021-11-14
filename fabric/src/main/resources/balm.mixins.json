@@ -28,7 +28,8 @@
     "ModelLayersAccessor",
     "ScreenAccessor",
     "EffectRenderingInventoryScreenMixin",
-    "ClientPacketListenerMixin"
+    "ClientPacketListenerMixin",
+    "ItemInHandRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
