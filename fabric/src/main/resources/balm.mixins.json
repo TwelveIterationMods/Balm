@@ -33,7 +33,10 @@
     "MinecraftMixin",
     "KeyboardHandlerMixin",
     "LevelRendererMixin",
-    "AbstractContainerScreenMixin"
+    "AbstractContainerScreenMixin",
+    "GuiMixin",
+    "DebugScreenOverlayMixin",
+    "PlayerTabOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1
