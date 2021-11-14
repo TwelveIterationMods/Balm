@@ -3,11 +3,15 @@ package net.blay09.mods.balm.mixin;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.LivingDamageEvent;
 import net.blay09.mods.balm.api.event.LivingFallEvent;
+import net.blay09.mods.balm.api.event.LivingHealEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -15,6 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
+    @Shadow
+    protected abstract byte entityEventForEquipmentBreak(EquipmentSlot equipmentSlot);
+
+    @Shadow
+    private boolean effectsDirty;
     private static final ThreadLocal<LivingFallEvent> currentFallEvent = new ThreadLocal<>();
 
     @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
@@ -40,6 +49,13 @@ public abstract class LivingEntityMixin {
             effectiveDamage = event.getFallDamageOverride();
         }
         return (int) effectiveDamage;
+    }
+
+    @ModifyArg(method = "heal(F)V", at = @At("HEAD"))
+    private float modifyHealing(float heal) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        LivingHealEvent event = new LivingHealEvent(entity, heal);
+        return event.isCanceled() ? 0f : heal;
     }
 
 }
