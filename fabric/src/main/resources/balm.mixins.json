@@ -32,7 +32,8 @@
     "ItemInHandRendererMixin",
     "MinecraftMixin",
     "KeyboardHandlerMixin",
-    "LevelRendererMixin"
+    "LevelRendererMixin",
+    "AbstractContainerScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
