@@ -56,12 +56,12 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public void enableMilkFluid() {
-        // TODO
+        // TODO Fluids
     }
 
     @Override
     public Fluid getMilkFluid() {
-        return Fluids.LAVA; // TODO
+        return Fluids.LAVA; // TODO Fluids
     }
 
     @Override

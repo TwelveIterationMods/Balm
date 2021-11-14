@@ -6,11 +6,16 @@ import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,8 +182,14 @@ public class FabricBalmClientEvents {
             }));
         });
 
+        events.registerEvent(ItemTooltipEvent.class, () -> {
+            ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+                final ItemTooltipEvent event = new ItemTooltipEvent(stack, Minecraft.getInstance().player, lines, context);
+                events.fireEventHandlers(event);
+            });
+        });
+
         // TODO RecipesUpdatedEvent
-        // TODO ItemTooltipEvent
     }
 
 }

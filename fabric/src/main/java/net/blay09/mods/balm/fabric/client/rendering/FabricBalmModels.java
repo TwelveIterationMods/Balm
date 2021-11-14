@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FabricBalmModels implements BalmModels { // TODO
+public class FabricBalmModels implements BalmModels { // TODO Models
     @Override
     public DeferredObject<BakedModel> loadModel(ResourceLocation identifier) {
         return null;

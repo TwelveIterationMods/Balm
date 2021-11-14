@@ -20,7 +20,7 @@ public class BalmBlockEntity extends BlockEntity implements BlockEntityClientSer
 
     @Override
     public AABB balmGetRenderBoundingBox() {
-        // TODO not yet used
+        // TODO Block Entity Bounding Box (Not yet called)
         return AABB.unitCubeFromLowerCorner(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getY()));
     }
 

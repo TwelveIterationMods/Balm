@@ -68,13 +68,11 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
-        // TODO
     }
 
     @Override
     public boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        // TODO
-        return false;
+        return false; // TODO Fluids
     }
 
     @Override
