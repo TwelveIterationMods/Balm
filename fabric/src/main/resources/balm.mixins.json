@@ -29,7 +29,8 @@
     "ScreenAccessor",
     "EffectRenderingInventoryScreenMixin",
     "ClientPacketListenerMixin",
-    "ItemInHandRendererMixin"
+    "ItemInHandRendererMixin",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
