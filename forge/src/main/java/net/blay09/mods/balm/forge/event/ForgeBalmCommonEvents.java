@@ -242,6 +242,13 @@ public class ForgeBalmCommonEvents {
                 }
             });
         });
+
+        events.registerEvent(PlayerChangedDimensionEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerChangedDimensionEvent orig) -> {
+                final PlayerChangedDimensionEvent event = new PlayerChangedDimensionEvent(orig.getPlayer(), orig.getFrom(), orig.getTo());
+                events.fireEventHandlers(priority, event);
+            });
+        });
     }
 
 }
