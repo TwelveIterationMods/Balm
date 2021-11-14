@@ -249,7 +249,7 @@ public class ForgeBalmClientEvents {
         events.registerEvent(UseItemInputEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.ClickInputEvent orig) -> {
                 if (orig.isUseItem()) {
-                    final UseItemInputEvent event = new UseItemInputEvent(orig.getKeyBinding(), orig.getHand());
+                    final UseItemInputEvent event = new UseItemInputEvent(orig.getHand());
                     events.fireEventHandlers(priority, event);
                     if (event.isCanceled()) {
                         orig.setSwingHand(false);

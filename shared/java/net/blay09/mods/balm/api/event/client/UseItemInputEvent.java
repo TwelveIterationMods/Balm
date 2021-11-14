@@ -6,16 +6,10 @@ import net.minecraft.world.InteractionHand;
 
 public class UseItemInputEvent extends BalmEvent {
 
-    private final KeyMapping keyMapping;
     private final InteractionHand hand;
 
-    public UseItemInputEvent(KeyMapping keyMapping, InteractionHand hand) {
-        this.keyMapping = keyMapping;
+    public UseItemInputEvent(InteractionHand hand) {
         this.hand = hand;
-    }
-
-    public KeyMapping getKeyMapping() {
-        return keyMapping;
     }
 
     public InteractionHand getHand() {
