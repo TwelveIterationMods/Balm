@@ -38,7 +38,8 @@
     "DebugScreenOverlayMixin",
     "PlayerTabOverlayMixin",
     "ChatComponentMixin",
-    "BossHealthOverlayMixin"
+    "BossHealthOverlayMixin",
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
