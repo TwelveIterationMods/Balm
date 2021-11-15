@@ -16,7 +16,7 @@ public class MouseHandlerMixin {
     @Shadow
     private int activeButton;
 
-    @Inject(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z"), cancellable = true)
+    @Inject(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z"), cancellable = true, require = 1)
     public void onMovePre(Screen screen, double mouseX, double mouseY, double dragX, double dragY, CallbackInfo callbackInfo) {
         ScreenMouseEvent.Drag.Pre event = new ScreenMouseEvent.Drag.Pre(screen, mouseX, mouseY, activeButton, dragX, dragY);
         Balm.getEvents().fireEvent(event);
@@ -25,7 +25,7 @@ public class MouseHandlerMixin {
         }
     }
 
-    @Inject(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", shift = At.Shift.AFTER))
+    @Inject(method = "*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;mouseDragged(DDIDD)Z", shift = At.Shift.AFTER), require = 1)
     public void onMovePost(Screen screen, double mouseX, double mouseY, double dragX, double dragY, CallbackInfo callbackInfo) {
         ScreenMouseEvent.Drag.Post event = new ScreenMouseEvent.Drag.Post(screen, mouseX, mouseY, activeButton, dragX, dragY);
         Balm.getEvents().fireEvent(event);
