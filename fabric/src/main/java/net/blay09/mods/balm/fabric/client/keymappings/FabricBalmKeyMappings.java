@@ -32,6 +32,13 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
     }
 
     @Override
+    public boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Key input) {
+        return input.getType() == InputConstants.Type.MOUSE
+                ? keyMapping.matchesMouse(input.getValue())
+                : keyMapping.matches(input.getType() == InputConstants.Type.KEYSYM ? input.getValue() : InputConstants.UNKNOWN.getValue(), input.getType() == InputConstants.Type.SCANCODE ? input.getValue() : InputConstants.UNKNOWN.getValue());
+    }
+
+    @Override
     public boolean isActiveAndMatches(KeyMapping keyMapping, int keyCode, int scanCode) {
         return keyMapping.matches(keyCode, scanCode);
     }

@@ -41,13 +41,18 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
     }
 
     @Override
+    public boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Key input) {
+        return keyMapping.isActiveAndMatches(input);
+    }
+
+    @Override
     public boolean isActiveAndMatches(KeyMapping keyMapping, int keyCode, int scanCode) {
-        return keyMapping.matches(keyCode, scanCode);
+        return keyMapping.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
     }
 
     @Override
     public boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
-        return type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode);
+        return type == InputConstants.Type.MOUSE ? keyMapping.isActiveAndMatches(InputConstants.Type.MOUSE.getOrCreate(keyCode)) : keyMapping.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
     }
 
     @Override
