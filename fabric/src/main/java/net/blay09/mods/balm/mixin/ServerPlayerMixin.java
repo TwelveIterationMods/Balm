@@ -31,13 +31,13 @@ public class ServerPlayerMixin {
         Balm.getEvents().fireEvent(new PlayerOpenMenuEvent(player, player.containerMenu));
     }
 
-    @Inject(remap = false, method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("HEAD"))
+    @Inject(method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("HEAD"))
     public void changeDimensionHead(ServerLevel level, CallbackInfoReturnable<Entity> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         fromDimHolder.set(player.level.dimension());
     }
 
-    @Inject(remap = false, method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("RETURN"))
+    @Inject(method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("RETURN"))
     public void changeDimensionTail(ServerLevel level, CallbackInfoReturnable<Entity> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         final ResourceKey<Level> fromDim = fromDimHolder.get();
@@ -45,7 +45,7 @@ public class ServerPlayerMixin {
         Balm.getEvents().fireEvent(new PlayerChangedDimensionEvent(player, fromDim, toDim));
     }
 
-    @Inject(remap = false, method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)
     public void drop(boolean flag, CallbackInfoReturnable<Boolean> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         Inventory inventory = player.getInventory();
