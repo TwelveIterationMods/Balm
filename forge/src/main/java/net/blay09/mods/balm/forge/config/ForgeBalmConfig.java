@@ -13,6 +13,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -133,7 +134,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
-            if (getConfigSyncMessageFactory(clazz) == null) {
+            if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
                 setActiveConfig(clazz, newConfigData);
             }
         });
@@ -143,7 +144,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
-            if (getConfigSyncMessageFactory(clazz) == null) {
+            if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
                 setActiveConfig(clazz, newConfigData);
             }
 
