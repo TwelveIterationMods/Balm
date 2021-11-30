@@ -112,7 +112,7 @@ publishing {
 }
 
 curseforge {
-	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY")
+	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
 	project {
 		id = project.curseforge_project_id
 		releaseType = project.curseforge_release_type
