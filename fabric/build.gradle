@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -26,7 +27,7 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	// mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	mappings minecraft.officialMojangMappings()
+	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -107,5 +108,31 @@ publishing {
 				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
 			}
 		}
+	}
+}
+
+curseforge {
+	apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY")
+	project {
+		id = project.curseforge_project_id
+		releaseType = project.curseforge_release_type
+		changelogType = 'markdown'
+		changelog = file('../changelog.md')
+		addGameVersion project.minecraft_version
+		addGameVersion 'Fabric'
+
+		relations {
+			requiredLibrary 'fabric-api'
+			requiredLibrary 'cloth-config'
+		}
+
+		afterEvaluate {
+			mainArtifact(remapJar)
+			uploadTask.dependsOn(remapJar)
+		}
+	}
+	options {
+		forgeGradleIntegration = false
+		debug = true
 	}
 }
