@@ -15,28 +15,22 @@ import java.io.File;
 public class FabricBalmConfig extends AbstractBalmConfig {
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        AutoConfig.register(configDataClass, Toml4jConfigSerializer::new).registerSaveListener((configHolder, configData) -> {
+        AutoConfig.register(clazz, Toml4jConfigSerializer::new).registerSaveListener((configHolder, configData) -> {
             Balm.getEvents().fireEvent(new ConfigReloadedEvent());
             return InteractionResult.SUCCESS;
         });
-        return (T) AutoConfig.getConfigHolder(configDataClass).getConfig();
+        return (T) AutoConfig.getConfigHolder(clazz).getConfig();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T getBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        return (T) AutoConfig.getConfigHolder(configDataClass).getConfig();
+        return (T) AutoConfig.getConfigHolder(clazz).getConfig();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> void saveBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        AutoConfig.getConfigHolder(configDataClass).save();
+        AutoConfig.getConfigHolder(clazz).save();
     }
 
     @Override
