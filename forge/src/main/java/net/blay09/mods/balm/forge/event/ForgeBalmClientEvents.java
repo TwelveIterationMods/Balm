@@ -65,8 +65,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenInitEvent.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.InitGuiEvent.Pre orig) -> {
-                final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getGui());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.InitScreenEvent.Pre orig) -> {
+                final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getScreen());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -75,15 +75,15 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenInitEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.InitGuiEvent.Post orig) -> {
-                final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getGui());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.InitScreenEvent.Post orig) -> {
+                final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getScreen());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.DrawScreenEvent.Pre orig) -> {
-                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getGui(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY(), orig.getRenderPartialTicks());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Pre orig) -> {
+                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTicks());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -92,29 +92,29 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ContainerScreenDrawEvent.Background.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiContainerEvent.DrawBackground orig) -> {
-                final ContainerScreenDrawEvent.Background event = new ContainerScreenDrawEvent.Background(orig.getGuiContainer(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawBackground orig) -> {
+                final ContainerScreenDrawEvent.Background event = new ContainerScreenDrawEvent.Background(orig.getContainerScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ContainerScreenDrawEvent.Foreground.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiContainerEvent.DrawBackground orig) -> {
-                final ContainerScreenDrawEvent.Foreground event = new ContainerScreenDrawEvent.Foreground(orig.getGuiContainer(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawBackground orig) -> {
+                final ContainerScreenDrawEvent.Foreground event = new ContainerScreenDrawEvent.Foreground(orig.getContainerScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.DrawScreenEvent.Post orig) -> {
-                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getGui(), orig.getMatrixStack(), orig.getMouseX(), orig.getMouseY(), orig.getRenderPartialTicks());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Post orig) -> {
+                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTicks());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseClickedEvent.Pre orig) -> {
-                final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseClickedEvent.Pre orig) -> {
+                final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -123,8 +123,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseClickedEvent.Post orig) -> {
-                final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseClickedEvent.Post orig) -> {
+                final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -133,8 +133,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Drag.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseDragEvent.Pre orig) -> {
-                final ScreenMouseEvent.Drag.Pre event = new ScreenMouseEvent.Drag.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragEvent.Pre orig) -> {
+                final ScreenMouseEvent.Drag.Pre event = new ScreenMouseEvent.Drag.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -143,8 +143,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Drag.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseDragEvent.Post orig) -> {
-                final ScreenMouseEvent.Drag.Post event = new ScreenMouseEvent.Drag.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragEvent.Post orig) -> {
+                final ScreenMouseEvent.Drag.Post event = new ScreenMouseEvent.Drag.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -153,8 +153,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseReleasedEvent.Pre orig) -> {
-                final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseReleasedEvent.Pre orig) -> {
+                final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -163,8 +163,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.MouseReleasedEvent.Post orig) -> {
-                final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(orig.getGui(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseReleasedEvent.Post orig) -> {
+                final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -173,8 +173,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyPressedEvent.Pre orig) -> {
-                final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyPressedEvent.Pre orig) -> {
+                final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -183,8 +183,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyPressedEvent.Post orig) -> {
-                final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyPressedEvent.Post orig) -> {
+                final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -193,8 +193,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyReleasedEvent.Pre orig) -> {
-                final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyReleasedEvent.Pre orig) -> {
+                final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -203,8 +203,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
-                final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getGui(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
+                final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -213,7 +213,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(FovUpdateEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FOVUpdateEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FOVModifierEvent orig) -> {
                 final FovUpdateEvent event = new FovUpdateEvent(orig.getEntity());
                 events.fireEventHandlers(priority, event);
                 if (event.getFov() != null) {
@@ -237,8 +237,8 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(PotionShiftEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiScreenEvent.PotionShiftEvent orig) -> {
-                final PotionShiftEvent event = new PotionShiftEvent(orig.getGui());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.PotionShiftEvent orig) -> {
+                final PotionShiftEvent event = new PotionShiftEvent(orig.getScreen());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -278,7 +278,7 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(BlockHighlightDrawEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (DrawSelectionEvent.HighlightBlock orig) -> {
-                final BlockHighlightDrawEvent event = new BlockHighlightDrawEvent(orig.getTarget(), orig.getMatrix(), orig.getBuffers(), orig.getInfo());
+                final BlockHighlightDrawEvent event = new BlockHighlightDrawEvent(orig.getTarget(), orig.getPoseStack(), orig.getMultiBufferSource(), orig.getCamera());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -287,10 +287,10 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(OpenScreenEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (GuiOpenEvent orig) -> {
-                final OpenScreenEvent event = new OpenScreenEvent(orig.getGui());
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenOpenEvent orig) -> {
+                final OpenScreenEvent event = new OpenScreenEvent(orig.getScreen());
                 events.fireEventHandlers(priority, event);
-                orig.setGui(event.getScreen());
+                orig.setScreen(event.getScreen());
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }

@@ -11,18 +11,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,24 +65,20 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     }
 
     @Override
-    public <T extends FeatureDecorator<?>> DeferredObject<T> registerDecorator(Supplier<T> supplier, ResourceLocation identifier) {
-        DeferredRegister<FeatureDecorator<?>> register = DeferredRegisters.get(ForgeRegistries.DECORATORS, identifier.getNamespace());
-        RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
-    }
-
-    @Override
-    public <T extends FeatureConfiguration> ConfiguredFeature<?, ?> configuredFeature(Feature<T> feature, T config, ConfiguredDecorator<?> configuredDecorator) {
-        return feature
-                .configured(config)
-                .decorated(configuredDecorator);
+    public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(Supplier<T> supplier, ResourceLocation identifier) {
+        // TODO 1.18 bet this will break horribly but placement modifiers aren't a Forge registry yet
+        return new DeferredObject<>(identifier, () -> {
+            T placementModifierType = supplier.get();
+            Registry.register(Registry.PLACEMENT_MODIFIERS, identifier, placementModifierType);
+            return placementModifierType;
+        }).resolveImmediately();
     }
 
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
 
     @Override
     public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier) {
-        ResourceKey<ConfiguredFeature<?, ?>> resourceKey = ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, configuredFeatureIdentifier);
+        ResourceKey<PlacedFeature> resourceKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, configuredFeatureIdentifier);
         biomeModifications.add(new BiomeModification(biomePredicate, step, resourceKey));
     }
 
@@ -91,9 +86,9 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     public void onBiomeLoading(BiomeLoadingEvent event) {
         for (BiomeModification biomeModification : biomeModifications) {
             if (biomeModification.getBiomePredicate().test(event.getName(), event.getCategory(), event.getClimate().precipitation, event.getClimate().temperature, event.getClimate().downfall)) {
-                ConfiguredFeature<?, ?> configuredFeature = BuiltinRegistries.CONFIGURED_FEATURE.get(biomeModification.getConfiguredFeatureKey());
-                if (configuredFeature != null) {
-                    event.getGeneration().addFeature(biomeModification.getStep(), configuredFeature);
+                PlacedFeature placedFeature = BuiltinRegistries.PLACED_FEATURE.get(biomeModification.getConfiguredFeatureKey());
+                if (placedFeature != null) {
+                    event.getGeneration().addFeature(biomeModification.getStep(), placedFeature);
                 }
             }
         }

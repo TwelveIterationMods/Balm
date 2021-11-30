@@ -17,8 +17,8 @@ public abstract class EffectRenderingInventoryScreenMixin<T extends AbstractCont
         super(abstractContainerMenu, inventory, component);
     }
 
-    @Inject(method = "checkEffectRendering()V", at = @At("RETURN"))
-    public void checkEffectRendering(CallbackInfo callbackInfo) {
-        this.leftPos = (this.width - this.imageWidth) / 2;
-    }
+//    @Inject(method = "checkEffectRendering()V", at = @At("RETURN")) TODO 1.18 Don't think this is necessary anymore, as potion effects no longer seem to shift the screen
+//    public void checkEffectRendering(CallbackInfo callbackInfo) {
+//        this.leftPos = (this.width - this.imageWidth) / 2;
+//    }
 }

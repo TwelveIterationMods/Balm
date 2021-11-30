@@ -2,6 +2,7 @@ package net.blay09.mods.balm.api.block;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
+import net.blay09.mods.balm.api.block.entity.BalmBlockEntity;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.api.energy.EnergyStorage;
@@ -11,8 +12,14 @@ import net.blay09.mods.balm.api.provider.BalmProvider;
 import net.blay09.mods.balm.api.provider.BalmProviderHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,13 +28,26 @@ import java.util.List;
 public interface BalmBlockEntityContract extends BalmProviderHolder {
     AABB balmGetRenderBoundingBox();
 
-    void balmOnLoad();
+    default void balmOnLoad() {}
 
-    void balmFromClientTag(CompoundTag tag);
+    default CompoundTag balmToClientTag(CompoundTag tag) {
+        return tag;
+    }
 
-    CompoundTag balmToClientTag(CompoundTag tag);
+    default void balmSync() {
+        BalmBlockEntity self = (BalmBlockEntity) this;
+        if (self.getLevel() != null && !self.getLevel().isClientSide) {
+            ((ServerLevel) self.getLevel()).getChunkSource().blockChanged(self.getBlockPos());
+        }
+    }
 
-    void balmSync();
+    static CompoundTag toUpdateTag(BlockEntity blockEntity) {
+        if (blockEntity instanceof BalmBlockEntity balmBlockEntity) {
+            return balmBlockEntity.balmToClientTag(new CompoundTag());
+        }
+
+        return new CompoundTag();
+    }
 
     default void balmBuildProviders(List<BalmProviderHolder> providers) {
         providers.add(this);

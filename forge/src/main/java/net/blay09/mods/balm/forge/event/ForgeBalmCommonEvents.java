@@ -19,9 +19,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class ForgeBalmCommonEvents {
 
@@ -72,14 +70,14 @@ public class ForgeBalmCommonEvents {
         });
 
         events.registerEvent(ServerStartedEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FMLServerStartedEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerStartedEvent orig) -> {
                 final ServerStartedEvent event = new ServerStartedEvent(orig.getServer());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ServerStoppedEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FMLServerStoppedEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerStoppedEvent orig) -> {
                 final ServerStoppedEvent event = new ServerStoppedEvent(orig.getServer());
                 events.fireEventHandlers(priority, event);
             });

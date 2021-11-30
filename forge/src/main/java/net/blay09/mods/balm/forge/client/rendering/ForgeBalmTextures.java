@@ -3,13 +3,11 @@ package net.blay09.mods.balm.forge.client.rendering;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +38,7 @@ public class ForgeBalmTextures implements BalmTextures {
         @SubscribeEvent
         public void registerIconsPre(TextureStitchEvent.Pre event) {
             for (TextureRegistration texture : textures) {
-                if (event.getMap().location().equals(texture.getAtlas())) {
+                if (event.getAtlas().location().equals(texture.getAtlas())) {
                     event.addSprite(texture.getLocation());
                 }
             }

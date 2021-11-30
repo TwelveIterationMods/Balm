@@ -16,6 +16,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -66,59 +68,9 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     }
 
     @Override
-    public void balmOnLoad() {
-    }
-
-    @Override
-    public void balmFromClientTag(CompoundTag tag) {
-    }
-
-    @Override
-    public CompoundTag balmToClientTag(CompoundTag tag) {
-        return tag;
-    }
-
-    @Override
-    public void balmSync() {
-        if (level != null && !level.isClientSide) {
-            List<? extends Player> playerList = level.players();
-            ClientboundBlockEntityDataPacket updatePacket = getUpdatePacket();
-            if (updatePacket == null) {
-                return;
-            }
-
-            for (Object obj : playerList) {
-                ServerPlayer player = (ServerPlayer) obj;
-                if (Math.hypot(player.getX() - worldPosition.getX() + 0.5, player.getZ() - worldPosition.getZ() + 0.5) < 64) {
-                    player.connection.send(updatePacket);
-                }
-            }
-        }
-    }
-
     @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        return balmToClientTag(super.getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-
-        balmFromClientTag(pkt.getTag());
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-
-        balmFromClientTag(tag);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this, BalmBlockEntityContract::toUpdateTag);
     }
 
     private void addCapabilities(BalmProvider<?> provider, Map<Capability<?>, LazyOptional<?>> capabilities) {

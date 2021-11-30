@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -71,7 +71,7 @@ public class ForgeBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
                 UnbakedModel model = bakery.getModel(identifier);
-                return model.bake(bakery, ModelLoader.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);
@@ -83,7 +83,7 @@ public class ForgeBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
-                return model.bake(bakery, ModelLoader.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);
@@ -96,7 +96,7 @@ public class ForgeBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
                 UnbakedModel model = retexture(bakery, identifier, textureMap);
-                return model.bake(bakery, ModelLoader.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);

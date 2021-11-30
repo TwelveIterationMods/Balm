@@ -7,8 +7,8 @@ import net.blay09.mods.balm.api.client.keymappings.KeyModifier;
 import net.blay09.mods.balm.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
 
 public class ForgeBalmKeyMappings implements BalmKeyMappings {
 

@@ -8,15 +8,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class FabricBalmWorldGen implements BalmWorldGen {
@@ -39,28 +35,21 @@ public class FabricBalmWorldGen implements BalmWorldGen {
     }
 
     @Override
-    public <T extends FeatureDecorator<?>> DeferredObject<T> registerDecorator(Supplier<T> supplier, ResourceLocation identifier) {
+    public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(Supplier<T> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> {
-            T decorator = supplier.get();
-            Registry.register(Registry.DECORATOR, identifier, decorator);
-            return decorator;
+            T placementModifierType = supplier.get();
+            Registry.register(Registry.PLACEMENT_MODIFIERS, identifier, placementModifierType);
+            return placementModifierType;
         }).resolveImmediately();
     }
 
     @Override
-    public <T extends FeatureConfiguration> ConfiguredFeature<?, ?> configuredFeature(Feature<T> feature, T config, ConfiguredDecorator<?> configuredDecorator) {
-        return feature
-                .configured(config)
-                .decorated(configuredDecorator);
-    }
-
-    @Override
-    public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier) {
+    public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
         BiomeModifications.addFeature(it -> biomePredicate.test(
                 it.getBiomeKey().location(),
                 it.getBiome().getBiomeCategory(),
                 it.getBiome().getPrecipitation(),
                 it.getBiome().getBaseTemperature(),
-                it.getBiome().getDownfall()), step, ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, configuredFeatureIdentifier));
+                it.getBiome().getDownfall()), step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));
     }
 }

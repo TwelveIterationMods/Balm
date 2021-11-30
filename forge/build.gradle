@@ -18,10 +18,10 @@ version = project.mod_version + "+" + buildNumber
 group = project.maven_group
 archivesBaseName = project.mod_id
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: project.minecraft_version
 
     runs {
         client {

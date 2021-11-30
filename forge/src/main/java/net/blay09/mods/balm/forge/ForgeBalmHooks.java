@@ -19,7 +19,6 @@ import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Random;
@@ -81,7 +80,7 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
-        BasicEventHooks.firePlayerCraftingEvent(player, crafted, craftMatrix);
+        ForgeEventFactory.firePlayerCraftingEvent(player, crafted, craftMatrix);
     }
 
     @Override

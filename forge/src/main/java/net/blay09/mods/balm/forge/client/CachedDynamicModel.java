@@ -2,7 +2,6 @@ package net.blay09.mods.balm.forge.client;
 
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
-import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.forge.client.rendering.ForgeBalmModels;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -11,7 +10,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.SimpleModelState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -61,13 +60,13 @@ public class CachedDynamicModel implements BakedModel {
 
                 // If we're going to retexture, we need to ensure the base model has already been baked to prevent circular parent references in the retextured model
                 if (textureMapFunction != null && !baseModelCache.containsKey(baseModelLocation)) {
-                    final UnbakedModel baseModel = ModelLoader.instance().getModelOrMissing(baseModelLocation);
-                    final BakedModel bakedBaseModel = baseModel.bake(modelBakery, ModelLoader.defaultTextureGetter(), modelTransform, baseModelLocation);
+                    final UnbakedModel baseModel = ForgeModelBakery.instance().getModelOrMissing(baseModelLocation);
+                    final BakedModel bakedBaseModel = baseModel.bake(modelBakery, ForgeModelBakery.defaultTextureGetter(), modelTransform, baseModelLocation);
                     baseModelCache.put(baseModelLocation, bakedBaseModel);
                 }
 
-                UnbakedModel retexturedBaseModel = textureMapFunction != null ? ForgeBalmModels.retexture(modelBakery, baseModelLocation, textureMapFunction.apply(state)) : ModelLoader.instance().getModelOrMissing(baseModelLocation);
-                bakedModel = retexturedBaseModel.bake(modelBakery, ModelLoader.defaultTextureGetter(), modelTransform, location);
+                UnbakedModel retexturedBaseModel = textureMapFunction != null ? ForgeBalmModels.retexture(modelBakery, baseModelLocation, textureMapFunction.apply(state)) : ForgeModelBakery.instance().getModelOrMissing(baseModelLocation);
+                bakedModel = retexturedBaseModel.bake(modelBakery, ForgeModelBakery.defaultTextureGetter(), modelTransform, location);
                 cache.put(stateString, bakedModel);
 
                 if (particleTexture == null && bakedModel != null) {
@@ -103,7 +102,7 @@ public class CachedDynamicModel implements BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return particleTexture != null ? particleTexture : ModelLoader.White.instance();
+        return particleTexture != null ? particleTexture : ForgeModelBakery.White.instance();
     }
 
     @Override

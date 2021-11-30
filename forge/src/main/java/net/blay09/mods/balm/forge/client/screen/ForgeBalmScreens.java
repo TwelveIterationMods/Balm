@@ -3,34 +3,19 @@ package net.blay09.mods.balm.forge.client.screen;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.client.screen.BalmScreenFactory;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
-import net.blay09.mods.balm.forge.client.rendering.ForgeBalmRenderers;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,9 +49,9 @@ public class ForgeBalmScreens implements BalmScreens {
     @Override
     public AbstractWidget addRenderableWidget(Screen screen, AbstractWidget widget) {
         ScreenAccessor accessor = ((ScreenAccessor) screen);
-        accessor.getChildren().add(widget);
-        accessor.getRenderables().add(widget);
-        accessor.getNarratables().add(widget);
+        accessor.balm_getChildren().add(widget);
+        accessor.balm_getRenderables().add(widget);
+        accessor.balm_getNarratables().add(widget);
         return widget;
     }
 
