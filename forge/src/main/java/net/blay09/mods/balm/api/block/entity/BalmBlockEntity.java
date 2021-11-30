@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO Cleanup: Not sure how to move this to shared while still having the default capability implementations for Forge.
 public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
 
     private final Map<Capability<?>, LazyOptional<?>> capabilities = new HashMap<>();

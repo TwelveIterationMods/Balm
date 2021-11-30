@@ -13,6 +13,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+// TODO Cleanup: Not sure how to move this to shared while still having the default capability implementations for Forge.
 public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
     public BalmBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
