@@ -5,8 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface BalmMenuProvider extends MenuProvider, BalmMenuProviderContract {
-    @Override
+public interface BalmMenuProvider extends MenuProvider {
     default void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
         if (this instanceof BlockEntity blockEntity) {
             buf.writeBlockPos(blockEntity.getBlockPos());

@@ -37,8 +37,8 @@ public class ForgeBalmNetworking implements BalmNetworking {
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer) {
-            if (menuProvider instanceof BalmMenuProvider) {
-                NetworkHooks.openGui((ServerPlayer) player, menuProvider, buf -> ((BalmMenuProvider) menuProvider).writeScreenOpeningData((ServerPlayer) player, buf));
+            if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
+                NetworkHooks.openGui((ServerPlayer) player, menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
             } else {
                 NetworkHooks.openGui((ServerPlayer) player, menuProvider);
             }

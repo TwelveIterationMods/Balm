@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.fabric.network;
 
 import net.blay09.mods.balm.api.client.BalmClient;
+import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.network.ClientboundMessageRegistration;
 import net.blay09.mods.balm.api.network.MessageRegistration;
@@ -9,15 +10,20 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +43,27 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
-        player.openMenu(menuProvider);
+        if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
+            player.openMenu(new ExtendedScreenHandlerFactory() {
+                @Override
+                public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                    balmMenuProvider.writeScreenOpeningData(player, buf);
+                }
+
+                @Override
+                public Component getDisplayName() {
+                    return balmMenuProvider.getDisplayName();
+                }
+
+                @Nullable
+                @Override
+                public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                    return balmMenuProvider.createMenu(i, inventory, player);
+                }
+            });
+        } else {
+            player.openMenu(menuProvider);
+        }
     }
 
     @Override
