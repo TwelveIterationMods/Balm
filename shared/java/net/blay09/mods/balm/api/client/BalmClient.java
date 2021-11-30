@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class BalmClient {
 
-    private static final BalmClientRuntime runtime = BalmClientRuntimeFactory.create();
+    private static final BalmClientRuntime runtime = BalmClientRuntimeSpi.create();
 
     public static void initialize(String modId, Runnable initializer) {
         runtime.initialize(modId, initializer);

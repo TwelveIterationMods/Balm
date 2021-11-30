@@ -21,7 +21,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import java.util.function.Consumer;
 
 public class Balm {
-    private static final BalmRuntime runtime = BalmRuntimeFactory.create();
+    private static final BalmRuntime runtime = BalmRuntimeSpi.create();
 
     @Deprecated
     public static void initialize(String modId) {
