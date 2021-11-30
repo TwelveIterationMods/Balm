@@ -41,7 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO Cleanup: Not sure how to move this to shared while still having the default capability implementations for Forge.
+// TODO Cleanup: Rename onLoad and getRenderBoundingBox to match Forge, get rid of this base class
+// TODO Provide getUpdatePacket helper in interface
+// TODO Use AttachCapabilitiesEvent to work around Forge's CapabilityProvider superclass
 public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
 
     private final Map<Capability<?>, LazyOptional<?>> capabilities = new HashMap<>();

@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -26,7 +27,11 @@ import java.util.Collections;
 import java.util.List;
 
 public interface BalmBlockEntityContract extends BalmProviderHolder {
-    AABB balmGetRenderBoundingBox();
+    // TODO Block Entity Bounding Box (Not yet called)
+    default AABB balmGetRenderBoundingBox() {
+        BalmBlockEntity self = (BalmBlockEntity) this;
+        return AABB.unitCubeFromLowerCorner(new Vec3(self.getBlockPos().getX(), self.getBlockPos().getY(), self.getBlockPos().getY()));
+    }
 
     default void balmOnLoad() {}
 
