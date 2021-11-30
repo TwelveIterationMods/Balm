@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EffectRenderingInventoryScreen.class)
+@Deprecated
 public abstract class EffectRenderingInventoryScreenMixin<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public EffectRenderingInventoryScreenMixin(T abstractContainerMenu, Inventory inventory, Component component) {
