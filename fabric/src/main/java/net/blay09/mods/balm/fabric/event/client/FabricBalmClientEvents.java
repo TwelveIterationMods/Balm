@@ -1,6 +1,7 @@
-package net.blay09.mods.balm.api.event.client;
+package net.blay09.mods.balm.fabric.event.client;
 
-import net.blay09.mods.balm.api.event.FabricBalmEvents;
+import net.blay09.mods.balm.api.event.client.*;
+import net.blay09.mods.balm.fabric.event.FabricBalmEvents;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
 import net.blay09.mods.balm.api.event.client.screen.*;
@@ -13,9 +14,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
 import java.util.List;

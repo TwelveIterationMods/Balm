@@ -1,10 +1,14 @@
-package net.blay09.mods.balm.api.event;
+package net.blay09.mods.balm.fabric.event;
 
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
+import net.blay09.mods.balm.api.event.BalmEvents;
+import net.blay09.mods.balm.api.event.EventPriority;
+import net.blay09.mods.balm.api.event.TickPhase;
+import net.blay09.mods.balm.api.event.TickType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;

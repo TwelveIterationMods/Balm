@@ -1,8 +1,6 @@
 package net.blay09.mods.balm.mixin;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.BalmEvents;
-import net.blay09.mods.balm.api.event.client.FabricBalmClientEvents;
 import net.blay09.mods.balm.api.event.client.FovUpdateEvent;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.LivingEntity;

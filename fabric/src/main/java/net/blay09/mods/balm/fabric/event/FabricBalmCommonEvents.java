@@ -1,6 +1,7 @@
-package net.blay09.mods.balm.api.event;
+package net.blay09.mods.balm.fabric.event;
 
 
+import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
