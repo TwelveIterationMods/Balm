@@ -16,7 +16,7 @@ public class FabricBalmBlockEntities implements BalmBlockEntities {
     @Override
     public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Block... blocks) {
         return new DeferredObject<>(identifier, () -> {
-            BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory, blocks).build();
+            BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory::create, blocks).build();
             return Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier.toString(), type);
         }).resolveImmediately();
     }
@@ -25,7 +25,7 @@ public class FabricBalmBlockEntities implements BalmBlockEntities {
     public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, DeferredObject<Block>... blocks) {
         return new DeferredObject<>(identifier, () -> {
             Block[] resolvedBlocks = Arrays.stream(blocks).map(DeferredObject::get).toArray(Block[]::new);
-            BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory, resolvedBlocks).build();
+            BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory::create, resolvedBlocks).build();
             return Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier.toString(), type);
         }).resolveImmediately();
     }

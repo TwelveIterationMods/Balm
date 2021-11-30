@@ -1,7 +1,7 @@
 package net.blay09.mods.balm.api.block;
 
-import net.blay09.mods.balm.api.block.entity.BalmBlockEntityFactory;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.api.block.entity.BalmBlockEntityFactory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
