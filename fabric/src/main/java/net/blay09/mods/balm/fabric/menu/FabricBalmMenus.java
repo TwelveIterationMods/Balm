@@ -12,7 +12,7 @@ public class FabricBalmMenus implements BalmMenus {
 
     @Override
     public <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, BalmMenuFactory<T> factory) {
-        return new DeferredObject<>(identifier, () -> ScreenHandlerRegistry.registerExtended(identifier, factory)).resolveImmediately();
+        return new DeferredObject<>(identifier, () -> ScreenHandlerRegistry.registerExtended(identifier, factory::create)).resolveImmediately();
     }
 
 }
