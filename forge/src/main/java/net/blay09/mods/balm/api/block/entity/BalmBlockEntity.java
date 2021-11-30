@@ -41,9 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO Cleanup: Rename onLoad and getRenderBoundingBox to match Forge, get rid of this base class
-// TODO Provide getUpdatePacket helper in interface
-// TODO Use AttachCapabilitiesEvent to work around Forge's CapabilityProvider superclass
 public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
 
     private final Map<Capability<?>, LazyOptional<?>> capabilities = new HashMap<>();
@@ -73,7 +70,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     @Override
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, BalmBlockEntityContract::toUpdateTag);
+        return createUpdatePacket();
     }
 
     private void addCapabilities(BalmProvider<?> provider, Map<Capability<?>, LazyOptional<?>> capabilities) {

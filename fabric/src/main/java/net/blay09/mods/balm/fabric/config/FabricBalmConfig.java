@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.fabric.config;
 
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
@@ -42,5 +43,11 @@ public class FabricBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return new File(Minecraft.getInstance().gameDirectory, "config");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BalmConfigData> ConfigScreenFactory<?> getConfigScreen(Class<T> clazz) {
+        var configDataClass = (Class<? extends ConfigData>) clazz;
+        return parent -> AutoConfig.getConfigScreen(configDataClass, parent).get();
     }
 }

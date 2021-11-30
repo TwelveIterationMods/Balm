@@ -40,14 +40,18 @@ public interface BalmBlockEntityContract extends BalmProviderHolder {
     }
 
     default void balmSync() {
-        BalmBlockEntity self = (BalmBlockEntity) this;
+        BlockEntity self = (BlockEntity) this;
         if (self.getLevel() != null && !self.getLevel().isClientSide) {
             ((ServerLevel) self.getLevel()).getChunkSource().blockChanged(self.getBlockPos());
         }
     }
 
+    default Packet<ClientGamePacketListener>  createUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(((BlockEntity) this), BalmBlockEntityContract::toUpdateTag);
+    }
+
     static CompoundTag toUpdateTag(BlockEntity blockEntity) {
-        if (blockEntity instanceof BalmBlockEntity balmBlockEntity) {
+        if (blockEntity instanceof BalmBlockEntityContract balmBlockEntity) {
             return balmBlockEntity.balmToClientTag(new CompoundTag());
         }
 
