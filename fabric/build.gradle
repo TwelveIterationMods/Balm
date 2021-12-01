@@ -91,6 +91,7 @@ publishing {
 			artifactId = project.archivesBaseName
 
 			from components.java
+			artifact jar
 		}
 	}
 
