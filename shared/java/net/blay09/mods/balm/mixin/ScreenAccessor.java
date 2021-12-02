@@ -12,23 +12,11 @@ import java.util.List;
 @Mixin(Screen.class)
 public interface ScreenAccessor {
 
-    @Accessor
-    @Deprecated(since = "1.18", forRemoval = true)
-    List<GuiEventListener> getChildren();
-
     @Accessor("children")
     List<GuiEventListener> balm_getChildren();
 
-    @Accessor
-    @Deprecated(since = "1.18", forRemoval = true)
-    List<NarratableEntry> getNarratables();
-
     @Accessor("narratables")
     List<NarratableEntry> balm_getNarratables();
-
-    @Accessor
-    @Deprecated(since = "1.18", forRemoval = true)
-    List<Widget> getRenderables();
 
     @Accessor("renderables")
     List<Widget> balm_getRenderables();

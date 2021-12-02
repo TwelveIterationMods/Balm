@@ -234,16 +234,6 @@ public class ForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(PotionShiftEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.PotionShiftEvent orig) -> {
-                final PotionShiftEvent event = new PotionShiftEvent(orig.getScreen());
-                events.fireEventHandlers(priority, event);
-                if (event.isCanceled()) {
-                    orig.setCanceled(true);
-                }
-            });
-        });
-
         events.registerEvent(UseItemInputEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.ClickInputEvent orig) -> {
                 if (orig.isUseItem()) {
