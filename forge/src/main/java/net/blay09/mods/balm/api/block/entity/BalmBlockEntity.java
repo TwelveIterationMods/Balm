@@ -52,22 +52,6 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     }
 
     @Override
-    public AABB getRenderBoundingBox() {
-        return balmGetRenderBoundingBox();
-    }
-
-    @Override
-    public AABB balmGetRenderBoundingBox() {
-        return super.getRenderBoundingBox();
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        balmOnLoad();
-    }
-
-    @Override
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return createUpdatePacket();

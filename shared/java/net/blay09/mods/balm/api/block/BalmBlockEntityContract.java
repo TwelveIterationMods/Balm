@@ -27,14 +27,6 @@ import java.util.Collections;
 import java.util.List;
 
 public interface BalmBlockEntityContract extends BalmProviderHolder {
-    // TODO Block Entity Bounding Box (Not yet called)
-    default AABB balmGetRenderBoundingBox() {
-        BalmBlockEntity self = (BalmBlockEntity) this;
-        return AABB.unitCubeFromLowerCorner(new Vec3(self.getBlockPos().getX(), self.getBlockPos().getY(), self.getBlockPos().getY()));
-    }
-
-    default void balmOnLoad() {}
-
     default CompoundTag balmToClientTag(CompoundTag tag) {
         return tag;
     }
