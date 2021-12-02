@@ -37,6 +37,11 @@ public interface BalmBlockEntityContract extends BalmProviderHolder {
         return ClientboundBlockEntityDataPacket.create(((BlockEntity) this), BalmBlockEntityContract::createUpdateTag);
     }
 
+    default CompoundTag createUpdateTag() {
+        BlockEntity self = (BlockEntity) this;
+        return createUpdateTag(self);
+    }
+
     private static CompoundTag createUpdateTag(BlockEntity blockEntity) {
         var tag = new CompoundTag();
         if (blockEntity instanceof BalmBlockEntityContract balmBlockEntity) {

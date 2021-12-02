@@ -14,6 +14,7 @@ import net.blay09.mods.balm.forge.fluid.ForgeFluidTank;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.Container;
@@ -42,6 +43,11 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
 
     public BalmBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return createUpdateTag();
     }
 
     @Override
