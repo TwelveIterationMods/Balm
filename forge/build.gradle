@@ -7,11 +7,13 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "org.spongepowered.mixin"
 apply plugin: 'maven-publish'
+apply plugin: "com.matthewprenger.cursegradle"
 
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
 version = project.mod_version + "+" + buildNumber
@@ -153,4 +155,17 @@ publishing {
 			}
 		}
 	}
+}
+
+
+curseforge {
+    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
+    project {
+        id = project.curseforge_project_id
+        releaseType = project.curseforge_release_type
+        changelogType = 'markdown'
+        changelog = file('../changelog.md')
+        addGameVersion project.minecraft_version
+        addGameVersion 'Forge'
+    }
 }

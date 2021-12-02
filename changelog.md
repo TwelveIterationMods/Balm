@@ -1,3 +1,3 @@
 # 2.0.0
 
-Testing CurseGradle
+Updated to Minecraft 1.18
