@@ -23,30 +23,29 @@ import java.util.Collections;
 import java.util.List;
 
 public interface BalmBlockEntityContract extends BalmProviderHolder {
-    default CompoundTag balmToClientTag(CompoundTag tag) {
-        return tag;
+    default void writeUpdateTag(CompoundTag tag) {
     }
 
-    default void balmSync() {
+    default void sync() {
         BlockEntity self = (BlockEntity) this;
         if (self.getLevel() != null && !self.getLevel().isClientSide) {
             ((ServerLevel) self.getLevel()).getChunkSource().blockChanged(self.getBlockPos());
         }
     }
 
-    default Packet<ClientGamePacketListener>  createUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(((BlockEntity) this), BalmBlockEntityContract::toUpdateTag);
+    default Packet<ClientGamePacketListener> createUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(((BlockEntity) this), BalmBlockEntityContract::createUpdateTag);
     }
 
-    static CompoundTag toUpdateTag(BlockEntity blockEntity) {
+    private static CompoundTag createUpdateTag(BlockEntity blockEntity) {
+        var tag = new CompoundTag();
         if (blockEntity instanceof BalmBlockEntityContract balmBlockEntity) {
-            return balmBlockEntity.balmToClientTag(new CompoundTag());
+            balmBlockEntity.writeUpdateTag(tag);
         }
-
-        return new CompoundTag();
+        return tag;
     }
 
-    default void balmBuildProviders(List<BalmProviderHolder> providers) {
+    default void buildProviders(List<BalmProviderHolder> providers) {
         providers.add(this);
 
         if (this instanceof BalmContainerProvider containerProvider) {
