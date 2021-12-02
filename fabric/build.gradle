@@ -127,13 +127,13 @@ curseforge {
 			requiredLibrary 'cloth-config'
 		}
 
+		mainArtifact(remapJar)
+
 		afterEvaluate {
-			mainArtifact(remapJar)
 			uploadTask.dependsOn(remapJar)
 		}
 	}
 	options {
 		forgeGradleIntegration = false
-		debug = true
 	}
 }
