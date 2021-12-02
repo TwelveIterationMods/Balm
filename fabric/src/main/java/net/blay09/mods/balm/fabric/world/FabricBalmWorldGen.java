@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.function.Supplier;
@@ -31,6 +32,15 @@ public class FabricBalmWorldGen implements BalmWorldGen {
             T configuredFeature = supplier.get();
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, identifier, configuredFeature);
             return configuredFeature;
+        }).resolveImmediately();
+    }
+
+    @Override
+    public <T extends PlacedFeature> DeferredObject<T> registerPlacedFeature(Supplier<T> supplier, ResourceLocation identifier) {
+        return new DeferredObject<>(identifier, () -> {
+            T placedFeature = supplier.get();
+            Registry.register(BuiltinRegistries.PLACED_FEATURE, identifier, placedFeature);
+            return placedFeature;
         }).resolveImmediately();
     }
 

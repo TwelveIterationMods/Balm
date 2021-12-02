@@ -33,10 +33,12 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     private static class Registrations {
         public final List<DeferredObject<?>> configuredFeatures = new ArrayList<>();
+        public final List<DeferredObject<?>> placedFeatures = new ArrayList<>();
 
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
             configuredFeatures.forEach(DeferredObject::resolve);
+            placedFeatures.forEach(DeferredObject::resolve);
         }
     }
 
@@ -65,6 +67,17 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     }
 
     @Override
+    public <T extends PlacedFeature> DeferredObject<T> registerPlacedFeature(Supplier<T> supplier, ResourceLocation identifier) {
+        DeferredObject<T> deferredObject = new DeferredObject<>(identifier, () -> {
+            T placedFeature = supplier.get();
+            Registry.register(BuiltinRegistries.PLACED_FEATURE, identifier, placedFeature);
+            return placedFeature;
+        });
+        getActiveRegistrations().placedFeatures.add(deferredObject);
+        return deferredObject;
+    }
+
+    @Override
     public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(Supplier<T> supplier, ResourceLocation identifier) {
         // TODO 1.18 bet this will break horribly but placement modifiers aren't a Forge registry yet
         return new DeferredObject<>(identifier, () -> {
@@ -77,8 +90,8 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
 
     @Override
-    public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier) {
-        ResourceKey<PlacedFeature> resourceKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, configuredFeatureIdentifier);
+    public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
+        ResourceKey<PlacedFeature> resourceKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier);
         biomeModifications.add(new BiomeModification(biomePredicate, step, resourceKey));
     }
 
