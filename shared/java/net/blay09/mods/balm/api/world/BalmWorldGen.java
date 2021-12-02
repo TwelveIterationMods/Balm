@@ -19,8 +19,16 @@ public interface BalmWorldGen {
 
     <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(Supplier<T> supplier, ResourceLocation identifier);
 
+    default <T extends FeatureConfiguration> ConfiguredFeature<?, ?> configuredFeature(Feature<T> feature, T config) {
+        return feature.configured(config);
+    }
+
     default <T extends FeatureConfiguration> PlacedFeature placedFeature(Feature<T> feature, T config, PlacementModifier... placementModifiers) {
-        return feature.configured(config).placed(placementModifiers);
+        return placedFeature(configuredFeature(feature, config), placementModifiers);
+    }
+
+    default PlacedFeature placedFeature(ConfiguredFeature<?, ?> configuredFeature, PlacementModifier... placementModifiers) {
+        return configuredFeature.placed(placementModifiers);
     }
 
     void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier);
