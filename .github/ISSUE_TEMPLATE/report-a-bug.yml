@@ -12,7 +12,8 @@ body:
       label: Minecraft Version
       description: What version of Minecraft were you running?
       options:
-        - 1.17
+        - 1.18.x
+        - 1.17.x
         - Other (specify below)
     validations:
       required: true
