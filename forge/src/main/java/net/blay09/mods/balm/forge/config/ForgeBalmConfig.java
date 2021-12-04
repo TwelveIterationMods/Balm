@@ -58,15 +58,15 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (int) defaultValue, 0, Integer.MAX_VALUE);
+                builder.defineInRange(path, (int) defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
             } else if (float.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (float) defaultValue, 0f, Float.MAX_VALUE);
+                builder.defineInRange(path, (float) defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE);
             } else if (double.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (double) defaultValue, 0.0, Double.MAX_VALUE);
+                builder.defineInRange(path, (double) defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE);
             } else if (boolean.class.isAssignableFrom(type)) {
                 builder.define(path, (boolean) defaultValue);
             } else if (long.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (long) defaultValue, 0L, Long.MAX_VALUE);
+                builder.defineInRange(path, (long) defaultValue, Long.MIN_VALUE, Long.MAX_VALUE);
             } else {
                 buildConfigSpec(path + ".", builder, type);
             }

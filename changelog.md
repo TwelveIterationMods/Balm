@@ -1,3 +1,7 @@
+## Version 2.1.1 for Minecraft 1.18
+
+- Fixed config not supporting negative values (Forge only)
+
 ## Version 2.1.0 for Minecraft 1.18
 
 - Updated world gen support for Minecraft 1.18
