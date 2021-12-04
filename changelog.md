@@ -1,6 +1,7 @@
 ## Version 2.1.1 for Minecraft 1.18
 
-- Fixed config not supporting negative values (Forge only)
+- Fixed unknown discriminator errors on Forge
+- Fixed config not supporting negative values on Forge
 
 ## Version 2.1.0 for Minecraft 1.18
 
