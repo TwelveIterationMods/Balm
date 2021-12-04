@@ -23,14 +23,15 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ForgeBalmNetworking implements BalmNetworking {
 
-    private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new HashMap<>();
-    private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new HashMap<>();
-    private static final Map<String, Integer> discriminatorCounter = new HashMap<>();
+    private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
     private static NetworkEvent.Context replyContext;
 
