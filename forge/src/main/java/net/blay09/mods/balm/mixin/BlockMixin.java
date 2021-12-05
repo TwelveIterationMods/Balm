@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Block.class)
 public class BlockMixin {
 
-    @Inject(method = "canSustainPlant(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraftforge/common/IPlantable;)Z", at = @At("HEAD"), remap = false)
+    @Inject(method = "canSustainPlant(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraftforge/common/IPlantable;)Z", at = @At("HEAD"), remap = false, cancellable = true)
     void canSustainPlant(BlockState state, BlockGetter blockGetter, BlockPos pos, Direction direction, IPlantable plantable, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (this instanceof CustomFarmBlock customFarmBlock) {
             Block plant = plantable.getPlant(blockGetter, pos.relative(direction)).getBlock();
