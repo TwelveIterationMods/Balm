@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -22,9 +23,15 @@ public class PlayerMixin implements BalmPlayer {
 
     private Pose forcedPose;
 
-    @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
-    private void actuallyHurt(DamageSource damageSource, float damageAmount, CallbackInfo callbackInfo) {
-        Balm.getEvents().fireEvent(new LivingDamageEvent((Player) (Object) this, damageSource, damageAmount));
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), argsOnly = true)
+    private float actuallyHurt(float damageAmount, DamageSource damageSource) {
+        LivingDamageEvent event = new LivingDamageEvent((Player) (Object) this, damageSource, damageAmount);
+        Balm.getEvents().fireEvent(event);
+        if (event.isCanceled()) {
+            return 0f;
+        } else {
+            return event.getDamageAmount();
+        }
     }
 
     @Inject(method = "getDestroySpeed(Lnet/minecraft/world/level/block/state/BlockState;)F", at = @At("RETURN"), cancellable = true)

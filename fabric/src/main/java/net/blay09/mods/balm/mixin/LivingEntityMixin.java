@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.event.LivingHealEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,9 +22,15 @@ public abstract class LivingEntityMixin {
 
     private static final ThreadLocal<LivingFallEvent> currentFallEvent = new ThreadLocal<>();
 
-    @Inject(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"))
-    private void actuallyHurt(DamageSource damageSource, float damageAmount, CallbackInfo callbackInfo) {
-        Balm.getEvents().fireEvent(new LivingDamageEvent((LivingEntity) (Object) this, damageSource, damageAmount));
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), argsOnly = true)
+    private float actuallyHurt(float damageAmount, DamageSource damageSource) {
+        LivingDamageEvent event = new LivingDamageEvent((LivingEntity) (Object) this, damageSource, damageAmount);
+        Balm.getEvents().fireEvent(event);
+        if (event.isCanceled()) {
+            return 0f;
+        } else {
+            return event.getDamageAmount();
+        }
     }
 
     @Inject(method = "causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z", at = @At("HEAD"), cancellable = true)
