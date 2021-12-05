@@ -27,6 +27,10 @@ public interface BalmHooks {
      */
     boolean growCrop(ItemStack itemStack, Level level, BlockPos pos, @Nullable Player player);
 
+    default CompoundTag getPersistentData(Player player) {
+        return getPersistentData((Entity) player);
+    }
+
     /**
      * Forge provides a tag in entity data, which for players is persisted across clones and death.
      * Fabric does not provide such a tag; so we add our own
