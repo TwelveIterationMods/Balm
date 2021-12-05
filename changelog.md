@@ -2,6 +2,7 @@
 
 - Added support for custom farmlands
 - Added support for loot modifiers
+- Added support for custom damage sources
 - Fixed entity registration on Forge
 
 ### Version 2.1.1 for Minecraft 1.18
