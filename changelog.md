@@ -1,3 +1,7 @@
+### Version 2.2.0 for Minecraft 1.18
+
+- Added support for custom farmlands
+
 ### Version 2.1.1 for Minecraft 1.18
 
 - Fixed unknown discriminator errors on Forge

@@ -4,14 +4,19 @@
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "balm.refmap.json",
-  "mixins": ["SlotAccessor", "MinecraftServerMixin", "MinecraftServerAccessor"],
+  "mixins": [
+    "BlockMixin",
+    "MinecraftServerAccessor",
+    "MinecraftServerMixin",
+    "SlotAccessor"
+  ],
   "client": [
     "AbstractContainerScreenAccessor",
-    "MouseHandlerAccessor",
     "CheckboxAccessor",
     "ImageButtonAccessor",
     "KeyMappingAccessor",
     "ModelLayersAccessor",
+    "MouseHandlerAccessor",
     "ScreenAccessor"
   ],
   "injectors": {
