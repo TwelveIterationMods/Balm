@@ -1,7 +1,7 @@
 ### Version 2.2.0 for Minecraft 1.18
 
 - Added support for custom farmlands
-- Fixed entity registration
+- Fixed entity registration on Forge
 
 ### Version 2.1.1 for Minecraft 1.18
 
