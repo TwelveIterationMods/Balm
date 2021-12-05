@@ -2,6 +2,7 @@ package net.blay09.mods.balm.fabric.provider;
 
 import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -28,7 +29,8 @@ public class FabricBalmProviders implements BalmProviders {
 
     @Override
     public <T> T getProvider(Entity entity, Class<T> clazz) {
-        return null; // TODO Entity Providers
+        var lookup = EntityApiLookup.get(lookupId(clazz), clazz, Void.class);
+        return lookup.find(entity, null);
     }
 
     public void registerProvider(ResourceLocation lookupId, Class<?> clazz) {
