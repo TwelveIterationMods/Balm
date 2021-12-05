@@ -1,6 +1,7 @@
 ### Version 2.2.0 for Minecraft 1.18
 
 - Added support for custom farmlands
+- Added support for loot modifiers
 - Fixed entity registration on Forge
 
 ### Version 2.1.1 for Minecraft 1.18
