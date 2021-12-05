@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -27,10 +28,10 @@ public interface BalmHooks {
     boolean growCrop(ItemStack itemStack, Level level, BlockPos pos, @Nullable Player player);
 
     /**
-     * Forge provides a tag in player data that is persisted across clones and death.
+     * Forge provides a tag in entity data, which for players is persisted across clones and death.
      * Fabric does not provide such a tag; so we add our own
      */
-    CompoundTag getPersistentData(Player player);
+    CompoundTag getPersistentData(Entity entity);
 
     /**
      * Forge provides a patch to cure potion effects specific to a given curative item.

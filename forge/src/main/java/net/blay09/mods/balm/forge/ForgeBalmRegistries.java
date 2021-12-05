@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -27,6 +28,11 @@ public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Fluid fluid) {
         return fluid.getRegistryName();
+    }
+
+    @Override
+    public ResourceLocation getKey(EntityType<?> entityType) {
+        return entityType.getRegistryName();
     }
 
     @Override

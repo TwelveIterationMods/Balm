@@ -12,6 +12,7 @@
     "MinecraftServerAccessor",
     "MinecraftServerMixin",
     "PlayerMixin",
+    "EntityMixin",
     "ResultSlotMixin",
     "ServerPlayerMixin",
     "SlotAccessor",

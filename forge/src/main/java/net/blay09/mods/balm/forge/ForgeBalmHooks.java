@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
@@ -39,12 +40,17 @@ public class ForgeBalmHooks implements BalmHooks {
     }
 
     @Override
-    public CompoundTag getPersistentData(Player player) {
-        CompoundTag persistentData = player.getPersistentData();
-        CompoundTag persistedTag = persistentData.getCompound(Player.PERSISTED_NBT_TAG);
-        CompoundTag balmData = persistedTag.getCompound("BalmData");
-        persistedTag.put("BalmData", balmData);
-        persistentData.put(Player.PERSISTED_NBT_TAG, persistedTag);
+    public CompoundTag getPersistentData(Entity entity) {
+        CompoundTag persistentData = entity.getPersistentData();
+        if (entity instanceof Player) {
+            CompoundTag persistedTag = persistentData.getCompound(Player.PERSISTED_NBT_TAG);
+            persistentData.put(Player.PERSISTED_NBT_TAG, persistedTag);
+            persistentData = persistedTag;
+        }
+
+        CompoundTag balmData = persistentData.getCompound("BalmData");
+        persistentData.put("BalmData", balmData);
+
         return balmData;
     }
 

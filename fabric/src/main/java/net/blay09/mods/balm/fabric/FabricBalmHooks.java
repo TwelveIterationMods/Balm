@@ -1,17 +1,17 @@
 package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmHooks;
-import net.blay09.mods.balm.api.entity.BalmPlayer;
+import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +28,8 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
-    public CompoundTag getPersistentData(Player player) {
-        return ((BalmPlayer) player).getBalmData();
+    public CompoundTag getPersistentData(Entity entity) {
+        return ((BalmEntity) entity).getBalmData();
     }
 
     @Override
