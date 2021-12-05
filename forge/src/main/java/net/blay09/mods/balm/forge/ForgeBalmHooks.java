@@ -7,6 +7,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.DyeColor;
@@ -97,5 +98,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public boolean isShield(ItemStack itemStack) {
         return itemStack.getItem().canPerformAction(itemStack, ToolActions.SHIELD_BLOCK);
+    }
+
+    @Override
+    public void setForcedPose(Player player, Pose pose) {
+        player.setForcedPose(pose);
     }
 }

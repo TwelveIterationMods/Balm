@@ -6,6 +6,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -58,4 +59,6 @@ public interface BalmHooks {
     boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult);
 
     boolean isShield(ItemStack itemStack);
+
+    void setForcedPose(Player player, Pose pose);
 }

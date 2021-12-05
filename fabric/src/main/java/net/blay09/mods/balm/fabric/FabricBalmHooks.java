@@ -2,6 +2,7 @@ package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.entity.BalmEntity;
+import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -9,6 +10,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -78,5 +80,10 @@ public class FabricBalmHooks implements BalmHooks {
     @Override
     public boolean isShield(ItemStack itemStack) {
         return itemStack.getItem() instanceof ShieldItem;
+    }
+
+    @Override
+    public void setForcedPose(Player player, Pose pose) {
+        ((BalmPlayer) player).setForcedPose(pose);
     }
 }
