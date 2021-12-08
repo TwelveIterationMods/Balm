@@ -1,5 +1,7 @@
 ### Version 2.2.0 for Minecraft 1.18
 
+- Fixed configs not loading properly on servers
+- Fixed configs not syncing properly to clients
 - Added support for custom farmlands
 - Added support for custom damage sources
 - Added support for loot modifiers on Fabric
