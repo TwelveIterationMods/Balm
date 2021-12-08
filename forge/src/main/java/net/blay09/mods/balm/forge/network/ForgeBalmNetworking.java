@@ -23,90 +23,99 @@ import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ForgeBalmNetworking implements BalmNetworking {
 
-    private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new HashMap<>();
-    private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new HashMap<>();
+    private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
-    private static int discriminator;
     private static NetworkEvent.Context replyContext;
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer) {
-            if (menuProvider instanceof BalmMenuProvider) {
-                NetworkHooks.openGui((ServerPlayer) player, menuProvider, buf -> ((BalmMenuProvider) menuProvider).writeScreenOpeningData((ServerPlayer) player, buf));
+            if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
+                NetworkHooks.openGui((ServerPlayer) player, menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
             } else {
                 NetworkHooks.openGui((ServerPlayer) player, menuProvider);
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void reply(T message) {
-        if(replyContext == null) {
+        if (replyContext == null) {
             throw new IllegalStateException("No context to reply to");
         }
 
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.reply(message, replyContext);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void sendTo(Player player, T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
+
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.send(PacketDistributor.PLAYER.with(() -> ((ServerPlayer) player)), message);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void sendToTracking(ServerLevel world, BlockPos pos, T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
+
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void sendToTracking(Entity entity, T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
+
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void sendToAll(MinecraftServer server, T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
+
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.send(PacketDistributor.ALL.noArg(), message);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void sendToServer(T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
+
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.sendToServer(message);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> MessageRegistration<T> getMessageRegistrationOrThrow(T message) {
+        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+        if (messageRegistration == null) {
+            throw new IllegalArgumentException("Cannot send message " + message.getClass() + " as it is not registered");
+        }
+        return messageRegistration;
     }
 
     @Override
@@ -117,7 +126,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(nextDiscriminator(), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
+        channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             if (context.getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
                 return;
@@ -138,7 +147,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(nextDiscriminator(), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
+        channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
                 replyContext = context;
@@ -150,7 +159,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         });
     }
 
-    private static int nextDiscriminator() {
-        return discriminator++;
+    private static int nextDiscriminator(String modId) {
+        return discriminatorCounter.compute(modId, (key, prev) -> prev != null ? prev + 1 : 0);
     }
 }
