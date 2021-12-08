@@ -133,9 +133,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
-            if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
-                setActiveConfig(clazz, newConfigData);
-            }
+            setActiveConfig(clazz, newConfigData);
         });
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Reloading event) -> {
@@ -143,6 +141,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
+            // Only rewrite active configs with reload if we're the hosting server or there is no syncing
+            // TODO would be good if this still applied non-synced properties
             if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
                 setActiveConfig(clazz, newConfigData);
             }
