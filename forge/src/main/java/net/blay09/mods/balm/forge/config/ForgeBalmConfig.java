@@ -134,9 +134,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
-            if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
-                setActiveConfig(clazz, newConfigData);
-            }
+            setActiveConfig(clazz, newConfigData);
         });
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Reloading event) -> {

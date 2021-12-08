@@ -96,7 +96,7 @@ public class SyncConfigMessage<TData> {
                 } else if (float.class.isAssignableFrom(type)) {
                     buf.writeFloat((float) value);
                 } else if (double.class.isAssignableFrom(type)) {
-                    buf.writeDouble((float) value);
+                    buf.writeDouble((double) value);
                 } else if (boolean.class.isAssignableFrom(type)) {
                     buf.writeBoolean((boolean) value);
                 } else if (long.class.isAssignableFrom(type)) {

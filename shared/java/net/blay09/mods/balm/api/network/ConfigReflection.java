@@ -18,7 +18,9 @@ public class ConfigReflection {
         List<Field> syncedFields = new ArrayList<>();
         Field[] fields = clazz.getFields();
         for (Field field : fields) {
-            if (field.getAnnotation(Synced.class) != null) {
+            boolean hasSyncedAnnotation = field.getAnnotation(Synced.class) != null;
+            boolean isObject = !field.getType().isPrimitive() && !field.getType().isEnum() && field.getType() != String.class && field.getType() != List.class;
+            if (hasSyncedAnnotation || isObject) {
                 syncedFields.add(field);
             }
         }
