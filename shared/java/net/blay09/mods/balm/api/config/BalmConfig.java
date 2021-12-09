@@ -22,5 +22,9 @@ public interface BalmConfig {
 
     <T extends BalmConfigData> void updateConfig(Class<T> clazz, Consumer<T> consumer);
 
+    <T extends BalmConfigData> void resetToBackingConfig(Class<T> clazz);
+
+    void resetToBackingConfigs();
+
     File getConfigDir();
 }

@@ -1,8 +1,11 @@
 package net.blay09.mods.balm.forge.client;
 
+import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.event.client.DisconnectedFromServerEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ForgeBalmClient {
-    public static void onInitializeClient(FMLClientSetupEvent event) {
+    public static void onInitializeClient(FMLClientSetupEvent setupEvent) {
+        Balm.getEvents().onEvent(DisconnectedFromServerEvent.class, event -> Balm.getConfig().resetToBackingConfigs());
     }
 }

@@ -5,14 +5,11 @@ import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
-import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -104,4 +101,16 @@ public abstract class AbstractBalmConfig implements BalmConfig {
         }
     }
 
+    @Override
+    public <T extends BalmConfigData> void resetToBackingConfig(Class<T> clazz) {
+        setActiveConfig(clazz, getBackingConfig(clazz));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void resetToBackingConfigs() {
+        for (Class<?> clazz : activeConfigs.keySet()) {
+            resetToBackingConfig((Class<? extends BalmConfigData>) clazz);
+        }
+    }
 }

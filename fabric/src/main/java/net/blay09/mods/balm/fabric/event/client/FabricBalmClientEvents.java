@@ -90,6 +90,11 @@ public class FabricBalmClientEvents {
             events.fireEventHandlers(event);
         }));
 
+        events.registerEvent(DisconnectedFromServerEvent.class, () -> ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            final DisconnectedFromServerEvent event = new DisconnectedFromServerEvent(client);
+            events.fireEventHandlers(event);
+        }));
+
         events.registerEvent(ScreenInitEvent.Pre.class, () -> ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(screen);
             events.fireEventHandlers(event);

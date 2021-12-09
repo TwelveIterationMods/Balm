@@ -62,6 +62,13 @@ public class ForgeBalmClientEvents {
             });
         });
 
+        events.registerEvent(DisconnectedFromServerEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ClientPlayerNetworkEvent.LoggedOutEvent orig) -> {
+                final DisconnectedFromServerEvent event = new DisconnectedFromServerEvent(Minecraft.getInstance());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
         events.registerEvent(ScreenInitEvent.Pre.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.InitScreenEvent.Pre orig) -> {
                 final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getScreen());
