@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.IConfigSpec;
@@ -143,7 +144,10 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
             // Only rewrite active configs with reload if we're the hosting server or there is no syncing
             // TODO would be good if this still applied non-synced properties
-            if (getConfigSyncMessageFactory(clazz) == null || ServerLifecycleHooks.getCurrentServer() != null) {
+            boolean hasSyncMessage = getConfigSyncMessageFactory(clazz) != null;
+            boolean isHostingServer = ServerLifecycleHooks.getCurrentServer() != null;
+            boolean isIngame = Minecraft.getInstance().gameMode != null;
+            if (!hasSyncMessage || isHostingServer || !isIngame) {
                 setActiveConfig(clazz, newConfigData);
             }
 
