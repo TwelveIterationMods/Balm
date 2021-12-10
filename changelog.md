@@ -1,3 +1,9 @@
+### Version 2.3.0 for Minecraft 1.18
+
+- Fixed dedicated server crash on Fabric when accessing config dir 
+- Fixed local configs not reloading once leaving multiplayer
+- Fixed local configs not reloading when changing them while on the main menu
+
 ### Version 2.2.0 for Minecraft 1.18
 
 - Fixed configs not loading properly on servers

@@ -8,7 +8,9 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionResult;
 
 import java.io.File;
@@ -42,7 +44,7 @@ public class FabricBalmConfig extends AbstractBalmConfig {
 
     @Override
     public File getConfigDir() {
-        return new File(Minecraft.getInstance().gameDirectory, "config");
+        return FabricLoader.getInstance().getConfigDir().toFile();
     }
 
     @SuppressWarnings("unchecked")
