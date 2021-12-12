@@ -165,9 +165,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener((FMLLoadCompleteEvent event) -> initializeAddons());
-        for (DeferredRegister<?> deferredRegister : DeferredRegisters.getByModId(modId)) {
-            deferredRegister.register(modEventBus);
-        }
+        DeferredRegisters.register(modId, modEventBus);
     }
 
     @Override
