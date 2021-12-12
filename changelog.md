@@ -1,3 +1,7 @@
+### Version 2.3.1 for Minecraft 1.18
+
+- Fixed occasional ConcurrentModificationException on startup with Forge
+
 ### Version 2.3.0 for Minecraft 1.18
 
 - Fixed dedicated server crash on Fabric when accessing config dir 
