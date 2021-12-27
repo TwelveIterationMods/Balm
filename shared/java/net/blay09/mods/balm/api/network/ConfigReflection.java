@@ -3,6 +3,7 @@ package net.blay09.mods.balm.api.network;
 import net.blay09.mods.balm.api.config.Synced;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.List;
 public class ConfigReflection {
 
     public static List<Field> getAllFields(Class<?> clazz) {
-        return Arrays.asList(clazz.getFields());
+        return Arrays.stream(clazz.getFields()).filter(it -> !Modifier.isFinal(it.getModifiers())).toList();
     }
 
     public static List<Field> getSyncedFields(Class<?> clazz) {
@@ -30,6 +31,10 @@ public class ConfigReflection {
     public static Object deepCopy(Object from, Object to) {
         Field[] fields = from.getClass().getFields();
         for (Field field : fields) {
+            if (Modifier.isFinal(field.getModifiers())) {
+                continue;
+            }
+
             Class<?> type = field.getType();
             try {
                 if (String.class.isAssignableFrom(type) || Enum.class.isAssignableFrom(type) || type.isPrimitive()) {
