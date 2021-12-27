@@ -7,6 +7,8 @@ import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.event.EventPriority;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -73,6 +75,10 @@ public class ForgeBalmEvents implements BalmEvents {
             for (EventPriority priority : EventPriority.values) {
                 fireEventHandlers(priority, event);
             }
+        }
+
+        if (event instanceof Event forgeEvent) {
+            MinecraftForge.EVENT_BUS.post(forgeEvent);
         }
     }
 
