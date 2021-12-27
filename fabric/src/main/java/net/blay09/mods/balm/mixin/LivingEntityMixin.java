@@ -22,7 +22,7 @@ public abstract class LivingEntityMixin {
 
     private static final ThreadLocal<LivingFallEvent> currentFallEvent = new ThreadLocal<>();
 
-    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), argsOnly = true)
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setAbsorptionAmount(F)V"), index = 2)
     private float actuallyHurt(float damageAmount, DamageSource damageSource) {
         LivingDamageEvent event = new LivingDamageEvent((LivingEntity) (Object) this, damageSource, damageAmount);
         Balm.getEvents().fireEvent(event);

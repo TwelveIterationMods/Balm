@@ -23,7 +23,7 @@ public class PlayerMixin implements BalmPlayer {
 
     private Pose forcedPose;
 
-    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At("HEAD"), argsOnly = true)
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setAbsorptionAmount(F)V"), argsOnly = true)
     private float actuallyHurt(float damageAmount, DamageSource damageSource) {
         LivingDamageEvent event = new LivingDamageEvent((Player) (Object) this, damageSource, damageAmount);
         Balm.getEvents().fireEvent(event);
