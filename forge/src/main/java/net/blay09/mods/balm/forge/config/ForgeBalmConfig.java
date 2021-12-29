@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.minecraft.client.Minecraft;
@@ -56,7 +57,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             if (String.class.isAssignableFrom(type)) {
                 builder.define(path, (String) defaultValue);
             } else if (List.class.isAssignableFrom(type)) {
-                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> true);
+                ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
+                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> expectedType.value().isAssignableFrom(it.getClass()));
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
