@@ -17,6 +17,8 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 public class ForgeBalmConfig extends AbstractBalmConfig {
 
+    private final Logger logger = LogManager.getLogger();
     private final Map<Class<?>, ModConfig> configs = new HashMap<>();
     private final Map<Class<?>, BalmConfigData> configData = new HashMap<>();
 
@@ -58,7 +61,11 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                 builder.define(path, (String) defaultValue);
             } else if (List.class.isAssignableFrom(type)) {
                 ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
-                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> expectedType.value().isAssignableFrom(it.getClass()));
+                if (expectedType == null) {
+                    logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
+                }
+
+                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()));
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
