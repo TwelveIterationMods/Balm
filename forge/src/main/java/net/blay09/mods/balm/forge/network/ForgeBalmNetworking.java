@@ -21,7 +21,6 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -34,6 +33,16 @@ public class ForgeBalmNetworking implements BalmNetworking {
     private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
     private static NetworkEvent.Context replyContext;
+
+    @Override
+    public void allowClientOnly(String modId) {
+        NetworkChannels.allowClientOnly(modId);
+    }
+
+    @Override
+    public void allowServerOnly(String modId) {
+        NetworkChannels.allowServerOnly(modId);
+    }
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {

@@ -42,6 +42,14 @@ public class FabricBalmNetworking implements BalmNetworking {
     private static Player replyPlayer;
 
     @Override
+    public void allowClientOnly(String modId) {
+    }
+
+    @Override
+    public void allowServerOnly(String modId) {
+    }
+
+    @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
             player.openMenu(new ExtendedScreenHandlerFactory() {
