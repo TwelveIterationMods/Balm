@@ -1,10 +1,17 @@
-### Version 2.3.1 for Minecraft 1.18
+### Version 2.4.1 for Minecraft 1.18.x
 
-- Fixed occasional ConcurrentModificationException on startup with Forge
+- Fixed crash on corrupted configs
+
+### Version 2.4.0 for Minecraft 1.18.x
+
 - Fixed custom events not being fired on Forge event bus
 - Fixed LivingDamageEvent on Fabric not taking armor into account
 - Fixed dedicated server crash on Forge
 - Fixed final fields being included in config loading on Forge
+
+### Version 2.3.1 for Minecraft 1.18
+
+- Fixed occasional ConcurrentModificationException on startup with Forge
 
 ### Version 2.3.0 for Minecraft 1.18
 
