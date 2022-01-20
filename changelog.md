@@ -1,3 +1,7 @@
+### Version 2.4.2 for Minecraft 1.18.x
+
+- Fixed ClientStartedEvent not being fired on Forge
+
 ### Version 2.4.1 for Minecraft 1.18.x
 
 - Fixed crash on corrupted configs

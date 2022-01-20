@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
+import net.blay09.mods.balm.api.event.client.ClientStartedEvent;
 import net.blay09.mods.balm.forge.event.ForgeBalmEvents;
 import net.blay09.mods.balm.forge.client.keymappings.ForgeBalmKeyMappings;
 import net.blay09.mods.balm.forge.client.rendering.ForgeBalmModels;
@@ -14,6 +15,8 @@ import net.blay09.mods.balm.forge.client.rendering.ForgeBalmRenderers;
 import net.blay09.mods.balm.forge.client.rendering.ForgeBalmTextures;
 import net.blay09.mods.balm.forge.client.screen.ForgeBalmScreens;
 import net.blay09.mods.balm.forge.event.ForgeBalmClientEvents;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ForgeBalmClientRuntime implements BalmClientRuntime {
 
@@ -58,6 +61,8 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
         ((ForgeBalmScreens) screens).register();
         ((ForgeBalmTextures) textures).register();
         ((ForgeBalmModels) models).register();
+
+        ForgeBalmClientEvents.registerLifecycleEvents((ForgeBalmEvents) Balm.getEvents());
 
         initializer.run();
     }
