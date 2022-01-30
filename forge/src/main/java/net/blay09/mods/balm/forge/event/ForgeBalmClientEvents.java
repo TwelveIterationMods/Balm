@@ -1,6 +1,5 @@
 package net.blay09.mods.balm.forge.event;
 
-import net.blay09.mods.balm.api.event.EventPriority;
 import net.blay09.mods.balm.api.event.client.RecipesUpdatedEvent;
 import net.blay09.mods.balm.api.event.TickPhase;
 import net.blay09.mods.balm.api.event.TickType;
@@ -343,14 +342,5 @@ public class ForgeBalmClientEvents {
         }
 
         return type;
-    }
-
-    public static void registerLifecycleEvents(ForgeBalmEvents events) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLLoadCompleteEvent orig) -> {
-            final ClientStartedEvent event = new ClientStartedEvent(Minecraft.getInstance());
-            for (EventPriority priority : EventPriority.values()) {
-                events.fireEventHandlers(priority, event);
-            }
-        });
     }
 }

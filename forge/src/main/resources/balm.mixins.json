@@ -12,7 +12,8 @@
     "KeyMappingAccessor",
     "ModelLayersAccessor",
     "MouseHandlerAccessor",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
