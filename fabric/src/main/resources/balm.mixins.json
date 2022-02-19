@@ -6,7 +6,9 @@
   "mixins": [
     "BalmConfigDataMixin",
     "ChunkMapMixin",
+    "StemBlockMixin",
     "CropBlockMixin",
+    "FabricCropBlockMixin",
     "EntityMixin",
     "LevelMixin",
     "LivingEntityMixin",
@@ -17,7 +19,7 @@
     "ResultSlotMixin",
     "ServerPlayerMixin",
     "SlotAccessor",
-    "StemBlockMixin",
+    "FabricStemBlockMixin",
     "DamageSourceAccessor"
   ],
   "client": [

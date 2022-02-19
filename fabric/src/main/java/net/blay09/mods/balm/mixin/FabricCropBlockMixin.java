@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.Random;
 
 @Mixin(CropBlock.class)
-public class CropBlockMixin {
+public class FabricCropBlockMixin {
 
     private static final ThreadLocal<BlockState> getGrowthSpeedBlockState = new ThreadLocal<>();
 
@@ -41,12 +41,7 @@ public class CropBlockMixin {
         Balm.getEvents().fireEvent(event);
     }
 
-    @Inject(method = "mayPlaceOn(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z", at = @At("HEAD"), cancellable = true)
-    public void mayPlaceOn(BlockState state, BlockGetter blockGetter, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (state.getBlock() instanceof CustomFarmBlock customFarmBlock) {
-            callbackInfo.setReturnValue(customFarmBlock.canSustainPlant(state, blockGetter, pos, Direction.UP, blockGetter.getBlockState(pos.relative(Direction.UP)).getBlock()));
-        }
-    }
+
 
     @ModifyVariable(method = "getGrowthSpeed(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z", ordinal = 0))
     private static BlockState getGrowthSpeedCaptureLocals(BlockState state) {

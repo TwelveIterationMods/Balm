@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 
 @Mixin(StemBlock.class)
-public class StemBlockMixin {
+public class FabricStemBlockMixin {
     @Inject(method = "randomTick(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Ljava/util/Random;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"), cancellable = true)
     public void randomTickPreGrow(BlockState state, ServerLevel level, BlockPos pos, Random random, CallbackInfo callbackInfo) {
         CropGrowEvent.Pre event = new CropGrowEvent.Pre(level, pos, state);
@@ -41,10 +41,4 @@ public class StemBlockMixin {
         Balm.getEvents().fireEvent(event);
     }
 
-    @Inject(method = "mayPlaceOn(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z", at = @At("HEAD"), cancellable = true)
-    public void mayPlaceOn(BlockState state, BlockGetter blockGetter, BlockPos pos, CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (state.getBlock() instanceof CustomFarmBlock customFarmBlock) {
-            callbackInfo.setReturnValue(customFarmBlock.canSustainPlant(state, blockGetter, pos, Direction.UP, blockGetter.getBlockState(pos.relative(Direction.UP)).getBlock()));
-        }
-    }
 }
