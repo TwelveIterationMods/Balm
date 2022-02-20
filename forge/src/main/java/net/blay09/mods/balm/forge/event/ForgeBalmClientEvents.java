@@ -104,7 +104,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ContainerScreenDrawEvent.Foreground.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawBackground orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawForeground orig) -> {
                 final ContainerScreenDrawEvent.Foreground event = new ContainerScreenDrawEvent.Foreground(orig.getContainerScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
