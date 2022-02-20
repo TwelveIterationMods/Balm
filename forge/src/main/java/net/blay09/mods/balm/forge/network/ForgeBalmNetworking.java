@@ -20,6 +20,8 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ForgeBalmNetworking implements BalmNetworking {
+
+    private static final Logger logger = LoggerFactory.getLogger(ForgeBalmNetworking.class);
 
     private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new ConcurrentHashMap<>();
     private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
@@ -138,6 +142,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
             if (context.getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
+                logger.warn("Received {} on incorrect side {}", identifier, context.getDirection());
                 return;
             }
 
@@ -158,6 +163,11 @@ public class ForgeBalmNetworking implements BalmNetworking {
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
             NetworkEvent.Context context = contextSupplier.get();
+            if (context.getDirection() != NetworkDirection.PLAY_TO_SERVER) {
+                logger.warn("Received {} on incorrect side {}", identifier, context.getDirection());
+                return;
+            }
+
             context.enqueueWork(() -> {
                 replyContext = context;
                 ServerPlayer player = context.getSender();

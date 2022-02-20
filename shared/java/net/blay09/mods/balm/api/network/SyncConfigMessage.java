@@ -118,7 +118,7 @@ public class SyncConfigMessage<TData> {
                                                                                                           Class<TData> dataClass,
                                                                                                           Supplier<TData> dataFactory) {
         Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getBackingConfig(dataClass), dataFactory);
-        Balm.getNetworking().registerServerboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
+        Balm.getNetworking().registerClientboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
             TData data = message.getData();
             writeSyncedFields(buf, data, false);
         }, buf -> {
