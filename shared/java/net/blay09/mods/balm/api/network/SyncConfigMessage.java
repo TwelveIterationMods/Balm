@@ -2,10 +2,12 @@ package net.blay09.mods.balm.api.network;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.BalmConfigData;
+import net.blay09.mods.balm.api.config.Synced;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -35,13 +37,13 @@ public class SyncConfigMessage<TData> {
     public static <TData, TMessage extends SyncConfigMessage<TData>> Function<FriendlyByteBuf, TMessage> createDecoder(Class<?> clazz, Function<TData, TMessage> messageFactory, Supplier<TData> dataFactory) {
         return buf -> {
             TData data = dataFactory.get();
-            readSyncedFields(buf, data);
+            readSyncedFields(buf, data, false);
             return messageFactory.apply(data);
         };
     }
 
-    private static <TData> void readSyncedFields(FriendlyByteBuf buf, TData data) {
-        List<Field> syncedFields = ConfigReflection.getSyncedFields(data.getClass());
+    private static <TData> void readSyncedFields(FriendlyByteBuf buf, TData data, boolean forceSynced) {
+        List<Field> syncedFields = forceSynced ? ConfigReflection.getSyncedFields(data.getClass()) : Arrays.asList(data.getClass().getFields());
         syncedFields.sort(Comparator.comparing(Field::getName));
         for (Field field : syncedFields) {
             Class<?> type = field.getType();
@@ -63,7 +65,7 @@ public class SyncConfigMessage<TData> {
                     value = buf.readLong();
                 } else {
                     value = field.get(data);
-                    readSyncedFields(buf, value);
+                    readSyncedFields(buf, value, field.getAnnotation(Synced.class) != null);
                 }
                 field.set(data, value);
             } catch (IllegalAccessException e) {
@@ -75,12 +77,12 @@ public class SyncConfigMessage<TData> {
     public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<TMessage, FriendlyByteBuf> createEncoder(Class<TData> clazz) {
         return (message, buf) -> {
             TData data = message.getData();
-            writeSyncedFields(buf, data);
+            writeSyncedFields(buf, data, false);
         };
     }
 
-    private static <TData> void writeSyncedFields(FriendlyByteBuf buf, TData data) {
-        List<Field> syncedFields = ConfigReflection.getSyncedFields(data.getClass());
+    private static <TData> void writeSyncedFields(FriendlyByteBuf buf, TData data, boolean forceSynced) {
+        List<Field> syncedFields = forceSynced ? ConfigReflection.getSyncedFields(data.getClass()) : Arrays.asList(data.getClass().getFields());
         syncedFields.sort(Comparator.comparing(Field::getName));
         for (Field field : syncedFields) {
             Class<?> type = field.getType();
@@ -102,7 +104,7 @@ public class SyncConfigMessage<TData> {
                 } else if (long.class.isAssignableFrom(type)) {
                     buf.writeLong((long) value);
                 } else {
-                    writeSyncedFields(buf, field.get(data));
+                    writeSyncedFields(buf, field.get(data), field.getAnnotation(Synced.class) != null);
                 }
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(e);
@@ -118,10 +120,10 @@ public class SyncConfigMessage<TData> {
         Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getBackingConfig(dataClass), dataFactory);
         Balm.getNetworking().registerServerboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
             TData data = message.getData();
-            writeSyncedFields(buf, data);
+            writeSyncedFields(buf, data, false);
         }, buf -> {
             TData data = copyFactory.get();
-            readSyncedFields(buf, data);
+            readSyncedFields(buf, data, false);
             return messageFactory.apply(data);
         }, Balm.getConfig()::handleSync);
     }
