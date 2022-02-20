@@ -3,6 +3,7 @@ package net.blay09.mods.balm.fabric.config;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
@@ -19,7 +20,12 @@ public class FabricBalmConfig extends AbstractBalmConfig {
     @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
         var configDataClass = (Class<? extends ConfigData>) clazz;
-        AutoConfig.register(configDataClass, Toml4jConfigSerializer::new).registerSaveListener((configHolder, configData) -> {
+        ConfigHolder<? extends ConfigData> configHolder = AutoConfig.register(configDataClass, Toml4jConfigSerializer::new);
+        configHolder.registerSaveListener((holder, configData) -> {
+            Balm.getEvents().fireEvent(new ConfigReloadedEvent());
+            return InteractionResult.SUCCESS;
+        });
+        configHolder.registerLoadListener((holder, configData) -> {
             Balm.getEvents().fireEvent(new ConfigReloadedEvent());
             return InteractionResult.SUCCESS;
         });
