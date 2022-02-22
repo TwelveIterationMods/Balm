@@ -1,3 +1,11 @@
+### Version 2.4.3 for Minecraft 1.18.x
+
+- Fixed block entities not syncing correctly on Fabric
+- Fixed config not syncing correctly on Fabric
+- Fixed config sync to include all fields if an object is marked as synced
+- Fixed incorrect ContainerScreenDrawEvent.Foreground binding on Forge resulting in different behaviour between Forge and Fabric
+- Fixed weird mixin issue in Forge farmland by just doing it differently instead
+
 ### Version 2.4.2 for Minecraft 1.18.x
 
 - Fixed ClientStartedEvent not being fired on Forge
