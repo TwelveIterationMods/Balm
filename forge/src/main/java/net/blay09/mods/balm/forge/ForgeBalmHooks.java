@@ -3,6 +3,7 @@ package net.blay09.mods.balm.forge;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +23,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Random;
 
@@ -103,5 +105,10 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public void setForcedPose(Player player, Pose pose) {
         player.setForcedPose(pose);
+    }
+
+    @Override
+    public MinecraftServer getServer() {
+        return ServerLifecycleHooks.getCurrentServer();
     }
 }

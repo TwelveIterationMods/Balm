@@ -3,7 +3,7 @@ package net.blay09.mods.balm.forge;
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -61,8 +61,8 @@ public class ForgeBalmRegistries implements BalmRegistries {
     }
 
     @Override
-    public Tag<Item> getItemTag(ResourceLocation key) {
-        return ItemTags.bind(key.toString());
+    public TagKey<Item> getItemTag(ResourceLocation key) {
+        return ItemTags.create(key);
     }
 
     @Override

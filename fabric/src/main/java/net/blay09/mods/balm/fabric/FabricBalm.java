@@ -11,6 +11,7 @@ public class FabricBalm implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ((FabricBalmHooks) Balm.getHooks()).initialize();
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {

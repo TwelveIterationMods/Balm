@@ -1,10 +1,9 @@
 package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmRegistries;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -56,8 +55,8 @@ public class FabricBalmRegistries implements BalmRegistries {
     }
 
     @Override
-    public Tag<Item> getItemTag(ResourceLocation key) {
-        return TagRegistry.item(key);
+    public TagKey<Item> getItemTag(ResourceLocation key) {
+        return TagKey.create(Registry.ITEM_REGISTRY, key);
     }
 
     @Override

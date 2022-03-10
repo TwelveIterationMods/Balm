@@ -2,6 +2,7 @@ package net.blay09.mods.balm.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -61,4 +62,6 @@ public interface BalmHooks {
     boolean isShield(ItemStack itemStack);
 
     void setForcedPose(Player player, Pose pose);
+
+    MinecraftServer getServer();
 }

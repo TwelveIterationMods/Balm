@@ -13,25 +13,14 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import java.util.function.Supplier;
 
 public interface BalmWorldGen {
-    <T extends Feature<?>> DeferredObject<T> registerFeature(Supplier<T> supplier, ResourceLocation identifier);
+    <T extends Feature<?>> DeferredObject<T> registerFeature(ResourceLocation identifier, Supplier<T> supplier);
 
-    <T extends ConfiguredFeature<?, ?>> DeferredObject<T> registerConfiguredFeature(Supplier<T> supplier, ResourceLocation identifier);
+    <FC extends FeatureConfiguration, F extends Feature<FC>, T extends ConfiguredFeature<FC, F>> DeferredObject<T> registerConfiguredFeature(ResourceLocation identifier, Supplier<F> featureSupplier, Supplier<FC> configurationSupplier);
 
-    <T extends PlacedFeature> DeferredObject<T> registerPlacedFeature(Supplier<T> supplier, ResourceLocation identifier);
+    <T extends PlacedFeature> DeferredObject<T> registerPlacedFeature(ResourceLocation identifier, Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier, PlacementModifier... placementModifiers);
 
-    <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(Supplier<T> supplier, ResourceLocation identifier);
+    <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(ResourceLocation identifier, Supplier<T> supplier);
 
-    default <T extends FeatureConfiguration> ConfiguredFeature<?, ?> configuredFeature(Feature<T> feature, T config) {
-        return feature.configured(config);
-    }
-
-    default <T extends FeatureConfiguration> PlacedFeature placedFeature(Feature<T> feature, T config, PlacementModifier... placementModifiers) {
-        return placedFeature(configuredFeature(feature, config), placementModifiers);
-    }
-
-    default PlacedFeature placedFeature(ConfiguredFeature<?, ?> configuredFeature, PlacementModifier... placementModifiers) {
-        return configuredFeature.placed(placementModifiers);
-    }
-
+    @Deprecated
     void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation configuredFeatureIdentifier);
 }

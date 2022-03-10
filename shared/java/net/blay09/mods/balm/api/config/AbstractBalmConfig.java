@@ -3,29 +3,21 @@ package net.blay09.mods.balm.api.config;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
-import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
-import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractBalmConfig implements BalmConfig {
 
-    private final AtomicReference<MinecraftServer> currentServer = new AtomicReference<>();
     private final Map<Class<?>, BalmConfigData> activeConfigs = new HashMap<>();
     private final Map<Class<?>, Function<?, ?>> syncMessageFactories = new HashMap<>();
 
     public void initialize() {
-        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> currentServer.set(event.getServer()));
-
-        Balm.getEvents().onEvent(ServerStoppedEvent.class, event -> currentServer.set(null));
-
         Balm.getEvents().onEvent(PlayerLoginEvent.class, event -> {
             for (BalmConfigData config : activeConfigs.values()) {
                 SyncConfigMessage<? extends BalmConfigData> message = getConfigSyncMessage(config.getClass());
@@ -36,11 +28,12 @@ public abstract class AbstractBalmConfig implements BalmConfig {
         });
 
         Balm.getEvents().onEvent(ConfigReloadedEvent.class, event -> {
-            if (currentServer.get() != null) {
+            MinecraftServer server = Balm.getHooks().getServer();
+            if (server != null) {
                 for (BalmConfigData config : activeConfigs.values()) {
                     SyncConfigMessage<? extends BalmConfigData> message = getConfigSyncMessage(config.getClass());
                     if (message != null) {
-                        Balm.getNetworking().sendToAll(currentServer.get(), message);
+                        Balm.getNetworking().sendToAll(server, message);
                     }
                 }
             }

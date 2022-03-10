@@ -5,22 +5,22 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BalmConfigDataMixin",
+    "BiomeAccessor",
     "ChunkMapMixin",
-    "StemBlockMixin",
     "CropBlockMixin",
-    "FabricCropBlockMixin",
+    "DamageSourceAccessor",
     "EntityMixin",
+    "FabricCropBlockMixin",
+    "FabricStemBlockMixin",
     "LevelMixin",
     "LivingEntityMixin",
     "LootTableMixin",
-    "MinecraftServerAccessor",
-    "MinecraftServerMixin",
+    "ReloadableServerResourcesMixin",
     "PlayerMixin",
     "ResultSlotMixin",
     "ServerPlayerMixin",
     "SlotAccessor",
-    "FabricStemBlockMixin",
-    "DamageSourceAccessor"
+    "StemBlockMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",

@@ -1,24 +1,24 @@
 package net.blay09.mods.balm.api.event.server;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.BalmEvent;
-import net.blay09.mods.balm.mixin.MinecraftServerAccessor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerResources;
+import net.minecraft.server.ReloadableServerResources;
 
 public class ServerReloadedEvent extends BalmEvent {
     private final MinecraftServer server;
-    private final ServerResources resources;
+    private final ReloadableServerResources resources;
 
-    public ServerReloadedEvent(MinecraftServer server) {
-        this.server = server;
-        this.resources = ((MinecraftServerAccessor) server).getResources();
+    public ServerReloadedEvent(ReloadableServerResources resources) {
+        this.server = Balm.getHooks().getServer();
+        this.resources = resources;
     }
 
     public MinecraftServer getServer() {
         return server;
     }
 
-    public ServerResources getResources() {
+    public ReloadableServerResources getResources() {
         return resources;
     }
 }

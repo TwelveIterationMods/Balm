@@ -1,11 +1,15 @@
 package net.blay09.mods.balm.fabric;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
+import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
+import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -19,8 +23,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FabricBalmHooks implements BalmHooks {
+
+    private final AtomicReference<MinecraftServer> currentServer = new AtomicReference<>();
+
+    public void initialize() {
+        Balm.getEvents().onEvent(ServerStartedEvent.class, event -> currentServer.set(event.getServer()));
+        Balm.getEvents().onEvent(ServerStoppedEvent.class, event -> currentServer.set(null));
+    }
+
     public boolean saplingGrowTree(Level level, Random random, BlockPos pos) {
         return true;
     }
@@ -85,5 +98,10 @@ public class FabricBalmHooks implements BalmHooks {
     @Override
     public void setForcedPose(Player player, Pose pose) {
         ((BalmPlayer) player).setForcedPose(pose);
+    }
+
+    @Override
+    public MinecraftServer getServer() {
+        return currentServer.get();
     }
 }
