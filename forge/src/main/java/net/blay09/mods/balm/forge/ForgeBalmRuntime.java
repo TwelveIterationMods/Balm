@@ -9,6 +9,7 @@ import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
+import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.forge.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.loot.BalmLootTables;
@@ -31,6 +32,7 @@ import net.blay09.mods.balm.forge.menu.ForgeBalmMenus;
 import net.blay09.mods.balm.forge.network.ForgeBalmNetworking;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.blay09.mods.balm.forge.sound.ForgeBalmSounds;
+import net.blay09.mods.balm.forge.stats.ForgeBalmStats;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.*;
@@ -41,7 +43,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmProviders providers = new ForgeBalmProviders();
     private final BalmCommands commands = new ForgeBalmCommands();
     private final BalmLootTables lootTables = new ForgeBalmLootTables();
+    private final BalmStats stats = new ForgeBalmStats();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -144,6 +146,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
     @Override
     public BalmLootTables getLootTables() {
         return lootTables;
+    }
+
+    @Override
+    public BalmStats getStats() {
+        return stats;
     }
 
     @Override

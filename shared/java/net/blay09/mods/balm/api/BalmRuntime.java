@@ -13,6 +13,7 @@ import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
+import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -50,6 +51,8 @@ public interface BalmRuntime {
     BalmCommands getCommands();
 
     BalmLootTables getLootTables();
+
+    BalmStats getStats();
 
     boolean isModLoaded(String modId);
     String getModName(String modId);
