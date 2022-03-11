@@ -13,12 +13,16 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class ForgeBalmBlockEntities implements BalmBlockEntities {
     @Override
-    public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Block... blocks) {
+    public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Supplier<Block>... blocks) {
         DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITIES, identifier.getNamespace());
-        RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> BlockEntityType.Builder.of(factory::create, blocks).build(null));
+        RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
+            Block[] resolvedBlocks = Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new);
+            return BlockEntityType.Builder.of(factory::create, resolvedBlocks).build(null);
+        });
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
