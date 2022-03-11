@@ -23,9 +23,5 @@ public interface BalmModels {
 
     DeferredObject<BakedModel> retexture(ResourceLocation identifier, Map<String, String> textureMap);
 
-    default void overrideModel(Block block, Supplier<BakedModel> model) {
-        overrideModel(() -> block, model);
-    }
-
     void overrideModel(Supplier<Block> block, Supplier<BakedModel> model);
 }
