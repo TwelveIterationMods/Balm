@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -39,11 +40,18 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     private static class Registrations {
         public final List<DeferredObject<?>> configuredFeatures = new ArrayList<>();
         public final List<DeferredObject<?>> placedFeatures = new ArrayList<>();
+        public final List<DeferredObject<?>> placementModifiers = new ArrayList<>();
 
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
             configuredFeatures.forEach(DeferredObject::resolve);
             placedFeatures.forEach(DeferredObject::resolve);
+        }
+
+        @SubscribeEvent
+        public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+            // Technically this is not the right place, but PlacementModifiers aren't a Forge registry yet...
+            placementModifiers.forEach(DeferredObject::resolve);
         }
     }
 
@@ -84,12 +92,13 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(ResourceLocation identifier, Supplier<T> supplier) {
-        // TODO 1.18 bet this will break horribly but placement modifiers aren't a Forge registry yet
-        return new DeferredObject<>(identifier, () -> {
+        DeferredObject<T> deferredObject = new DeferredObject<>(identifier, () -> {
             T placementModifierType = supplier.get();
             Registry.register(Registry.PLACEMENT_MODIFIERS, identifier, placementModifierType);
             return placementModifierType;
-        }).resolveImmediately();
+        });
+        getActiveRegistrations().placementModifiers.add(deferredObject);
+        return deferredObject;
     }
 
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
