@@ -22,7 +22,7 @@ public class ForgeBalmStats implements BalmStats {
         public final List<ResourceLocation> customStats = new ArrayList<>();
 
         @SubscribeEvent
-        public void commonSetup(RegistryEvent.Register<StatType<?>> event) {
+        public void registerStats(RegistryEvent.Register<StatType<?>> event) {
             customStats.forEach(it -> {
                 Registry.register(Registry.CUSTOM_STAT, it.getPath(), it);
                 Stats.CUSTOM.get(it, StatFormatter.DEFAULT);
