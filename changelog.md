@@ -1,3 +1,8 @@
+### Version 3.0.1 for Minecraft 1.18.2
+
+- Updated to Minecraft 1.18.2
+- Fixed stats not being registered
+
 ### Version 2.4.3 for Minecraft 1.18.x
 
 - Fixed block entities not syncing correctly on Fabric
