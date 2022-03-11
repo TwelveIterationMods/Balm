@@ -15,9 +15,9 @@ import java.util.function.Supplier;
 
 public class FabricBalmBlockEntities implements BalmBlockEntities {
     @Override
-    public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Supplier<Block>... blocks) {
+    public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Supplier<Block[]> blocks) {
         return new DeferredObject<>(identifier, () -> {
-            Block[] resolvedBlocks = Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new);
+            Block[] resolvedBlocks = blocks.get();
             BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory::create, resolvedBlocks).build();
             return Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier.toString(), type);
         }).resolveImmediately();
