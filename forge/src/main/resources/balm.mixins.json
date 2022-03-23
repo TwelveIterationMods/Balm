@@ -13,7 +13,8 @@
     "ModelLayersAccessor",
     "MouseHandlerAccessor",
     "ScreenAccessor",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "LootTableMixin"
   ],
   "injectors": {
     "defaultRequire": 1

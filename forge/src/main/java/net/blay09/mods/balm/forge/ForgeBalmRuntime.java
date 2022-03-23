@@ -10,6 +10,7 @@ import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.stats.BalmStats;
+import net.blay09.mods.balm.common.CommonBalmLootTables;
 import net.blay09.mods.balm.forge.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.loot.BalmLootTables;
@@ -27,7 +28,6 @@ import net.blay09.mods.balm.forge.config.ForgeBalmConfig;
 import net.blay09.mods.balm.forge.entity.ForgeBalmEntities;
 import net.blay09.mods.balm.forge.event.ForgeBalmCommonEvents;
 import net.blay09.mods.balm.forge.item.ForgeBalmItems;
-import net.blay09.mods.balm.forge.loot.ForgeBalmLootTables;
 import net.blay09.mods.balm.forge.menu.ForgeBalmMenus;
 import net.blay09.mods.balm.forge.network.ForgeBalmNetworking;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
@@ -64,7 +64,7 @@ public class ForgeBalmRuntime implements BalmRuntime {
     private final BalmEntities entities = new ForgeBalmEntities();
     private final BalmProviders providers = new ForgeBalmProviders();
     private final BalmCommands commands = new ForgeBalmCommands();
-    private final BalmLootTables lootTables = new ForgeBalmLootTables();
+    private final BalmLootTables lootTables = new CommonBalmLootTables();
     private final BalmStats stats = new ForgeBalmStats();
 
     private final List<String> addonClasses = new ArrayList<>();

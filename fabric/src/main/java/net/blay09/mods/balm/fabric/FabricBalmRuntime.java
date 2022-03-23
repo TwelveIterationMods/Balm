@@ -27,7 +27,7 @@ import net.blay09.mods.balm.fabric.command.FabricBalmCommands;
 import net.blay09.mods.balm.fabric.config.FabricBalmConfig;
 import net.blay09.mods.balm.fabric.entity.FabricBalmEntities;
 import net.blay09.mods.balm.fabric.item.FabricBalmItems;
-import net.blay09.mods.balm.fabric.loot.FabricBalmLootTables;
+import net.blay09.mods.balm.common.CommonBalmLootTables;
 import net.blay09.mods.balm.fabric.menu.FabricBalmMenus;
 import net.blay09.mods.balm.fabric.network.FabricBalmNetworking;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
@@ -65,7 +65,7 @@ public class FabricBalmRuntime implements BalmRuntime {
     private final BalmEntities entities = new FabricBalmEntities();
     private final BalmProviders providers = new FabricBalmProviders();
     private final BalmCommands commands = new FabricBalmCommands();
-    private final BalmLootTables lootTables = new FabricBalmLootTables();
+    private final BalmLootTables lootTables = new CommonBalmLootTables();
     private final BalmStats stats = new FabricBalmStats();
 
     public FabricBalmRuntime() {
