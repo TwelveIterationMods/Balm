@@ -19,7 +19,7 @@ import java.util.List;
 public class ForgeBalmLootTables implements BalmLootTables {
     @Override
     public void registerLootModifier(ResourceLocation identifier, BalmLootModifier modifier) {
-        DeferredRegister<GlobalLootModifierSerializer<?>> register = DeferredRegisters.get(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS, identifier.getNamespace());
+        DeferredRegister<GlobalLootModifierSerializer<?>> register = DeferredRegisters.get(ForgeRegistries.LOOT_MODIFIER_SERIALIZERS.get(), identifier.getNamespace());
         register.register(identifier.getPath(), () -> new GlobalLootModifierSerializer<>() {
             @Override
             public IGlobalLootModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] conditions) {
