@@ -1,3 +1,7 @@
+### Version 3.0.2 for Minecraft 1.18.2
+
+- Fixed crash on startup on Forge when used with Farming for Blockheads
+
 ### Version 3.0.1 for Minecraft 1.18.2
 
 - Updated to Minecraft 1.18.2
