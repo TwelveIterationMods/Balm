@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[38,)"
+loaderVersion="[40,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/ModdingForBlockheads/Balm/issues"
 [[mods]]
@@ -16,7 +16,7 @@ Abstraction Layer (but not really)™ for Blay's multiplatform mods
 [[dependencies.balm]]
     modId="forge"
     mandatory=true
-    versionRange="[38,)"
+    versionRange="[40,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.balm]]
