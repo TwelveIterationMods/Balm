@@ -20,7 +20,8 @@
     "ResultSlotMixin",
     "ServerPlayerMixin",
     "SlotAccessor",
-    "StemBlockMixin"
+    "StemBlockMixin",
+    "MinecraftServerMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",

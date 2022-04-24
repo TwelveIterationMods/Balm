@@ -4,7 +4,14 @@
   "package": "net.blay09.mods.balm.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "balm.refmap.json",
-  "mixins": ["CropBlockMixin", "StemBlockMixin", "DamageSourceAccessor", "ReloadableServerResourcesMixin", "SlotAccessor"],
+  "mixins": [
+    "CropBlockMixin",
+    "StemBlockMixin",
+    "DamageSourceAccessor",
+    "ReloadableServerResourcesMixin",
+    "SlotAccessor",
+    "MinecraftServerMixin"
+  ],
   "client": [
     "AbstractContainerScreenAccessor",
     "CheckboxAccessor",
