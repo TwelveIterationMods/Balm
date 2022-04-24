@@ -1,3 +1,8 @@
+### Version 3.0.3 for Minecraft 1.18.2
+
+- Added workaround for new tag loading order
+- Fixed classloading issues in resource reload listeners
+
 ### Version 3.0.2 for Minecraft 1.18.2
 
 - Fixed crash on startup on Forge when used with Farming for Blockheads
