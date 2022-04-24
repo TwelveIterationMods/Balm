@@ -19,7 +19,7 @@ public class ReloadableServerResourcesMixin {
 
     @Inject(method = "loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/RegistryAccess$Frozen;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", at = @At("RETURN"), cancellable = true)
     private static void loadResources(ResourceManager resourceManager, RegistryAccess.Frozen frozen, Commands.CommandSelection commandSelection, int i, Executor e1, Executor e2, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> callbackInfo) {
-        callbackInfo.getReturnValue().thenAcceptAsync(it -> Balm.getEvents().fireEvent(new ServerReloadedEvent(it)));
+        callbackInfo.getReturnValue().thenAccept(it -> Balm.getEvents().fireEvent(new ServerReloadedEvent(it)));
     }
 
 }
