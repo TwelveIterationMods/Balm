@@ -44,8 +44,10 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
-            configuredFeatures.forEach(DeferredObject::resolve);
-            placedFeatures.forEach(DeferredObject::resolve);
+            event.enqueueWork(() -> {
+                configuredFeatures.forEach(DeferredObject::resolve);
+                placedFeatures.forEach(DeferredObject::resolve);
+            });
         }
 
         @SubscribeEvent
