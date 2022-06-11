@@ -50,8 +50,10 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(ClientStartedEvent.class, priority -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeBalmEvents.toForge(priority), (FMLLoadCompleteEvent orig) -> {
-                final ClientStartedEvent event = new ClientStartedEvent(Minecraft.getInstance());
-                events.fireEventHandlers(priority, event);
+                orig.enqueueWork(() -> {
+                    final ClientStartedEvent event = new ClientStartedEvent(Minecraft.getInstance());
+                    events.fireEventHandlers(priority, event);
+                });
             });
         });
 
