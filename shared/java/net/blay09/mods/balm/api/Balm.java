@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeSpi.create();
+    private static final SidedProxy<BalmProxy> proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
 
     @Deprecated
     public static void initialize(String modId) {
@@ -56,6 +57,10 @@ public class Balm {
 
     public static void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
         runtime.addServerReloadListener(identifier, reloadListener);
+    }
+
+    public static BalmProxy getProxy() {
+        return proxy.get();
     }
 
     public static BalmEvents getEvents() {

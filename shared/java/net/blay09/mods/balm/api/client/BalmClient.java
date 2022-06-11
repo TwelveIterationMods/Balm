@@ -21,6 +21,10 @@ public class BalmClient {
         runtime.initialize(modId, () -> {});
     }
 
+    /**
+     * Use Balm.getProxy() for extra side-safety
+     */
+    @Deprecated
     public static Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
