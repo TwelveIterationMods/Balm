@@ -247,6 +247,13 @@ public class ForgeBalmCommonEvents {
                 events.fireEventHandlers(priority, event);
             });
         });
+
+        events.registerEvent(ItemCraftedEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.ItemCraftedEvent orig) -> {
+                final ItemCraftedEvent event = new ItemCraftedEvent(orig.getPlayer(), orig.getCrafting(), orig.getInventory());
+                events.fireEventHandlers(priority, event);
+            });
+        });
     }
 
 }
