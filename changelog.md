@@ -1,3 +1,11 @@
+### Version 3.1.0 for Minecraft 1.18.2
+
+- Fixed potential crash on startup for some mods
+- Fixed potential crash on dedicated servers under some mod combinations
+- Fixed potential crash on first startup when config is generated
+- Fixed crashes under some config edge-cases, instead fall back to default
+- Fixed ItemCraftedEvent not being recognized on Forge
+
 ### Version 3.0.3 for Minecraft 1.18.2
 
 - Added workaround for new tag loading order
