@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -34,10 +35,12 @@ public class FabricBalmHooks implements BalmHooks {
         Balm.getEvents().onEvent(ServerStoppedEvent.class, event -> currentServer.set(null));
     }
 
-    public boolean saplingGrowTree(Level level, Random random, BlockPos pos) {
+    @Override
+    public boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos) {
         return true;
     }
 
+    @Override
     public boolean growCrop(ItemStack itemStack, Level level, BlockPos pos, @Nullable Player player) {
         return BoneMealItem.growCrop(itemStack, level, pos);
     }
