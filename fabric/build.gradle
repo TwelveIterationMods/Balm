@@ -2,6 +2,7 @@ plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -136,4 +137,20 @@ curseforge {
 	options {
 		forgeGradleIntegration = false
 	}
+}
+
+import com.modrinth.minotaur.dependencies.ModDependency
+
+modrinth {
+	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
+	projectId = project.modrinth_project_id
+	versionType = project.modrinth_release_type
+	uploadFile = remapJar
+	changelog = rootProject.file("../changelog.md").text
+	gameVersions = [project.minecraft_version]
+	syncBodyFrom = rootProject.file("../modrinth.md").text
+	loaders = ['fabric']
+	dependencies = [
+			new ModDependency('P7dR8mSH', 'required') // Fabric API
+	]
 }
