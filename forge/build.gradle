@@ -176,6 +176,7 @@ modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
     projectId = project.modrinth_project_id
     versionType = project.modrinth_release_type
+    versionNumber = project.version + "-forge"
     uploadFile = jar
     changelog = rootProject.file("../changelog.md").text
     gameVersions = [project.minecraft_version]
