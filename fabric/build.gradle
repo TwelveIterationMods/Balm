@@ -38,7 +38,7 @@ dependencies {
 	}
 
 	//modImplementation "com.terraformersmc:modmenu:2.0.2"
-	modImplementation "curse.maven:modmenu-308702:3348711"
+	modImplementation "curse.maven:modmenu-308702:3821162"
 }
 
 processResources {

@@ -90,7 +90,7 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(ScreenDrawEvent.Pre.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Pre orig) -> {
-                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTicks());
+                final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTick());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
@@ -114,7 +114,7 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(ScreenDrawEvent.Post.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Post orig) -> {
-                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTicks());
+                final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTick());
                 events.fireEventHandlers(priority, event);
             });
         });
@@ -221,10 +221,10 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(FovUpdateEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FOVModifierEvent orig) -> {
-                final FovUpdateEvent event = new FovUpdateEvent(orig.getEntity());
+                final FovUpdateEvent event = new FovUpdateEvent(orig.getPlayer());
                 events.fireEventHandlers(priority, event);
                 if (event.getFov() != null) {
-                    orig.setNewfov(event.getFov());
+                    orig.setNewFov(event.getFov());
                 }
             });
         });
@@ -298,7 +298,7 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Pre orig) -> {
                 GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
                 if (type != null) {
-                    final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getMatrixStack(), type);
+                    final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getPoseStack(), type);
                     events.fireEventHandlers(priority, event);
                     if (event.isCanceled()) {
                         orig.setCanceled(true);
@@ -311,7 +311,7 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Post orig) -> {
                 GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
                 if (type != null) {
-                    final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getMatrixStack(), type);
+                    final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getPoseStack(), type);
                     events.fireEventHandlers(priority, event);
                 }
             });

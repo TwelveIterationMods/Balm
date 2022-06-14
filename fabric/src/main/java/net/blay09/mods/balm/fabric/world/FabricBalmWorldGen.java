@@ -3,11 +3,9 @@ package net.blay09.mods.balm.fabric.world;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
-import net.blay09.mods.balm.mixin.BiomeAccessor;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -63,7 +61,6 @@ public class FabricBalmWorldGen implements BalmWorldGen {
     public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
         BiomeModifications.addFeature(it -> biomePredicate.test(
                 it.getBiomeKey().location(),
-                ((BiomeAccessor) (Object) it.getBiome()).getBiomeCategory(),
                 it.getBiome().getPrecipitation(),
                 it.getBiome().getBaseTemperature(),
                 it.getBiome().getDownfall()), step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));

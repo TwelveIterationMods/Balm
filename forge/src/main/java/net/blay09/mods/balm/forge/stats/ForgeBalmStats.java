@@ -4,11 +4,10 @@ import net.blay09.mods.balm.api.stats.BalmStats;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
-import net.minecraft.stats.StatType;
 import net.minecraft.stats.Stats;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.ArrayList;
@@ -22,11 +21,11 @@ public class ForgeBalmStats implements BalmStats {
         public final List<ResourceLocation> customStats = new ArrayList<>();
 
         @SubscribeEvent
-        public void registerStats(RegistryEvent.Register<StatType<?>> event) {
-            customStats.forEach(it -> {
+        public void commonSetup(FMLCommonSetupEvent event) {
+            event.enqueueWork(() -> customStats.forEach(it -> {
                 Registry.register(Registry.CUSTOM_STAT, it.getPath(), it);
                 Stats.CUSTOM.get(it, StatFormatter.DEFAULT);
-            });
+            }));
         }
     }
 

@@ -17,22 +17,22 @@ import java.util.Collection;
 public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Item item) {
-        return item.getRegistryName();
+        return ForgeRegistries.ITEMS.getKey(item);
     }
 
     @Override
     public ResourceLocation getKey(Block block) {
-        return block.getRegistryName();
+        return ForgeRegistries.BLOCKS.getKey(block);
     }
 
     @Override
     public ResourceLocation getKey(Fluid fluid) {
-        return fluid.getRegistryName();
+        return ForgeRegistries.FLUIDS.getKey(fluid);
     }
 
     @Override
     public ResourceLocation getKey(EntityType<?> entityType) {
-        return entityType.getRegistryName();
+        return ForgeRegistries.ENTITIES.getKey(entityType);
     }
 
     @Override

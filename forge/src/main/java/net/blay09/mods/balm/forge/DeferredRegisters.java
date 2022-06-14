@@ -6,7 +6,6 @@ import com.google.common.collect.Tables;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.Collection;
 
@@ -14,7 +13,7 @@ public class DeferredRegisters {
     private static final Table<IForgeRegistry<?>, String, DeferredRegister<?>> deferredRegisters = Tables.synchronizedTable(HashBasedTable.create());
 
     @SuppressWarnings("unchecked")
-    public static <T extends IForgeRegistryEntry<T>> DeferredRegister<T> get(IForgeRegistry<T> registry, String modId) {
+    public static <T> DeferredRegister<T> get(IForgeRegistry<T> registry, String modId) {
         DeferredRegister<?> register = deferredRegisters.get(registry, modId);
         if (register == null) {
             register = DeferredRegister.create(registry, modId);

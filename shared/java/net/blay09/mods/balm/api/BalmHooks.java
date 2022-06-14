@@ -3,6 +3,7 @@ package net.blay09.mods.balm.api;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -16,13 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
 public interface BalmHooks {
     /**
      * Forge fires SaplingGrowTreeEvent, Fabric NOPs
      */
-    boolean saplingGrowTree(Level level, Random random, BlockPos pos);
+    boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos);
 
     /**
      * Forge adds player-sensitive version, Fabric uses normal version

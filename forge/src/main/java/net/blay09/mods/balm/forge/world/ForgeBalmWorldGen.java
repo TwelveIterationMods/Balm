@@ -19,8 +19,6 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -45,15 +43,10 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> {
+                placementModifiers.forEach(DeferredObject::resolve);
                 configuredFeatures.forEach(DeferredObject::resolve);
                 placedFeatures.forEach(DeferredObject::resolve);
             });
-        }
-
-        @SubscribeEvent
-        public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
-            // Technically this is not the right place, but PlacementModifiers aren't a Forge registry yet...
-            placementModifiers.forEach(DeferredObject::resolve);
         }
     }
 
@@ -111,14 +104,14 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         biomeModifications.add(new BiomeModification(biomePredicate, step, resourceKey));
     }
 
-    @SubscribeEvent
-    public void onBiomeLoading(BiomeLoadingEvent event) {
-        for (BiomeModification biomeModification : biomeModifications) {
-            if (biomeModification.getBiomePredicate().test(event.getName(), event.getCategory(), event.getClimate().precipitation, event.getClimate().temperature, event.getClimate().downfall)) {
-                BuiltinRegistries.PLACED_FEATURE.getHolder(biomeModification.getConfiguredFeatureKey()).ifPresent(placedFeature -> event.getGeneration().addFeature(biomeModification.getStep(), placedFeature));
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void onBiomeLoading(BiomeLoadingEvent event) { TODO 1.19 "BiomeModifier", I can't wait
+//        for (BiomeModification biomeModification : biomeModifications) {
+//            if (biomeModification.getBiomePredicate().test(event.getName(), event.getCategory(), event.getClimate().precipitation, event.getClimate().temperature, event.getClimate().downfall)) {
+//                BuiltinRegistries.PLACED_FEATURE.getHolder(biomeModification.getConfiguredFeatureKey()).ifPresent(placedFeature -> event.getGeneration().addFeature(biomeModification.getStep(), placedFeature));
+//            }
+//        }
+//    }
 
     public void register() {
         FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());

@@ -2,9 +2,9 @@ package net.blay09.mods.balm.fabric.client.rendering;
 
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -41,12 +41,12 @@ public class FabricBalmRenderers implements BalmRenderers {
 
     @Override
     public <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<? super T> provider) {
-        EntityRendererRegistry.INSTANCE.register(type.get(), provider);
+        EntityRendererRegistry.register(type.get(), provider);
     }
 
     @Override
     public <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<? super T> provider) {
-        BlockEntityRendererRegistry.INSTANCE.register(type.get(), provider);
+        BlockEntityRendererRegistry.register(type.get(), provider);
     }
 
     @Override

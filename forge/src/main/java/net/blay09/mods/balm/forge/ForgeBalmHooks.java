@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmHooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +30,7 @@ import java.util.Random;
 
 public class ForgeBalmHooks implements BalmHooks {
     @Override
-    public boolean saplingGrowTree(Level level, Random random, BlockPos pos) {
+    public boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos) {
         return ForgeEventFactory.saplingGrowTree(level, random, pos);
     }
 
