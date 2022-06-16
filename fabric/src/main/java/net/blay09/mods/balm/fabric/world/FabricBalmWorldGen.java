@@ -32,7 +32,7 @@ public class FabricBalmWorldGen implements BalmWorldGen {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <FC extends FeatureConfiguration, F extends Feature<FC>, T extends ConfiguredFeature<FC, F>> DeferredObject<T> registerConfiguredFeature(ResourceLocation identifier, Supplier<F> featureSupplier, Supplier<FC> configurationSupplier){
+    public <FC extends FeatureConfiguration, F extends Feature<FC>, T extends ConfiguredFeature<FC, F>> DeferredObject<T> registerConfiguredFeature(ResourceLocation identifier, Supplier<F> featureSupplier, Supplier<FC> configurationSupplier) {
         return new DeferredObject<>(identifier, () -> {
             Holder<ConfiguredFeature<FC, ?>> configuredFeature = FeatureUtils.register(identifier.toString(), featureSupplier.get(), configurationSupplier.get());
             return (T) configuredFeature.value();
@@ -59,10 +59,7 @@ public class FabricBalmWorldGen implements BalmWorldGen {
 
     @Override
     public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
-        BiomeModifications.addFeature(it -> biomePredicate.test(
-                it.getBiomeKey().location(),
-                it.getBiome().getPrecipitation(),
-                it.getBiome().getBaseTemperature(),
-                it.getBiome().getDownfall()), step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));
+        BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiomeKey().location(), Holder.direct(it.getBiome())),
+                step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));
     }
 }

@@ -139,8 +139,6 @@ curseforge {
 	}
 }
 
-import com.modrinth.minotaur.dependencies.ModDependency
-
 modrinth {
 	token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
 	projectId = project.modrinth_project_id
@@ -151,7 +149,7 @@ modrinth {
 	gameVersions = [project.minecraft_version]
 	syncBodyFrom = rootProject.file("../modrinth.md").text
 	loaders = ['fabric']
-	dependencies = [
-			new ModDependency('P7dR8mSH', 'required') // Fabric API
-	]
+	dependencies {
+		required.project "fabric-api"
+	}
 }

@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.forge.world;
 
+import com.mojang.serialization.Codec;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
@@ -11,6 +12,7 @@ import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -19,6 +21,8 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.common.world.ModifiableBiomeInfo;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -50,9 +54,14 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         }
     }
 
+    public static final Codec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = Codec.unit(BalmBiomeModifier.INSTANCE);
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {
+        var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
+        registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
+        registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -104,14 +113,17 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         biomeModifications.add(new BiomeModification(biomePredicate, step, resourceKey));
     }
 
-//    @SubscribeEvent
-//    public void onBiomeLoading(BiomeLoadingEvent event) { TODO 1.19 "BiomeModifier", I can't wait
-//        for (BiomeModification biomeModification : biomeModifications) {
-//            if (biomeModification.getBiomePredicate().test(event.getName(), event.getCategory(), event.getClimate().precipitation, event.getClimate().temperature, event.getClimate().downfall)) {
-//                BuiltinRegistries.PLACED_FEATURE.getHolder(biomeModification.getConfiguredFeatureKey()).ifPresent(placedFeature -> event.getGeneration().addFeature(biomeModification.getStep(), placedFeature));
-//            }
-//        }
-//    }
+    public void modifyBiome(Holder<Biome> biome, BiomeModifier.Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        if (phase == BiomeModifier.Phase.ADD) {
+            for (var biomeModification : biomeModifications) {
+                ResourceLocation location = biome.unwrapKey().map(ResourceKey::location).orElse(null);
+                if (location != null && biomeModification.getBiomePredicate().test(location, biome)) {
+                    BuiltinRegistries.PLACED_FEATURE.getHolder(biomeModification.getConfiguredFeatureKey())
+                            .ifPresent(placedFeature -> builder.getGenerationSettings().addFeature(biomeModification.getStep(), placedFeature));
+                }
+            }
+        }
+    }
 
     public void register() {
         FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
