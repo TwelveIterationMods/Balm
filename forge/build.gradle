@@ -18,7 +18,7 @@ apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: "com.modrinth.minotaur"
 
 def buildNumber = System.getenv("GPR_BUILD_NUMBER") ? "+" + System.getenv("GPR_BUILD_NUMBER") : ""
-version = project.mod_version + "+" + buildNumber
+version = project.mod_version + buildNumber
 group = project.maven_group
 archivesBaseName = project.mod_id
 
