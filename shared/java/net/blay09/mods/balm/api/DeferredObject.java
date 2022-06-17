@@ -59,4 +59,5 @@ public class DeferredObject<T> {
     public static <T> DeferredObject<T> of(ResourceLocation identifier, T instance) {
         return new DeferredObject<>(identifier, () -> instance).resolveImmediately();
     }
+
 }
