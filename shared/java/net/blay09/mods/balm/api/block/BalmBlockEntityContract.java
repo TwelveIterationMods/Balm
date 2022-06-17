@@ -50,6 +50,8 @@ public interface BalmBlockEntityContract extends BalmProviderHolder {
         return tag;
     }
 
+    <T> T getProvider(Class<T> clazz);
+
     default void buildProviders(List<BalmProviderHolder> providers) {
         providers.add(this);
 

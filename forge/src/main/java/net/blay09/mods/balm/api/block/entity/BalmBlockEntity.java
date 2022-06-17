@@ -70,6 +70,14 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
         }
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getProvider(Class<T> clazz) {
+        ForgeBalmProviders forgeProviders = (ForgeBalmProviders) Balm.getProviders();
+        Capability<?> capability = forgeProviders.getCapability(clazz);
+        return (T) getCapability(capability).resolve().orElse(null);
+    }
+
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
