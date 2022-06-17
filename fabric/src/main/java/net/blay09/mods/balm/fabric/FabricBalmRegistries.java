@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmRegistries;
+import net.blay09.mods.balm.fabric.fluid.SimpleMilkFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -9,11 +10,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
 import java.util.Collection;
 
 public class FabricBalmRegistries implements BalmRegistries {
+    public Fluid milkFluid;
+
     @Override
     public ResourceLocation getKey(Item item) {
         return Registry.ITEM.getKey(item);
@@ -61,12 +63,12 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public void enableMilkFluid() {
-        // TODO Fluids
+        milkFluid = Registry.register(Registry.FLUID, new ResourceLocation("balm-fabric", "milk"), new SimpleMilkFluid());
     }
 
     @Override
     public Fluid getMilkFluid() {
-        return Fluids.LAVA; // TODO Fluids
+        return milkFluid;
     }
 
     @Override
