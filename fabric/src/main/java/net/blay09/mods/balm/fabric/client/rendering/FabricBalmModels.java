@@ -33,11 +33,12 @@ public class FabricBalmModels implements BalmModels {
     }
 
     private static ModelBakery bakery;
-    private List<DeferredModel> modelsToBake = new ArrayList<>();
+
+    private final List<DeferredModel> modelsToBake = new ArrayList<>();
     public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
 
     public void onModelBake(ModelBakery bakery) {
-        this.bakery = bakery;
+        FabricBalmModels.bakery = bakery;
 
         for (DeferredModel model : modelsToBake) {
             model.resolveAndSet(bakery);
@@ -59,7 +60,7 @@ public class FabricBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
                 UnbakedModel model = bakery.getModel(identifier);
-                return model.bake(bakery, Material::sprite, BlockModelRotation.X0_Y0, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -71,7 +72,7 @@ public class FabricBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
-                return model.bake(bakery, Material::sprite, BlockModelRotation.X0_Y0, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -97,7 +98,7 @@ public class FabricBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
                 UnbakedModel model = retexture(bakery, identifier, textureMap);
-                return model.bake(bakery, Material::sprite, BlockModelRotation.X0_Y0, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -111,7 +112,7 @@ public class FabricBalmModels implements BalmModels {
 
     @Override
     public ModelState getModelState(Transformation transformation) {
-        return BlockModelRotation.X0_Y0; // TODO Models
+        return new TransformationModelState(transformation);
     }
 
     @Override
