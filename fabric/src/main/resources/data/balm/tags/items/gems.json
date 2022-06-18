@@ -1,0 +1,31 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:gems",
+      "required": false
+    },
+    {
+      "id": "#c:diamonds",
+      "required": false
+    },
+    {
+      "id": "#c:emeralds",
+      "required": false
+    },
+    {
+      "id": "#c:lapis",
+      "required": false
+    },
+    {
+      "id": "#c:quartz",
+      "required": false
+    },
+    {
+      "id": "#c:quartz",
+      "required": false
+    },
+    "minecraft:amethyst_shard",
+    "minecraft:prismarine_crystals"
+  ]
+}

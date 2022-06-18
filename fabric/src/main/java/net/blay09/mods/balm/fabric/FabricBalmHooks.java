@@ -100,6 +100,11 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
+    public boolean isRepairable(ItemStack itemStack) {
+        return itemStack.getItem().canBeDepleted();
+    }
+
+    @Override
     public void setForcedPose(Player player, Pose pose) {
         ((BalmPlayer) player).setForcedPose(pose);
     }

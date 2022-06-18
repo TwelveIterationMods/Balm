@@ -104,6 +104,11 @@ public class ForgeBalmHooks implements BalmHooks {
     }
 
     @Override
+    public boolean isRepairable(ItemStack itemStack) {
+        return itemStack.isRepairable();
+    }
+
+    @Override
     public void setForcedPose(Player player, Pose pose) {
         player.setForcedPose(pose);
     }
