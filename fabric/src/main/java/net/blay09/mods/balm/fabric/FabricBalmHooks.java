@@ -106,6 +106,7 @@ public class FabricBalmHooks implements BalmHooks {
                         ItemStack bucketItemStack = new ItemStack(bucketItem);
                         if (handItem.getCount() > 1) {
                             if (player.addItem(bucketItemStack)) {
+                                handItem.shrink(1);
                                 fluidTank.drain(fluidTank.getFluid(), 1000, false);
                                 return true;
                             }
