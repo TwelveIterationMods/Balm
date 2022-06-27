@@ -1,3 +1,9 @@
+### Version 4.3.0 for Minecraft 1.19.x
+
+- Fixed bugs related to biome modifications and bucket handling in Fabric
+- Fixed fluid tanks not being saved on changes
+- Added some new common tags on both Forge and Fabric
+
 ### Version 4.2.0 for Minecraft 1.19.x
 
 - Add support for Cooking for Blockheads
