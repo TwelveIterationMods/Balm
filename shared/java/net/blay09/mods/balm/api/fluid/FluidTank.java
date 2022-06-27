@@ -44,6 +44,7 @@ public class FluidTank {
         int filled = Math.min(capacity - amount, Math.min(this.maxFill, maxFill));
         if (!simulate) {
             amount += filled;
+            setChanged();
         }
         return filled;
     }
@@ -56,6 +57,7 @@ public class FluidTank {
         int drained = Math.min(amount, Math.min(this.maxDrain, maxDrain));
         if (!simulate) {
             amount -= drained;
+            setChanged();
         }
         return drained;
     }
@@ -67,6 +69,7 @@ public class FluidTank {
     public void setFluid(Fluid fluid, int amount) {
         this.fluid = fluid;
         this.amount = amount;
+        setChanged();
     }
 
     public int getAmount() {
@@ -95,5 +98,8 @@ public class FluidTank {
     public void deserialize(CompoundTag tag) {
         fluid = Balm.getRegistries().getFluid(ResourceLocation.tryParse(tag.getString("Fluid")));
         amount = tag.getInt("Amount");
+    }
+
+    public void setChanged() {
     }
 }
