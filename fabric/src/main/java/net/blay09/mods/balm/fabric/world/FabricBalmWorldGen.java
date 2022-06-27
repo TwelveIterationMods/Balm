@@ -59,8 +59,7 @@ public class FabricBalmWorldGen implements BalmWorldGen {
 
     @Override
     public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
-        // TODO Direct holder does not have tag access so this will never work right
-        BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiomeKey().location(), Holder.direct(it.getBiome())),
+        BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiomeKey().location(), it.getBiomeRegistryEntry()),
                 step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));
     }
 }
