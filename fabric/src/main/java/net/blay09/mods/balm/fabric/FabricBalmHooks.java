@@ -6,8 +6,10 @@ import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
+import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -19,11 +21,12 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class FabricBalmHooks implements BalmHooks {
@@ -91,7 +94,49 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        return false; // TODO Fluids
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        FluidTank fluidTank = Balm.getProviders().getProvider(blockEntity, FluidTank.class);
+        if (fluidTank != null) {
+            ItemStack handItem = player.getItemInHand(hand);
+            if (handItem.getItem() == Items.BUCKET) {
+                int drained = fluidTank.drain(fluidTank.getFluid(), 1000, true);
+                if (drained >= 1000) {
+                    Item bucketItem = fluidTank.getFluid().getBucket();
+                    if (bucketItem != null && bucketItem != Items.AIR) {
+                        ItemStack bucketItemStack = new ItemStack(bucketItem);
+                        if (handItem.getCount() > 1) {
+                            if (player.addItem(bucketItemStack)) {
+                                fluidTank.drain(fluidTank.getFluid(), 1000, false);
+                                return true;
+                            }
+                        } else {
+                            player.setItemInHand(hand, bucketItemStack);
+                            fluidTank.drain(fluidTank.getFluid(), 1000, false);
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                Fluid fluid = Registry.FLUID.stream().filter(it -> it.getBucket() == handItem.getItem()).findFirst().orElse(null);
+                if (fluid != null) {
+                    int filled = fluidTank.fill(fluid, 1000, true);
+                    if (filled >= 1000) {
+                        if (handItem.getCount() > 1) {
+                            ItemStack restItem = Balm.getHooks().getCraftingRemainingItem(handItem);
+                            if (player.addItem(restItem)) {
+                                handItem.shrink(1);
+                                fluidTank.fill(fluid, 1000, false);
+                            }
+                        } else {
+                            player.setItemInHand(hand, Balm.getHooks().getCraftingRemainingItem(handItem));
+                            fluidTank.fill(fluid, 1000, false);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
