@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,7 +120,7 @@ public class FabricBalmHooks implements BalmHooks {
                 }
             } else {
                 Fluid fluid = Registry.FLUID.stream().filter(it -> it.getBucket() == handItem.getItem()).findFirst().orElse(null);
-                if (fluid != null) {
+                if (fluid != null && !fluid.isSame(Fluids.EMPTY)) {
                     int filled = fluidTank.fill(fluid, 1000, true);
                     if (filled >= 1000) {
                         if (handItem.getCount() > 1) {
