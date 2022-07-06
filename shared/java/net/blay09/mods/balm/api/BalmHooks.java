@@ -64,4 +64,5 @@ public interface BalmHooks {
     void setForcedPose(Player player, Pose pose);
 
     MinecraftServer getServer();
+
 }

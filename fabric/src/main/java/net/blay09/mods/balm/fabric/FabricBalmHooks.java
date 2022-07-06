@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -107,11 +108,13 @@ public class FabricBalmHooks implements BalmHooks {
                         ItemStack bucketItemStack = new ItemStack(bucketItem);
                         if (handItem.getCount() > 1) {
                             if (player.addItem(bucketItemStack)) {
+                                fluidTank.getFluid().getPickupSound().ifPresent(sound -> player.playSound(sound, 1f, 1f));
                                 handItem.shrink(1);
                                 fluidTank.drain(fluidTank.getFluid(), 1000, false);
                                 return true;
                             }
                         } else {
+                            fluidTank.getFluid().getPickupSound().ifPresent(sound -> player.playSound(sound, 1f, 1f));
                             player.setItemInHand(hand, bucketItemStack);
                             fluidTank.drain(fluidTank.getFluid(), 1000, false);
                             return true;
@@ -126,10 +129,14 @@ public class FabricBalmHooks implements BalmHooks {
                         if (handItem.getCount() > 1) {
                             ItemStack restItem = Balm.getHooks().getCraftingRemainingItem(handItem);
                             if (player.addItem(restItem)) {
+                                player.playSound(SoundEvents.BUCKET_EMPTY, 1f, 1f);
+                                fluidTank.getFluid().getPickupSound().ifPresent(sound -> player.playSound(sound, 1f, 1f));
                                 handItem.shrink(1);
                                 fluidTank.fill(fluid, 1000, false);
+                                return true;
                             }
                         } else {
+                            player.playSound(SoundEvents.BUCKET_EMPTY, 1f, 1f);
                             player.setItemInHand(hand, Balm.getHooks().getCraftingRemainingItem(handItem));
                             fluidTank.fill(fluid, 1000, false);
                             return true;
