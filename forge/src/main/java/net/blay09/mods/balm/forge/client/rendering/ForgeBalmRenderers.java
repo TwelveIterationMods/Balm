@@ -17,8 +17,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -62,7 +62,7 @@ public class ForgeBalmRenderers implements BalmRenderers {
         @SubscribeEvent
         public void setupClient(FMLClientSetupEvent event) {
             for (Pair<Supplier<Block>, RenderType> entry : blockRenderTypes) {
-                ItemBlockRenderTypes.setRenderLayer(entry.getFirst().get(), entry.getSecond());
+                ItemBlockRenderTypes.setRenderLayer(entry.getFirst().get(), entry.getSecond()); // TODO depr
             }
         }
 
@@ -85,16 +85,16 @@ public class ForgeBalmRenderers implements BalmRenderers {
         }
 
         @SubscribeEvent
-        public void initBlockColors(ColorHandlerEvent.Block event) {
+        public void initBlockColors(RegisterColorHandlersEvent.Block event) {
             for (ColorRegistration<BlockColor, Block> blockColor : blockColors) {
-                event.getBlockColors().register(blockColor.getColor(), blockColor.getObjects().get());
+                event.register(blockColor.getColor(), blockColor.getObjects().get());
             }
         }
 
         @SubscribeEvent
-        public void initItemColors(ColorHandlerEvent.Item event) {
+        public void initItemColors(RegisterColorHandlersEvent.Item event) {
             for (ColorRegistration<ItemColor, ItemLike> itemColor : itemColors) {
-                event.getItemColors().register(itemColor.getColor(), itemColor.getObjects().get());
+                event.register(itemColor.getColor(), itemColor.getObjects().get());
             }
         }
     }

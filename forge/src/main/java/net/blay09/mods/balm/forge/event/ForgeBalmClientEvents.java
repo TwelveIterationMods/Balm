@@ -8,8 +8,8 @@ import net.blay09.mods.balm.api.event.client.RenderHandEvent;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -58,21 +58,21 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ConnectedToServerEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ClientPlayerNetworkEvent.LoggedInEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ClientPlayerNetworkEvent.LoggingIn orig) -> {
                 final ConnectedToServerEvent event = new ConnectedToServerEvent(Minecraft.getInstance());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(DisconnectedFromServerEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ClientPlayerNetworkEvent.LoggedOutEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ClientPlayerNetworkEvent.LoggingOut orig) -> {
                 final DisconnectedFromServerEvent event = new DisconnectedFromServerEvent(Minecraft.getInstance());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenInitEvent.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.InitScreenEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.Init.Pre orig) -> {
                 final ScreenInitEvent.Pre event = new ScreenInitEvent.Pre(orig.getScreen());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -82,14 +82,14 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenInitEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.InitScreenEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.Init.Post orig) -> {
                 final ScreenInitEvent.Post event = new ScreenInitEvent.Post(orig.getScreen());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.Render.Pre orig) -> {
                 final ScreenDrawEvent.Pre event = new ScreenDrawEvent.Pre(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTick());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -99,28 +99,28 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ContainerScreenDrawEvent.Background.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawBackground orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.Render.Background orig) -> {
                 final ContainerScreenDrawEvent.Background event = new ContainerScreenDrawEvent.Background(orig.getContainerScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ContainerScreenDrawEvent.Foreground.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.DrawForeground orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ContainerScreenEvent.Render.Foreground orig) -> {
                 final ContainerScreenDrawEvent.Foreground event = new ContainerScreenDrawEvent.Foreground(orig.getContainerScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenDrawEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.DrawScreenEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.Render.Post orig) -> {
                 final ScreenDrawEvent.Post event = new ScreenDrawEvent.Post(orig.getScreen(), orig.getPoseStack(), orig.getMouseX(), orig.getMouseY(), orig.getPartialTick());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseClickedEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseButtonPressed.Pre orig) -> {
                 final ScreenMouseEvent.Click.Pre event = new ScreenMouseEvent.Click.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -130,7 +130,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Click.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseClickedEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseButtonPressed.Post orig) -> {
                 final ScreenMouseEvent.Click.Post event = new ScreenMouseEvent.Click.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -140,7 +140,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Drag.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragged.Pre orig) -> {
                 final ScreenMouseEvent.Drag.Pre event = new ScreenMouseEvent.Drag.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -150,7 +150,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Drag.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseDragged.Post orig) -> {
                 final ScreenMouseEvent.Drag.Post event = new ScreenMouseEvent.Drag.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getMouseButton(), orig.getDragX(), orig.getDragY());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -160,7 +160,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseReleasedEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseButtonReleased.Pre orig) -> {
                 final ScreenMouseEvent.Release.Pre event = new ScreenMouseEvent.Release.Pre(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -170,7 +170,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenMouseEvent.Release.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseReleasedEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.MouseButtonReleased.Post orig) -> {
                 final ScreenMouseEvent.Release.Post event = new ScreenMouseEvent.Release.Post(orig.getScreen(), orig.getMouseX(), orig.getMouseY(), orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -180,7 +180,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyPressedEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyPressed.Pre orig) -> {
                 final ScreenKeyEvent.Press.Pre event = new ScreenKeyEvent.Press.Pre(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -190,7 +190,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Press.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyPressedEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyPressed.Post orig) -> {
                 final ScreenKeyEvent.Press.Post event = new ScreenKeyEvent.Press.Post(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -200,7 +200,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyReleasedEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyReleased.Pre orig) -> {
                 final ScreenKeyEvent.Release.Pre event = new ScreenKeyEvent.Release.Pre(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -210,7 +210,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(ScreenKeyEvent.Release.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyboardKeyReleasedEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.KeyReleased.Post orig) -> {
                 final ScreenKeyEvent.Release.Post event = new ScreenKeyEvent.Release.Post(orig.getScreen(), orig.getKeyCode(), orig.getScanCode(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -220,11 +220,11 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(FovUpdateEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (FOVModifierEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ComputeFovModifierEvent orig) -> {
                 final FovUpdateEvent event = new FovUpdateEvent(orig.getPlayer());
                 events.fireEventHandlers(priority, event);
                 if (event.getFov() != null) {
-                    orig.setNewFov(event.getFov());
+                    orig.setNewFovModifier(event.getFov());
                 }
             });
         });
@@ -244,7 +244,7 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(UseItemInputEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.ClickInputEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.InteractionKeyMappingTriggered orig) -> {
                 if (orig.isUseItem()) {
                     final UseItemInputEvent event = new UseItemInputEvent(orig.getHand());
                     events.fireEventHandlers(priority, event);
@@ -267,14 +267,14 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(KeyInputEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.KeyInputEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (InputEvent.Key orig) -> {
                 final KeyInputEvent event = new KeyInputEvent(orig.getKey(), orig.getScanCode(), orig.getAction(), orig.getModifiers());
                 events.fireEventHandlers(priority, event);
             });
         });
 
         events.registerEvent(BlockHighlightDrawEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (DrawSelectionEvent.HighlightBlock orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderHighlightEvent.Block orig) -> {
                 final BlockHighlightDrawEvent event = new BlockHighlightDrawEvent(orig.getTarget(), orig.getPoseStack(), orig.getMultiBufferSource(), orig.getCamera());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
@@ -284,10 +284,10 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(OpenScreenEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenOpenEvent orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenEvent.Opening orig) -> {
                 final OpenScreenEvent event = new OpenScreenEvent(orig.getScreen());
                 events.fireEventHandlers(priority, event);
-                orig.setScreen(event.getScreen());
+                orig.setNewScreen(event.getScreen());
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }
@@ -295,7 +295,15 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(GuiDrawEvent.Pre.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Pre orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiEvent.Pre orig) -> {
+                final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getPoseStack(), GuiDrawEvent.Element.ALL);
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiOverlayEvent.Pre orig) -> {
                 GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
                 if (type != null) {
                     final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getPoseStack(), type);
@@ -308,7 +316,12 @@ public class ForgeBalmClientEvents {
         });
 
         events.registerEvent(GuiDrawEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGameOverlayEvent.Post orig) -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiEvent.Post orig) -> {
+                final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getPoseStack(), GuiDrawEvent.Element.ALL);
+                events.fireEventHandlers(priority, event);
+            });
+
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiOverlayEvent.Post orig) -> {
                 GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
                 if (type != null) {
                     final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getPoseStack(), type);
@@ -319,30 +332,20 @@ public class ForgeBalmClientEvents {
     }
 
     @Nullable
-    private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGameOverlayEvent orig) {
+    private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGuiOverlayEvent orig) {
         GuiDrawEvent.Element type = null;
-        IIngameOverlay overlay = null;
-        if (orig instanceof RenderGameOverlayEvent.PreLayer preLayer) {
-            overlay = preLayer.getOverlay();
-        } else if (orig instanceof RenderGameOverlayEvent.PostLayer postLayer) {
-            overlay = postLayer.getOverlay();
+        NamedGuiOverlay overlay = orig.getOverlay();
+        if (overlay.id().equals(VanillaGuiOverlay.PLAYER_HEALTH.id())) {
+            type = GuiDrawEvent.Element.HEALTH;
+        } else if (overlay.id().equals(VanillaGuiOverlay.CHAT_PANEL.id())) {
+            type = GuiDrawEvent.Element.CHAT;
+        } else if (overlay.id().equals(VanillaGuiOverlay.DEBUG_TEXT.id())) {
+            type = GuiDrawEvent.Element.DEBUG;
+        } else if (overlay.id().equals(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id())) {
+            type = GuiDrawEvent.Element.BOSS_INFO;
+        } else if (overlay.id().equals(VanillaGuiOverlay.PLAYER_LIST.id())) {
+            type = GuiDrawEvent.Element.PLAYER_LIST;
         }
-
-        if (overlay != null) {
-            if (overlay == ForgeIngameGui.PLAYER_HEALTH_ELEMENT) {
-                type = GuiDrawEvent.Element.HEALTH;
-            }
-        } else {
-            type = switch (orig.getType()) {
-                case ALL -> GuiDrawEvent.Element.ALL;
-                case CHAT -> GuiDrawEvent.Element.CHAT;
-                case DEBUG -> GuiDrawEvent.Element.DEBUG;
-                case BOSSINFO -> GuiDrawEvent.Element.BOSS_INFO;
-                case PLAYER_LIST -> GuiDrawEvent.Element.PLAYER_LIST;
-                default -> null;
-            };
-        }
-
         return type;
     }
 }

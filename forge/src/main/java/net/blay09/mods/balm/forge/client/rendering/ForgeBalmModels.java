@@ -11,8 +11,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
 
 public class ForgeBalmModels implements BalmModels {
 
-    private static abstract class DeferredModel extends DeferredObject<BakedModel> {
+    private abstract static class DeferredModel extends DeferredObject<BakedModel> {
         public DeferredModel(ResourceLocation identifier) {
             super(identifier);
         }
@@ -44,22 +43,25 @@ public class ForgeBalmModels implements BalmModels {
         public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
 
         @SubscribeEvent
-        public void onBakeModels(ModelBakeEvent event) {
+        public void onBakeModels(ModelEvent.BakingCompleted event) {
+            ForgeBalmModels.bakery = event.getModelBakery();
+
             for (DeferredModel deferredModel : modelsToBake) {
-                deferredModel.resolveAndSet(event.getModelLoader(), event.getModelRegistry());
+                deferredModel.resolveAndSet(event.getModelBakery(), event.getModels());
             }
 
             for (Pair<Supplier<Block>, Supplier<BakedModel>> override : overrides) {
                 Block block = override.getFirst().get();
                 BakedModel bakedModel = override.getSecond().get();
-                block.getStateDefinition().getPossibleStates().forEach((state) -> {
+                block.getStateDefinition().getPossibleStates().forEach(state -> {
                     ModelResourceLocation modelLocation = BlockModelShaper.stateToModelLocation(state);
-                    event.getModelRegistry().put(modelLocation, bakedModel);
+                    event.getModels().put(modelLocation, bakedModel);
                 });
             }
         }
     }
 
+    private static ModelBakery bakery;
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
@@ -68,7 +70,7 @@ public class ForgeBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
                 UnbakedModel model = bakery.getModel(identifier);
-                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);
@@ -80,7 +82,7 @@ public class ForgeBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
-                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);
@@ -93,7 +95,7 @@ public class ForgeBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry) {
                 UnbakedModel model = retexture(bakery, identifier, textureMap);
-                return model.bake(bakery, ForgeModelBakery.defaultTextureGetter(), SimpleModelState.IDENTITY, identifier);
+                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         getActiveRegistrations().modelsToBake.add(deferredModel);
@@ -126,12 +128,12 @@ public class ForgeBalmModels implements BalmModels {
 
     @Override
     public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
-        return ForgeModelBakery.instance().getModelOrMissing(location);
+        return bakery.getModel(location);
     }
 
     @Override
     public UnbakedModel getUnbakedMissingModel() {
-        return ForgeModelBakery.instance().getModelOrMissing(ForgeModelBakery.MISSING_MODEL_LOCATION);
+        return bakery.getModel(ModelBakery.MISSING_MODEL_LOCATION);
     }
 
     public void register() {

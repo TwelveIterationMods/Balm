@@ -7,36 +7,54 @@ import net.blay09.mods.balm.api.client.keymappings.KeyModifier;
 import net.blay09.mods.balm.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ForgeBalmKeyMappings implements BalmKeyMappings {
+    private static class Registrations {
+        public final List<KeyMapping> keyMappings = new ArrayList<>();
+
+        @SubscribeEvent
+        public void registerKeyMappings(RegisterKeyMappingsEvent event) {
+            keyMappings.forEach(event::register);
+        }
+    }
+
+    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
     public KeyMapping registerKeyMapping(String name, int keyCode, String category) {
         KeyMapping keyMapping = new KeyMapping(name, InputConstants.Type.KEYSYM, keyCode, category);
-        ClientRegistry.registerKeyBinding(keyMapping);
+        getActiveRegistrations().keyMappings.add(keyMapping);
         return keyMapping;
     }
 
     @Override
     public KeyMapping registerKeyMapping(String name, InputConstants.Type type, int keyCode, String category) {
         KeyMapping keyMapping = new KeyMapping(name, type, keyCode, category);
-        ClientRegistry.registerKeyBinding(keyMapping);
+        getActiveRegistrations().keyMappings.add(keyMapping);
         return keyMapping;
     }
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, int keyCode, String category) {
         KeyMapping keyMapping = new KeyMapping(name, toForge(conflictContext), toForge(modifier), InputConstants.Type.KEYSYM, keyCode, category);
-        ClientRegistry.registerKeyBinding(keyMapping);
+        getActiveRegistrations().keyMappings.add(keyMapping);
         return keyMapping;
     }
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category) {
         KeyMapping keyMapping = new KeyMapping(name, toForge(conflictContext), toForge(modifier), type, keyCode, category);
-        ClientRegistry.registerKeyBinding(keyMapping);
+        getActiveRegistrations().keyMappings.add(keyMapping);
         return keyMapping;
     }
 
@@ -99,6 +117,14 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
             case ALT -> net.minecraftforge.client.settings.KeyModifier.ALT;
             default -> net.minecraftforge.client.settings.KeyModifier.NONE;
         };
+    }
+
+    public void register() {
+        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    }
+
+    private Registrations getActiveRegistrations() {
+        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
     }
 
 }
