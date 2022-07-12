@@ -26,8 +26,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.util.Random;
-
 public class ForgeBalmHooks implements BalmHooks {
     @Override
     public boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos) {
@@ -70,7 +68,7 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return itemStack.getContainerItem();
+        return itemStack.getCraftingRemainingItem();
     }
 
     @Override

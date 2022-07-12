@@ -39,14 +39,14 @@ public class ForgeBalmEntities implements BalmEntities {
 
     @Override
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
-        DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITIES, identifier.getNamespace());
+        DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
         RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(identifier.toString()));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override
     public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
-        final DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITIES, identifier.getNamespace());
+        final DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
         final Registrations registrations = getActiveRegistrations();
         final RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
             EntityType<T> entityType = typeBuilder.build(identifier.toString());

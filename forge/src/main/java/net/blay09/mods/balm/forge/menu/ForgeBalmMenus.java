@@ -16,7 +16,7 @@ public class ForgeBalmMenus implements BalmMenus {
 
     @Override
     public <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, BalmMenuFactory<T> factory) {
-        DeferredRegister<MenuType<?>> register = DeferredRegisters.get(ForgeRegistries.CONTAINERS, identifier.getNamespace());
+        DeferredRegister<MenuType<?>> register = DeferredRegisters.get(ForgeRegistries.MENU_TYPES, identifier.getNamespace());
         RegistryObject<MenuType<T>> registryObject = register.register(identifier.getPath(), () -> new MenuType<>((IContainerFactory<T>) factory::create));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }

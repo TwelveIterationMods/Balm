@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public class ForgeBalmBlockEntities implements BalmBlockEntities {
     @Override
     public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, Supplier<Block[]> blocks) {
-        DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITIES, identifier.getNamespace());
+        DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITY_TYPES, identifier.getNamespace());
         RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
             Block[] resolvedBlocks = blocks.get();
             return BlockEntityType.Builder.of(factory::create, resolvedBlocks).build(null);
@@ -28,7 +28,7 @@ public class ForgeBalmBlockEntities implements BalmBlockEntities {
 
     @Override
     public <T extends BlockEntity> DeferredObject<BlockEntityType<T>> registerBlockEntity(ResourceLocation identifier, BalmBlockEntityFactory<T> factory, DeferredObject<Block>... blocks) {
-        DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITIES, identifier.getNamespace());
+        DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITY_TYPES, identifier.getNamespace());
         RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
             Block[] resolvedBlocks = Arrays.stream(blocks).map(DeferredObject::get).toArray(Block[]::new);
             return BlockEntityType.Builder.of(factory::create, resolvedBlocks).build(null);

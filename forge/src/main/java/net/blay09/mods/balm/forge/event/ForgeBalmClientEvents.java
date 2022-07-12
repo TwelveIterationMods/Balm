@@ -238,7 +238,7 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(ItemTooltipEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.player.ItemTooltipEvent orig) -> {
-                final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getPlayer(), orig.getToolTip(), orig.getFlags());
+                final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getEntity(), orig.getToolTip(), orig.getFlags());
                 events.fireEventHandlers(priority, event);
             });
         });

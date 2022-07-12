@@ -1,3 +1,7 @@
+### Version 4.5.0 for Minecraft 1.19.x and Forge 41.0.94+
+
+- Updated to breaking changes in Forge
+
 ### Version 4.4.0 for Minecraft 1.19.x and Forge 41.0.64+
 
 - Updated to breaking changes in Forge

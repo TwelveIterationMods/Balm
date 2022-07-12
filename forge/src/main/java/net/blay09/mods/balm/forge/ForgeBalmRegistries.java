@@ -32,7 +32,7 @@ public class ForgeBalmRegistries implements BalmRegistries {
 
     @Override
     public ResourceLocation getKey(EntityType<?> entityType) {
-        return ForgeRegistries.ENTITIES.getKey(entityType);
+        return ForgeRegistries.ENTITY_TYPES.getKey(entityType);
     }
 
     @Override
