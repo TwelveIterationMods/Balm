@@ -58,9 +58,12 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {
-        var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
-        registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
-        registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        // Mod loading context may be null if something in load process errored before
+        if (FMLJavaModLoadingContext.get() != null) {
+            var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
+            registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
+            registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        }
 
         MinecraftForge.EVENT_BUS.register(this);
     }
