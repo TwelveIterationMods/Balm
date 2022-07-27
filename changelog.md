@@ -2,6 +2,7 @@
 
 - Fixed Balm obscuring loading crashes from other mods, making it look like Balm is at fault
 - Fixed some block inventories not being saved or synced to client when the only change was an increase in stack size
+- Fixed containers not being recognized by Fabric
 
 ### Version 4.5.0 for Minecraft 1.19.x and Forge 41.0.94+
 
