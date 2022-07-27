@@ -22,108 +22,118 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import java.util.function.Consumer;
 
 public class Balm {
-    private static final BalmRuntime runtime = BalmRuntimeSpi.create();
-    private static final SidedProxy<BalmProxy> proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
+    private static BalmRuntime runtime;
+    private static SidedProxy<BalmProxy> proxy;
+
+    private static BalmRuntime getRuntime() {
+        if (runtime == null) {
+            runtime = BalmRuntimeSpi.create();
+        }
+        return runtime;
+    }
 
     @Deprecated
     public static void initialize(String modId) {
-        runtime.initialize(modId, () -> {
+        getRuntime().initialize(modId, () -> {
         });
     }
 
     public static void initialize(String modId, Runnable initializer) {
-        runtime.initialize(modId, initializer);
+        getRuntime().initialize(modId, initializer);
     }
 
     public static boolean isModLoaded(String modId) {
-        return runtime.isModLoaded(modId);
+        return getRuntime().isModLoaded(modId);
     }
 
     public static String getModName(String modId) {
-        return runtime.getModName(modId);
+        return getRuntime().getModName(modId);
     }
 
     public static <T> SidedProxy<T> sidedProxy(String commonName, String clientName) {
-        return runtime.sidedProxy(commonName, clientName);
+        return getRuntime().sidedProxy(commonName, clientName);
     }
 
     public static void initializeIfLoaded(String modId, String className) {
-        runtime.initializeIfLoaded(modId, className);
+        getRuntime().initializeIfLoaded(modId, className);
     }
 
     public static void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
-        runtime.addServerReloadListener(identifier, reloadListener);
+        getRuntime().addServerReloadListener(identifier, reloadListener);
     }
 
     public static void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {
-        runtime.addServerReloadListener(identifier, reloadListener);
+        getRuntime().addServerReloadListener(identifier, reloadListener);
     }
 
     public static BalmProxy getProxy() {
+        if (proxy == null) {
+            proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
+        }
         return proxy.get();
     }
 
     public static BalmEvents getEvents() {
-        return runtime.getEvents();
+        return getRuntime().getEvents();
     }
 
     public static BalmConfig getConfig() {
-        return runtime.getConfig();
+        return getRuntime().getConfig();
     }
 
     public static BalmNetworking getNetworking() {
-        return runtime.getNetworking();
+        return getRuntime().getNetworking();
     }
 
     public static BalmWorldGen getWorldGen() {
-        return runtime.getWorldGen();
+        return getRuntime().getWorldGen();
     }
 
     public static BalmBlocks getBlocks() {
-        return runtime.getBlocks();
+        return getRuntime().getBlocks();
     }
 
     public static BalmBlockEntities getBlockEntities() {
-        return runtime.getBlockEntities();
+        return getRuntime().getBlockEntities();
     }
 
     public static BalmItems getItems() {
-        return runtime.getItems();
+        return getRuntime().getItems();
     }
 
     public static BalmMenus getMenus() {
-        return runtime.getMenus();
+        return getRuntime().getMenus();
     }
 
     public static BalmHooks getHooks() {
-        return runtime.getHooks();
+        return getRuntime().getHooks();
     }
 
     public static BalmRegistries getRegistries() {
-        return runtime.getRegistries();
+        return getRuntime().getRegistries();
     }
 
     public static BalmSounds getSounds() {
-        return runtime.getSounds();
+        return getRuntime().getSounds();
     }
 
     public static BalmEntities getEntities() {
-        return runtime.getEntities();
+        return getRuntime().getEntities();
     }
 
     public static BalmProviders getProviders() {
-        return runtime.getProviders();
+        return getRuntime().getProviders();
     }
 
     public static BalmCommands getCommands() {
-        return runtime.getCommands();
+        return getRuntime().getCommands();
     }
 
     public static BalmLootTables getLootTables() {
-        return runtime.getLootTables();
+        return getRuntime().getLootTables();
     }
 
     public static BalmStats getStats() {
-        return runtime.getStats();
+        return getRuntime().getStats();
     }
 }

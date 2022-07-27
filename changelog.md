@@ -1,3 +1,7 @@
+### Version 4.5.1 for Minecraft 1.19.x and Forge 41.0.94+
+
+- Fixed Balm obscuring loading crashes from other mods, making it look like Balm is at fault
+
 ### Version 4.5.0 for Minecraft 1.19.x and Forge 41.0.94+
 
 - Updated to breaking changes in Forge
