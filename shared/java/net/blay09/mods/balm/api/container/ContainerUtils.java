@@ -84,6 +84,7 @@ public class ContainerUtils {
                 container.setItem(slot, reachedLimit ? copyStackWithSize(itemStack, limit) : itemStack);
             } else {
                 existing.grow(reachedLimit ? limit : itemStack.getCount());
+                container.setChanged();
             }
         }
 
