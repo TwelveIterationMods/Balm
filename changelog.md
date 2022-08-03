@@ -1,3 +1,7 @@
+### Version 4.5.3 for Minecraft 1.19.x and Forge 41.0.94+
+
+- Fixed keybinds no longer being registered properly 
+
 ### Version 4.5.2 for Minecraft 1.19.x and Forge 41.0.94+
 
 - Fixed the previous fix as it broke many things by introducing race conditions

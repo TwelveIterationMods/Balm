@@ -58,6 +58,7 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
         ((ForgeBalmScreens) screens).register();
         ((ForgeBalmTextures) textures).register();
         ((ForgeBalmModels) models).register();
+        ((ForgeBalmKeyMappings) keyMappings).register();
 
         initializer.run();
     }
