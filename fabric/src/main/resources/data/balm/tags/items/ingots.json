@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:ingots",
+      "required": false
+    },
+    {
+      "id": "#c:iron_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:copper_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:gold_ingots",
+      "required": false
+    },
+    {
+      "id": "#c:netherite_ingots",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:iron_nuggets",
+      "required": false
+    },
+    "minecraft:iron_nugget"
+  ]
+}
