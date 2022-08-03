@@ -1,15 +1,12 @@
 package net.blay09.mods.balm.forge.client.rendering;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
-import net.blay09.mods.balm.forge.client.CachedDynamicModel;
+import net.blay09.mods.balm.common.CachedDynamicModel;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -122,18 +119,19 @@ public class ForgeBalmModels implements BalmModels {
         getActiveRegistrations().overrides.add(Pair.of(block, model));
     }
 
-    public static UnbakedModel retexture(ModelBakery bakery, ResourceLocation identifier, Map<String, String> textureMap) {
-        Map<String, Either<Material, String>> replacedTexturesMapped = new HashMap<>();
-        for (Map.Entry<String, String> entry : textureMap.entrySet()) {
-            replacedTexturesMapped.put(entry.getKey(), Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(entry.getValue()))));
-        }
+    @Override
+    public ModelState getModelState(Transformation transformation) {
+        return new SimpleModelState(transformation);
+    }
 
-        BlockModel blockModel = new BlockModel(identifier, Collections.emptyList(), replacedTexturesMapped, false, BlockModel.GuiLight.FRONT, ItemTransforms.NO_TRANSFORMS, Collections.emptyList());
+    @Override
+    public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
+        return ForgeModelBakery.instance().getModelOrMissing(location);
+    }
 
-        // We have to call getMaterials to initialize the parent field in the model (as that is usually done during stitching, which we're already past)
-        blockModel.getMaterials(bakery::getModel, new HashSet<>());
-
-        return blockModel;
+    @Override
+    public UnbakedModel getUnbakedMissingModel() {
+        return ForgeModelBakery.instance().getModelOrMissing(ForgeModelBakery.MISSING_MODEL_LOCATION);
     }
 
     public void register() {
