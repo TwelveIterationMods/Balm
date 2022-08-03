@@ -1,3 +1,7 @@
+### Version 3.2.0 for Minecraft 1.18.2
+
+- Added some functionality to fix item transfers in Ex Compressum
+
 ### Version 3.1.0 for Minecraft 1.18.2
 
 - Fixed potential crash on startup for some mods
