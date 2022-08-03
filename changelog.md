@@ -1,6 +1,7 @@
 ### Version 3.2.0 for Minecraft 1.18.2
 
 - Added some functionality to fix item transfers in Ex Compressum
+- Backported some things from 1.19 to support Cooking for Blockheads
 
 ### Version 3.1.0 for Minecraft 1.18.2
 
