@@ -1,3 +1,7 @@
+### Version 4.5.2 for Minecraft 1.19.x and Forge 41.0.94+
+
+- Fixed the previous fix as it broke many things by introducing race conditions
+
 ### Version 4.5.1 for Minecraft 1.19.x and Forge 41.0.94+
 
 - Fixed Balm obscuring loading crashes from other mods, making it look like Balm is at fault
