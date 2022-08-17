@@ -4,7 +4,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class SubContainer implements Container {
+public class SubContainer implements Container, ExtractionAwareContainer {
     private final Container container;
     private final int minSlot;
     private final int maxSlot;
@@ -100,5 +100,13 @@ public class SubContainer implements Container {
         for (int i = minSlot; i < maxSlot; i++) {
             container.setItem(i, ItemStack.EMPTY);
         }
+    }
+
+    @Override
+    public boolean canExtractItem(int slot) {
+        if (container instanceof ExtractionAwareContainer extractionAwareContainer) {
+            return containsSlot(slot) && extractionAwareContainer.canExtractItem(slot + minSlot);
+        }
+        return containsSlot(slot);
     }
 }

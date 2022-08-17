@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
-public class CombinedContainer implements Container {
+public class CombinedContainer implements Container, ExtractionAwareContainer {
     private final Container[] containers;
     private final int[] baseIndex;
     private final int totalSlots;
@@ -100,5 +100,15 @@ public class CombinedContainer implements Container {
         for (Container container : containers) {
             container.clearContent();
         }
+    }
+
+    @Override
+    public boolean canExtractItem(int slot) {
+        int containerIndex = getContainerIndexForSlot(slot);
+        Container container = getContainerFromIndex(containerIndex);
+        if (container instanceof ExtractionAwareContainer extractionAwareContainer) {
+            return extractionAwareContainer.canExtractItem(getSlotFromIndex(slot, containerIndex));
+        }
+        return true;
     }
 }

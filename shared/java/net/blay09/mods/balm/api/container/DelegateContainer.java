@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Set;
 
-public class DelegateContainer implements Container {
+public class DelegateContainer implements Container, ExtractionAwareContainer {
     private final Container delegate;
 
     public DelegateContainer(Container delegate) {
@@ -87,5 +87,13 @@ public class DelegateContainer implements Container {
     @Override
     public void clearContent() {
         delegate.clearContent();
+    }
+
+    @Override
+    public boolean canExtractItem(int slot) {
+        if (delegate instanceof ExtractionAwareContainer extractionAwareContainer) {
+            return extractionAwareContainer.canExtractItem(slot);
+        }
+        return true;
     }
 }
