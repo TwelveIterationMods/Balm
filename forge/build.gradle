@@ -18,7 +18,7 @@ apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: "com.modrinth.minotaur"
 
 version = project.mod_version
-group = project.maven_group
+group = project.mod_group
 archivesBaseName = project.mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -121,6 +121,8 @@ dependencies {
     implementation("org.jetbrains:annotations:22.0.0")
 }
 
+apply from: 'dependencies.gradle'
+
 jar {
     manifest {
         attributes([
@@ -152,7 +154,7 @@ publishing {
             var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
             url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
             name = "twelveIterationsNexus"
-            credentials(PasswordCredentials::class)
+            credentials(PasswordCredentials)
         }
 	}
 }
@@ -160,10 +162,10 @@ publishing {
 curseforge {
     apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
-        id = project.curseforge_project_id
+        id = project.curseforge_forge_project_id
         releaseType = project.curseforge_release_type
         changelogType = 'markdown'
-        changelog = file('../CHANGELOG.md')
+        changelog = rootProject.file('CHANGELOG.md')
         project.minecraft_versions.split(',').each {
             addGameVersion it
         }
@@ -177,7 +179,7 @@ modrinth {
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
-    changelog = rootProject.file("../CHANGELOG.md").text
+    changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("../modrinth.md").text
+    syncBodyFrom = rootProject.file("modrinth.md").text
 }
