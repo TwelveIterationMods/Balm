@@ -144,7 +144,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
 			artifactId = project.mod_id + "-forge"
-            version = project.version + "+" + project.minecraft_version
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 			
             artifact jar
         }

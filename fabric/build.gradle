@@ -81,8 +81,8 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = project.mod_id + "-fabric"
-            version = project.version + "+" + project.minecraft_version
+            artifactId = mod_id + "-fabric"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             from components.java
             artifact jar
