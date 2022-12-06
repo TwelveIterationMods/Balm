@@ -9,8 +9,7 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-def buildNumber = System.getenv("GPR_BUILD_NUMBER") ?: "0"
-version = project.mod_version + "+" + buildNumber
+version = project.mod_version
 group = project.maven_group
 
 repositories {
