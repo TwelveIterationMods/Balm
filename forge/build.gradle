@@ -148,26 +148,26 @@ publishing {
         }
     }
     repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/" + project.github_publish)
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("GPR_USERNAME")
-				password = project.findProperty("gpr.key") ?: System.getenv("GPR_TOKEN")
-			}
-		}
+        maven {
+            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials::class)
+        }
 	}
 }
 
-
 curseforge {
-    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CF_API_KEY") ?: "none"
+    apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
         id = project.curseforge_project_id
         releaseType = project.curseforge_release_type
         changelogType = 'markdown'
-        changelog = file('../changelog.md')
-        addGameVersion project.minecraft_version
+        changelog = file('../CHANGELOG.md')
+        project.minecraft_versions.split(',').each {
+            addGameVersion it
+        }
         addGameVersion 'Forge'
     }
 }
@@ -178,7 +178,7 @@ modrinth {
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
-    changelog = rootProject.file("../changelog.md").text
-    gameVersions = [project.minecraft_version]
+    changelog = rootProject.file("../CHANGELOG.md").text
+    gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("../modrinth.md").text
 }
