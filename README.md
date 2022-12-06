@@ -17,7 +17,7 @@ See [the license](LICENSE) for modpack permissions etc.
 [![Versions](http://cf.way2muchnoise.eu/versions/500525_latest.svg)](https://www.curseforge.com/minecraft/mc-mods/balm-fabric)
 [![Downloads](http://cf.way2muchnoise.eu/full_500525_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/balm-fabric)
 
-## Depending on Balm
+## Adding Balm to a development environment
 
 ### Using CurseMaven
 
