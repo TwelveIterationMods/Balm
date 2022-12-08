@@ -1,6 +1,7 @@
 plugins {
     id('java')
     id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'maven-publish'
 }
 
 archivesBaseName = "${mod_id}-common-${minecraft_version}"
@@ -29,4 +30,31 @@ loom {
 
 configurations {
     testImplementation.extendsFrom compileOnly
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = mod_id + "-common"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
+            var snapshotsRepoUrl = "https://nexus.twelveiterations.com/repository/maven-snapshots/"
+            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
+            name = "twelveIterationsNexus"
+            credentials(PasswordCredentials)
+        }
+    }
 }

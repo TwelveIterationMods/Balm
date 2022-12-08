@@ -43,6 +43,7 @@ loom {
 
 processResources {
     from project(":shared").sourceSets.main.resources
+    from project(":shared-bridge").sourceSets.main.resources
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
@@ -52,6 +53,7 @@ processResources {
 
 tasks.withType(JavaCompile) {
     source(project(":shared").sourceSets.main.allSource)
+    source(project(":shared-bridge").sourceSets.main.allSource)
 }
 
 jar {
@@ -64,6 +66,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = mod_id + "-fabric"
+            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             from components.java
         }
