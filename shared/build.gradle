@@ -1,6 +1,6 @@
 plugins {
     id('java')
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
 }
 
 archivesBaseName = "${mod_id}-common-${minecraft_version}"
@@ -22,8 +22,6 @@ dependencies {
 }
 
 loom {
-    shareCaches()
-    remapArchives = false
     mixin {
         useLegacyMixinAp = false
     }

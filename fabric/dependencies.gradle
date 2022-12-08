@@ -3,5 +3,5 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation "curse.maven:modmenu-308702:3821162"
+    modCompileOnly "curse.maven:modmenu-308702:3821162"
 }
