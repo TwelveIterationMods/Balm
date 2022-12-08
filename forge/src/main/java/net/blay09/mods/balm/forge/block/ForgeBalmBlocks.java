@@ -1,11 +1,10 @@
 package net.blay09.mods.balm.forge.block;
 
+import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
-import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -20,11 +19,6 @@ public class ForgeBalmBlocks implements BalmBlocks {
     @Override
     public BlockBehaviour.Properties blockProperties(Material material) {
         return BlockBehaviour.Properties.of(material);
-    }
-
-    @Override
-    public Item.Properties itemProperties(CreativeModeTab creativeModeTab) {
-        return new Item.Properties().tab(creativeModeTab);
     }
 
     @Override

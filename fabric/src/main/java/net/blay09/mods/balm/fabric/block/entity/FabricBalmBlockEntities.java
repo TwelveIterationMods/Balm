@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.entity.BalmBlockEntityFactory;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,7 +20,7 @@ public class FabricBalmBlockEntities implements BalmBlockEntities {
         return new DeferredObject<>(identifier, () -> {
             Block[] resolvedBlocks = blocks.get();
             BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory::create, resolvedBlocks).build();
-            return Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier.toString(), type);
+            return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier.toString(), type);
         }).resolveImmediately();
     }
 
@@ -28,7 +29,7 @@ public class FabricBalmBlockEntities implements BalmBlockEntities {
         return new DeferredObject<>(identifier, () -> {
             Block[] resolvedBlocks = Arrays.stream(blocks).map(DeferredObject::get).toArray(Block[]::new);
             BlockEntityType<T> type = FabricBlockEntityTypeBuilder.create(factory::create, resolvedBlocks).build();
-            return Registry.register(Registry.BLOCK_ENTITY_TYPE, identifier.toString(), type);
+            return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, identifier.toString(), type);
         }).resolveImmediately();
     }
 }

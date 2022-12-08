@@ -1,20 +1,24 @@
 package net.blay09.mods.balm.fabric.client.rendering;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.common.CachedDynamicModel;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -36,9 +40,12 @@ public class FabricBalmModels implements BalmModels {
 
     private final List<DeferredModel> modelsToBake = new ArrayList<>();
     public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
+    private ModelBakery modelBakery;
+    private BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction;
 
-    public void onModelBake(ModelBakery bakery) {
-        FabricBalmModels.bakery = bakery;
+    public void onBakeModels(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
+        this.modelBakery = modelBakery;
+        this.spriteBiFunction = spriteBiFunction;
 
         for (DeferredModel model : modelsToBake) {
             model.resolveAndSet(bakery);
@@ -60,7 +67,7 @@ public class FabricBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
                 UnbakedModel model = bakery.getModel(identifier);
-                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
+                return model.bake(createBaker(identifier), Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -72,7 +79,7 @@ public class FabricBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
-                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
+                return model.bake(createBaker(identifier), Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -98,7 +105,7 @@ public class FabricBalmModels implements BalmModels {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
                 UnbakedModel model = retexture(bakery, identifier, textureMap);
-                return model.bake(bakery, Material::sprite, getModelState(Transformation.identity()), identifier);
+                return model.bake(createBaker(identifier), Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
         modelsToBake.add(deferredModel);
@@ -123,5 +130,16 @@ public class FabricBalmModels implements BalmModels {
     @Override
     public UnbakedModel getUnbakedMissingModel() {
         return bakery.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+    }
+
+    @Override
+    public ModelBaker createBaker(ResourceLocation location) {
+        try {
+            Class<?> clazz = Class.forName("net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl");
+            Constructor<?> constructor = clazz.getConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
+            return (ModelBaker) constructor.newInstance(bakery, spriteBiFunction, location);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Balm failed to create model baker", e);
+        }
     }
 }

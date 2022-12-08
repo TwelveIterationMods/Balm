@@ -1,12 +1,12 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = "https://repo.spongepowered.org/maven" }
+        maven { url = "https://repo.spongepowered.org/maven" }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.4.0'
         classpath "com.modrinth.minotaur:Minotaur:2.+"
     }
@@ -17,20 +17,22 @@ apply plugin: 'maven-publish'
 apply plugin: "com.matthewprenger.cursegradle"
 apply plugin: "com.modrinth.minotaur"
 
-version = project.mod_version
-group = project.mod_group
+group = mod_group
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+version = mod_version
 
 minecraft {
-    mappings channel: 'official', version: project.minecraft_version
+    mappings channel: 'official', version: minecraft_version
 
     runs {
         client {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Client"
 
-			arg "-mixin.config=balm.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -43,16 +45,21 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                balm {
+                "${mod_id}" {
                     source sourceSets.main
+                    source project(":shared").sourceSets.main
                 }
             }
         }
 
         server {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Server"
 
-			arg "-mixin.config=balm.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -65,18 +72,23 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                balm {
+                "${mod_id}" {
                     source sourceSets.main
+                    source project(":shared").sourceSets.main
                 }
             }
         }
 
         data {
             workingDirectory project.file('run')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName "Data"
 
             property 'forge.logging.console.level', 'debug'
 
-			arg "-mixin.config=balm.mixins.json"
+            if (forge_mixins.toBoolean()) {
+                arg "-mixin.config=${mod_id}.mixins.json"
+            }
 
             property "mixin.env.disableRefMap", "true"
             property "mixin.debug.export", "true"
@@ -86,11 +98,12 @@ minecraft {
             property "mixin.checks", "true"
             property "mixin.hotSwap", "true"
 
-            args '--mod', 'balm-forge', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                balm {
+                "${mod_id}" {
                     source sourceSets.main
+                    source project(":shared").sourceSets.main
                 }
             }
         }
@@ -98,44 +111,36 @@ minecraft {
 }
 
 sourceSets {
-	main {
-        java {
-            srcDirs '../shared/java/'
-        }
+    main {
         resources {
-            srcDirs '../shared/resources/'
             srcDirs 'src/generated/resources'
         }
-		ext.refMap = "balm.refmap.json"
-	}
+        ext.refMap = "${mod_id}.refmap.json"
+    }
 }
 
-repositories {
-    maven { url "https://www.cursemaven.com" }
+configurations {
+    testImplementation.extendsFrom compileOnly
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    compileOnly project(":shared")
 
-    implementation("org.jetbrains:annotations:22.0.0")
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:5.0.38")
+
+    implementation "org.jetbrains:annotations:22.0.0"
 }
 
 apply from: 'dependencies.gradle'
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : project.mod_id,
-                "Specification-Vendor"    : "BlayTheNinth",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "BlayTheNinth",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-				"MixinConfigs": "balm.mixins.json"
-        ])
-    }
+tasks.withType(JavaCompile) {
+    source(project(":shared").sourceSets.main.allSource)
+}
+
+processResources {
+    from project(":shared").sourceSets.main.resources
 }
 
 jar.finalizedBy('reobfJar')
@@ -143,12 +148,13 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-			artifactId = project.mod_id + "-forge"
+            artifactId = mod_id + "-forge"
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
-			
+
             artifact jar
         }
     }
+
     repositories {
         maven {
             var releasesRepoUrl = "https://nexus.twelveiterations.com/repository/maven-releases/"
@@ -157,30 +163,38 @@ publishing {
             name = "twelveIterationsNexus"
             credentials(PasswordCredentials)
         }
-	}
+    }
 }
 
 curseforge {
     apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
-        id = project.curseforge_forge_project_id
-        releaseType = project.curseforge_release_type
+        id = curseforge_forge_project_id
+        releaseType = curseforge_release_type
         changelogType = 'markdown'
         changelog = rootProject.file('CHANGELOG.md')
         project.minecraft_versions.split(',').each {
-            addGameVersion it
+            addGameVersion minecraft_version
         }
         addGameVersion 'Forge'
+
+        relations {
+            requiredLibrary 'balm'
+        }
     }
 }
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_project_id
+    projectId = project.modrinth_forge_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("modrinth.md").text
+    loaders = ['forge']
+    dependencies {
+        required.project "balm"
+    }
 }

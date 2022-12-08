@@ -6,6 +6,8 @@ import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
@@ -25,26 +27,8 @@ public class FabricBalmWorldGen implements BalmWorldGen {
     public <T extends Feature<?>> DeferredObject<T> registerFeature(ResourceLocation identifier, Supplier<T> supplier) {
         return new DeferredObject<>(identifier, () -> {
             T feature = supplier.get();
-            Registry.register(Registry.FEATURE, identifier, feature);
+            Registry.register(BuiltInRegistries.FEATURE, identifier, feature);
             return feature;
-        }).resolveImmediately();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <FC extends FeatureConfiguration, F extends Feature<FC>, T extends ConfiguredFeature<FC, F>> DeferredObject<T> registerConfiguredFeature(ResourceLocation identifier, Supplier<F> featureSupplier, Supplier<FC> configurationSupplier) {
-        return new DeferredObject<>(identifier, () -> {
-            Holder<ConfiguredFeature<FC, ?>> configuredFeature = FeatureUtils.register(identifier.toString(), featureSupplier.get(), configurationSupplier.get());
-            return (T) configuredFeature.value();
-        }).resolveImmediately();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends PlacedFeature> DeferredObject<T> registerPlacedFeature(ResourceLocation identifier, Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier, PlacementModifier... placementModifiers) {
-        return new DeferredObject<>(identifier, () -> {
-            Holder<PlacedFeature> placedFeature = PlacementUtils.register(identifier.toString(), Holder.direct(configuredFeatureSupplier.get()), placementModifiers);
-            return (T) placedFeature.value();
         }).resolveImmediately();
     }
 
@@ -52,7 +36,7 @@ public class FabricBalmWorldGen implements BalmWorldGen {
     public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(ResourceLocation identifier, Supplier<T> supplier) {
         return new DeferredObject<>(identifier, () -> {
             T placementModifierType = supplier.get();
-            Registry.register(Registry.PLACEMENT_MODIFIERS, identifier, placementModifierType);
+            Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, identifier, placementModifierType);
             return placementModifierType;
         }).resolveImmediately();
     }
@@ -60,6 +44,6 @@ public class FabricBalmWorldGen implements BalmWorldGen {
     @Override
     public void addFeatureToBiomes(BiomePredicate biomePredicate, GenerationStep.Decoration step, ResourceLocation placedFeatureIdentifier) {
         BiomeModifications.addFeature(it -> biomePredicate.test(it.getBiomeKey().location(), it.getBiomeRegistryEntry()),
-                step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, placedFeatureIdentifier));
+                step, ResourceKey.create(Registries.PLACED_FEATURE, placedFeatureIdentifier));
     }
 }

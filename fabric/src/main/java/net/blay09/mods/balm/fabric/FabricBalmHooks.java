@@ -9,7 +9,9 @@ import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvents;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,7 +44,7 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
-    public boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos) {
+    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<? extends ConfiguredFeature<?, ?>> holder) {
         return true;
     }
 
@@ -122,7 +125,7 @@ public class FabricBalmHooks implements BalmHooks {
                     }
                 }
             } else {
-                Fluid fluid = Registry.FLUID.stream().filter(it -> it.getBucket() == handItem.getItem()).findFirst().orElse(null);
+                Fluid fluid = BuiltInRegistries.FLUID.stream().filter(it -> it.getBucket() == handItem.getItem()).findFirst().orElse(null);
                 if (fluid != null && !fluid.isSame(Fluids.EMPTY)) {
                     int filled = fluidTank.fill(fluid, 1000, true);
                     if (filled >= 1000) {

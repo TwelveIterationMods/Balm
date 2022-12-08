@@ -19,8 +19,8 @@ public class ChatComponentMixin {
     @Shadow
     private Minecraft minecraft;
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;I)V", at = @At("HEAD"), cancellable = true)
-    public void renderPre(PoseStack poseStack, int tickCount, CallbackInfo callbackInfo) {
+    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;III)V", at = @At("HEAD"), cancellable = true)
+    public void renderPre(PoseStack poseStack, int tickCount, int x, int y, CallbackInfo callbackInfo) {
         GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.CHAT);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {
@@ -28,8 +28,8 @@ public class ChatComponentMixin {
         }
     }
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;I)V", at = @At("TAIL"))
-    public void renderPost(PoseStack poseStack, int tickCount, CallbackInfo callbackInfo) {
+    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;III)V", at = @At("TAIL"))
+    public void renderPost(PoseStack poseStack, int tickCount, int x, int y, CallbackInfo callbackInfo) {
         Balm.getEvents().fireEvent(new GuiDrawEvent.Post(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.CHAT));
     }
 }

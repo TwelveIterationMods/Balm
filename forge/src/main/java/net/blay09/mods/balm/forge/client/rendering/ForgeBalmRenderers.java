@@ -57,13 +57,9 @@ public class ForgeBalmRenderers implements BalmRenderers {
         public final List<Pair<Supplier<EntityType<?>>, EntityRendererProvider<Entity>>> entityRenderers = new ArrayList<>();
         public final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
         public final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
-        public final List<Pair<Supplier<Block>, RenderType>> blockRenderTypes = new ArrayList<>();
 
         @SubscribeEvent
         public void setupClient(FMLClientSetupEvent event) {
-            for (Pair<Supplier<Block>, RenderType> entry : blockRenderTypes) {
-                ItemBlockRenderTypes.setRenderLayer(entry.getFirst().get(), entry.getSecond()); // TODO depr
-            }
         }
 
         @SubscribeEvent
@@ -132,7 +128,8 @@ public class ForgeBalmRenderers implements BalmRenderers {
 
     @Override
     public void setBlockRenderType(Supplier<Block> block, RenderType renderType) {
-        getActiveRegistrations().blockRenderTypes.add(Pair.of(block, renderType));
+        // Do nothing in Forge. Forge unfortunately changes the Vanilla model format,
+        // so we have to have both this call (for Fabric) and change the JSON (for Forge).
     }
 
     public void register() {

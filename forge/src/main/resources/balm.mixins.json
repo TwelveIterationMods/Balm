@@ -21,7 +21,8 @@
     "MouseHandlerAccessor",
     "ScreenAccessor",
     "MinecraftMixin",
-    "LootTableMixin"
+    "LootTableMixin",
+    "ModelBakeryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -63,11 +64,11 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
         capabilities.put(capability, LazyOptional.of(provider::getInstance));
 
         if (provider.getProviderClass() == Container.class) {
-            capabilities.put(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, LazyOptional.of(() -> new BalmInvWrapper((Container) provider.getInstance())));
+            capabilities.put(ForgeCapabilities.ITEM_HANDLER, LazyOptional.of(() -> new BalmInvWrapper((Container) provider.getInstance())));
         } else if(provider.getProviderClass() == FluidTank.class) {
-            capabilities.put(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, LazyOptional.of(() -> new ForgeFluidTank((FluidTank) provider.getInstance())));
+            capabilities.put(ForgeCapabilities.FLUID_HANDLER, LazyOptional.of(() -> new ForgeFluidTank((FluidTank) provider.getInstance())));
         } else if(provider.getProviderClass() == EnergyStorage.class) {
-            capabilities.put(CapabilityEnergy.ENERGY, LazyOptional.of(() -> new ForgeEnergyStorage((EnergyStorage) provider.getInstance())));
+            capabilities.put(ForgeCapabilities.ENERGY, LazyOptional.of(() -> new ForgeEnergyStorage((EnergyStorage) provider.getInstance())));
         }
     }
 

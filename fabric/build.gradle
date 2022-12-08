@@ -10,24 +10,28 @@ group = mod_group
 archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 version = mod_version
 
-repositories {
-    // For CurseForge
-    maven { url "https://www.cursemaven.com" }
-
-    // For Cloth Config
-    maven { url "https://maven.shedaniel.me/" }
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation project(path: ":shared", configuration: "namedElements")
+    implementation project(path: ":shared-bridge", configuration: "namedElements")
+
+    modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modImplementation "curse.maven:modmenu-308702:3348711"
+
+    implementation "org.jetbrains:annotations:22.0.0"
 }
 
 apply from: 'dependencies.gradle'
 
 loom {
+    shareCaches()
     runs {
         client {
             client()
@@ -45,6 +49,7 @@ loom {
 }
 
 processResources {
+    from project(":shared").sourceSets.main.resources
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
@@ -52,29 +57,13 @@ processResources {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs '../shared/java/'
-        }
-        resources {
-            srcDirs '../shared/resources/'
-        }
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    it.options.release = 17
-}
-
-java {
-    withSourcesJar()
+tasks.withType(JavaCompile) {
+    source(project(":shared").sourceSets.main.allSource)
 }
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${mod_id}" }
     }
 }
 
@@ -85,7 +74,6 @@ publishing {
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             from components.java
-            artifact jar
         }
     }
 
@@ -103,18 +91,17 @@ publishing {
 curseforge {
     apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
-        id = project.curseforge_fabric_project_id
-        releaseType = project.curseforge_release_type
+        id = curseforge_fabric_project_id
+        releaseType = curseforge_release_type
         changelogType = 'markdown'
         changelog = rootProject.file('CHANGELOG.md')
         project.minecraft_versions.split(',').each {
-            addGameVersion it
+            addGameVersion minecraft_version
         }
         addGameVersion 'Fabric'
 
         relations {
-            requiredLibrary 'fabric-api'
-            requiredLibrary 'cloth-config'
+            requiredLibrary 'balm-fabric'
         }
 
         mainArtifact(remapJar)
@@ -130,7 +117,7 @@ curseforge {
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_project_id
+    projectId = project.modrinth_fabric_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+fabric-" + project.minecraft_version
     uploadFile = remapJar
@@ -140,5 +127,6 @@ modrinth {
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"
+        required.project "balm"
     }
 }
