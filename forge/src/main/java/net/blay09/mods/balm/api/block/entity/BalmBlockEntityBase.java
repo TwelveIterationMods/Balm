@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.block.BalmBlockEntityContract;
 import net.blay09.mods.balm.api.energy.EnergyStorage;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.api.provider.BalmProvider;
@@ -25,37 +24,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContract {
+public abstract class BalmBlockEntityBase extends BlockEntity {
 
     private final Map<Capability<?>, LazyOptional<?>> capabilities = new HashMap<>();
     private final Table<Capability<?>, Direction, LazyOptional<?>> sidedCapabilities = HashBasedTable.create();
     private boolean capabilitiesInitialized;
 
-    public BalmBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    public BalmBlockEntityBase(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        return createUpdateTag();
-    }
-
-    @Override
-    @Nullable
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return createUpdatePacket();
     }
 
     private void addCapabilities(BalmProvider<?> provider, Map<Capability<?>, LazyOptional<?>> capabilities) {
@@ -65,14 +46,13 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
 
         if (provider.getProviderClass() == Container.class) {
             capabilities.put(ForgeCapabilities.ITEM_HANDLER, LazyOptional.of(() -> new BalmInvWrapper((Container) provider.getInstance())));
-        } else if(provider.getProviderClass() == FluidTank.class) {
+        } else if (provider.getProviderClass() == FluidTank.class) {
             capabilities.put(ForgeCapabilities.FLUID_HANDLER, LazyOptional.of(() -> new ForgeFluidTank((FluidTank) provider.getInstance())));
-        } else if(provider.getProviderClass() == EnergyStorage.class) {
+        } else if (provider.getProviderClass() == EnergyStorage.class) {
             capabilities.put(ForgeCapabilities.ENERGY, LazyOptional.of(() -> new ForgeEnergyStorage((EnergyStorage) provider.getInstance())));
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T getProvider(Class<T> clazz) {
         ForgeBalmProviders forgeProviders = (ForgeBalmProviders) Balm.getProviders();
@@ -84,10 +64,11 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (!capabilitiesInitialized) {
-            List<BalmProviderHolder> providers = new ArrayList<>();
+            List<Object> providers = new ArrayList<>();
             buildProviders(providers);
 
-            for (BalmProviderHolder providerHolder : providers) {
+            for (Object holder : providers) {
+                BalmProviderHolder providerHolder = (BalmProviderHolder) holder;
                 for (BalmProvider<?> provider : providerHolder.getProviders()) {
                     addCapabilities(provider, capabilities);
                 }
@@ -111,4 +92,7 @@ public class BalmBlockEntity extends BlockEntity implements BalmBlockEntityContr
         }
         return result != null ? result.cast() : super.getCapability(cap, side);
     }
+
+    protected abstract void buildProviders(List<Object> providers);
+
 }
