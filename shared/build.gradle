@@ -18,7 +18,7 @@ dependencies {
 
     compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
 
-    compileOnly project(":shared-bridge")
+    compileOnly project(path: ":shared-bridge", configuration: "namedElements")
 }
 
 loom {

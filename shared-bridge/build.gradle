@@ -14,9 +14,6 @@ repositories {
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
-    compileOnly 'org.spongepowered:mixin:0.8.4'
-
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
 }
 
 loom {
@@ -25,8 +22,4 @@ loom {
     mixin {
         useLegacyMixinAp = false
     }
-}
-
-configurations {
-    testImplementation.extendsFrom compileOnly
 }
