@@ -89,7 +89,7 @@ public class ForgeBalmItems implements BalmItems {
 
     @Override
     public DeferredObject<CreativeModeTab> registerCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
-        Component displayName = Component.translatable(identifier.toString().replace(':', '.'));
+        Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
         CreativeTabRegistration deferred = new CreativeTabRegistration(identifier,
                 displayName,
                 iconSupplier);

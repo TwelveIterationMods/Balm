@@ -32,7 +32,7 @@ public class FabricBalmItems implements BalmItems {
     @Override
     public DeferredObject<CreativeModeTab> registerCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
         return new DeferredObject<>(identifier, () -> {
-            Component displayName = Component.translatable(identifier.toString().replace(':', '.'));
+            Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
             return FabricItemGroup.builder(identifier)
                     .title(displayName)
                     .icon(iconSupplier)
