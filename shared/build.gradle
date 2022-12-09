@@ -38,6 +38,12 @@ jar {
     }
 }
 
+loom {
+    mixin {
+        useLegacyMixinAp = false
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
