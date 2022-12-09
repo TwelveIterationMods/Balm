@@ -24,12 +24,6 @@ dependencies {
     compileOnly project(path: ":shared-bridge", configuration: "namedElements")
 }
 
-loom {
-    mixin {
-        useLegacyMixinAp = false
-    }
-}
-
 configurations {
     testImplementation.extendsFrom compileOnly
 }

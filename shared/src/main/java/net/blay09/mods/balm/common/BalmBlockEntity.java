@@ -176,7 +176,7 @@ public class BalmBlockEntity extends BalmBlockEntityBase implements BalmProvider
         return tag;
     }
 
-    private void writeUpdateTag(CompoundTag tag) {
+    protected void writeUpdateTag(CompoundTag tag) {
     }
 
 

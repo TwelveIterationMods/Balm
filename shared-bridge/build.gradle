@@ -17,9 +17,3 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
 }
-
-loom {
-    mixin {
-        useLegacyMixinAp = false
-    }
-}
