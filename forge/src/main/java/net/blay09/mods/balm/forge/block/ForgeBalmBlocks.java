@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.forge.block;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -29,15 +31,13 @@ public class ForgeBalmBlocks implements BalmBlocks {
     }
 
     @Override
-    public DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier) {
-        DeferredRegister<Item> register = DeferredRegisters.get(ForgeRegistries.ITEMS, identifier.getNamespace());
-        RegistryObject<Item> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+    public DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
+        return Balm.getItems().registerItem(supplier::get, identifier, creativeTab);
     }
 
     @Override
-    public void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier) {
+    public void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
         registerBlock(blockSupplier, identifier);
-        registerBlockItem(blockItemSupplier, identifier);
+        registerBlockItem(blockItemSupplier, identifier, creativeTab);
     }
 }

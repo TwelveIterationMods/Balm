@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.fabric.block;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -31,16 +33,13 @@ public class FabricBalmBlocks implements BalmBlocks {
     }
 
     @Override
-    public DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier) {
-        return new DeferredObject<>(identifier, () -> {
-            Item item = supplier.get();
-            return Registry.register(BuiltInRegistries.ITEM, identifier, item);
-        }).resolveImmediately();
+    public DeferredObject<Item> registerBlockItem(Supplier<BlockItem> supplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
+        return Balm.getItems().registerItem(supplier::get, identifier, creativeTab);
     }
 
     @Override
-    public void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier) {
+    public void register(Supplier<Block> blockSupplier, Supplier<BlockItem> blockItemSupplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
         registerBlock(blockSupplier, identifier);
-        registerBlockItem(blockItemSupplier, identifier);
+        registerBlockItem(blockItemSupplier, identifier, creativeTab);
     }
 }
