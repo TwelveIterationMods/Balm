@@ -1,10 +1,12 @@
 package net.blay09.mods.balm.fabric.client.rendering;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.common.CachedDynamicModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -24,13 +27,20 @@ import java.util.function.Supplier;
 
 public class FabricBalmModels implements BalmModels {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     private static abstract class DeferredModel extends DeferredObject<BakedModel> {
         public DeferredModel(ResourceLocation identifier) {
             super(identifier);
         }
 
         public void resolveAndSet(ModelBakery modelBakery) {
-            set(resolve(modelBakery));
+            try {
+                set(resolve(modelBakery));
+            } catch (Exception exception) {
+                LOGGER.warn("Unable to bake model: '{}': {}", getIdentifier(), exception);
+                set(Minecraft.getInstance().getModelManager().getMissingModel());
+            }
         }
 
         public abstract BakedModel resolve(ModelBakery modelBakery);
