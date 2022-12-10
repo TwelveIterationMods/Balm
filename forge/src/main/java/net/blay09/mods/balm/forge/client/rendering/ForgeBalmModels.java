@@ -38,6 +38,8 @@ public class ForgeBalmModels implements BalmModels {
         public abstract BakedModel resolve(ModelBakery modelBakery, Map<ResourceLocation, BakedModel> modelRegistry);
     }
 
+    public final List<DeferredModel> modelsToBake = Collections.synchronizedList(new ArrayList<>());
+
     private static class Registrations {
         public final List<DeferredModel> additionalModels = new ArrayList<>();
         public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
@@ -71,6 +73,12 @@ public class ForgeBalmModels implements BalmModels {
     public void onBakeModels(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
         this.modelBakery = modelBakery;
         this.spriteBiFunction = spriteBiFunction;
+
+        synchronized (modelsToBake) {
+            for (DeferredModel deferredModel : modelsToBake) {
+                deferredModel.resolve(modelBakery, modelBakery.getBakedTopLevelModels());
+            }
+        }
     }
 
     @Override
@@ -93,7 +101,7 @@ public class ForgeBalmModels implements BalmModels {
                 return model.bake(createBaker(identifier), Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
-        getActiveRegistrations().additionalModels.add(deferredModel);
+        modelsToBake.add(deferredModel);
         return deferredModel;
     }
 
@@ -106,7 +114,7 @@ public class ForgeBalmModels implements BalmModels {
                 return model.bake(createBaker(identifier), Material::sprite, getModelState(Transformation.identity()), identifier);
             }
         };
-        getActiveRegistrations().additionalModels.add(deferredModel);
+        modelsToBake.add(deferredModel);
         return deferredModel;
     }
 
@@ -120,7 +128,7 @@ public class ForgeBalmModels implements BalmModels {
                 return new CachedDynamicModel(bakery, effectiveModelFunction, null, textureMapFunction, transformFunction, identifier);
             }
         };
-        getActiveRegistrations().additionalModels.add(deferredModel);
+        modelsToBake.add(deferredModel);
         return deferredModel;
     }
 

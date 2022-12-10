@@ -36,10 +36,9 @@ public class FabricBalmModels implements BalmModels {
         public abstract BakedModel resolve(ModelBakery modelBakery);
     }
 
-    private static ModelBakery bakery;
 
-    private final List<DeferredModel> modelsToBake = new ArrayList<>();
-    public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = new ArrayList<>();
+    private final List<DeferredModel> modelsToBake = Collections.synchronizedList(new ArrayList<>());
+    public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = Collections.synchronizedList(new ArrayList<>());
     private ModelBakery modelBakery;
     private BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction;
 
@@ -47,17 +46,21 @@ public class FabricBalmModels implements BalmModels {
         this.modelBakery = modelBakery;
         this.spriteBiFunction = spriteBiFunction;
 
-        for (DeferredModel model : modelsToBake) {
-            model.resolveAndSet(bakery);
+        synchronized (modelsToBake) {
+            for (DeferredModel model : modelsToBake) {
+                model.resolveAndSet(modelBakery);
+            }
         }
 
-        for (Pair<Supplier<Block>, Supplier<BakedModel>> override : overrides) {
-            Block block = override.getFirst().get();
-            BakedModel bakedModel = override.getSecond().get();
-            block.getStateDefinition().getPossibleStates().forEach((state) -> {
-                ModelResourceLocation modelLocation = BlockModelShaper.stateToModelLocation(state);
-                bakery.getBakedTopLevelModels().put(modelLocation, bakedModel);
-            });
+        synchronized (overrides) {
+            for (Pair<Supplier<Block>, Supplier<BakedModel>> override : overrides) {
+                Block block = override.getFirst().get();
+                BakedModel bakedModel = override.getSecond().get();
+                block.getStateDefinition().getPossibleStates().forEach((state) -> {
+                    ModelResourceLocation modelLocation = BlockModelShaper.stateToModelLocation(state);
+                    modelBakery.getBakedTopLevelModels().put(modelLocation, bakedModel);
+                });
+            }
         }
     }
 
@@ -124,12 +127,12 @@ public class FabricBalmModels implements BalmModels {
 
     @Override
     public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
-        return bakery.getModel(location);
+        return modelBakery.getModel(location);
     }
 
     @Override
     public UnbakedModel getUnbakedMissingModel() {
-        return bakery.getModel(ModelBakery.MISSING_MODEL_LOCATION);
+        return modelBakery.getModel(ModelBakery.MISSING_MODEL_LOCATION);
     }
 
     @Override
@@ -138,7 +141,7 @@ public class FabricBalmModels implements BalmModels {
             Class<?> clazz = Class.forName("net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl");
             Constructor<?> constructor = clazz.getDeclaredConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
             constructor.setAccessible(true);
-            return (ModelBaker) constructor.newInstance(bakery, spriteBiFunction, location);
+            return (ModelBaker) constructor.newInstance(modelBakery, spriteBiFunction, location);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Balm failed to create model baker", e);
         }
