@@ -156,7 +156,8 @@ public class ForgeBalmModels implements BalmModels {
     public ModelBaker createBaker(ResourceLocation location) {
         try {
             Class<?> clazz = Class.forName("net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl");
-            Constructor<?> constructor = clazz.getConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
+            Constructor<?> constructor = clazz.getDeclaredConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
+            constructor.setAccessible(true);
             return (ModelBaker) constructor.newInstance(modelBakery, spriteBiFunction, location);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Balm failed to create model baker", e);
