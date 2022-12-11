@@ -81,11 +81,11 @@ public class ForgeBalmItems implements BalmItems {
             if (tabIdentifier != null) {
                 Collection<Supplier<ItemLike[]>> itemStacks = creativeTabContents.get(tabIdentifier);
                 if (!itemStacks.isEmpty()) {
-                    event.register((enabledFlags, populator, hasPermissions) -> itemStacks.forEach(it -> {
+                    itemStacks.forEach(it -> {
                         for (ItemLike itemStack : it.get()) {
-                            populator.accept(itemStack);
+                            event.accept(itemStack);
                         }
-                    }));
+                    });
                 }
             }
         }
