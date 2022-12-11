@@ -1,3 +1,7 @@
+### Version 3.2.1 for Minecraft 1.18.2
+
+- Fixed crashes on some key mapping checks
+
 ### Version 3.2.0 for Minecraft 1.18.2
 
 - Added some functionality to fix item transfers in Ex Compressum
