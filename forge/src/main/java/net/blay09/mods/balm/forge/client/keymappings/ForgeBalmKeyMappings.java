@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.jetbrains.annotations.Nullable;
 
 public class ForgeBalmKeyMappings implements BalmKeyMappings {
     private static class Registrations {
@@ -59,26 +60,34 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
     }
 
     @Override
-    public boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Key input) {
-        return keyMapping.isActiveAndMatches(input);
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Key input) {
+        return keyMapping != null && keyMapping.isActiveAndMatches(input);
     }
 
     @Override
-    public boolean isActiveAndMatches(KeyMapping keyMapping, int keyCode, int scanCode) {
-        return keyMapping.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
+        return keyMapping != null && keyMapping.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
     }
 
     @Override
-    public boolean isActiveAndMatches(KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
+        if(keyMapping == null) {
+            return false;
+        }
+
         return type == InputConstants.Type.MOUSE ? keyMapping.isActiveAndMatches(InputConstants.Type.MOUSE.getOrCreate(keyCode)) : keyMapping.isActiveAndMatches(InputConstants.getKey(keyCode, scanCode));
     }
 
     @Override
-    public boolean isActiveAndWasPressed(KeyMapping keyMapping) {
-        return keyMapping.consumeClick();
+    public boolean isActiveAndWasPressed(@Nullable KeyMapping keyMapping) {
+        return keyMapping != null && keyMapping.consumeClick();
     }
 
-    private boolean isActiveAndMatchesStrictModifier(KeyMapping keyMapping, int keyCode, int scanCode) {
+    private boolean isActiveAndMatchesStrictModifier(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
+        if(keyMapping == null) {
+            return false;
+        }
+
         if (keyMapping.getKeyModifier() == net.minecraftforge.client.settings.KeyModifier.NONE) {
             if (net.minecraftforge.client.settings.KeyModifier.SHIFT.isActive(keyMapping.getKeyConflictContext())
                     || net.minecraftforge.client.settings.KeyModifier.CONTROL.isActive(keyMapping.getKeyConflictContext())
@@ -91,13 +100,21 @@ public class ForgeBalmKeyMappings implements BalmKeyMappings {
     }
 
     @Override
-    public boolean isKeyDownIgnoreContext(KeyMapping keyMapping) {
+    public boolean isKeyDownIgnoreContext(@Nullable KeyMapping keyMapping) {
+        if(keyMapping == null) {
+            return false;
+        }
+
         InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
         return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
     }
 
     @Override
-    public boolean isActiveAndKeyDown(KeyMapping keyMapping) {
+    public boolean isActiveAndKeyDown(@Nullable KeyMapping keyMapping) {
+        if(keyMapping == null) {
+            return false;
+        }
+
         InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
         return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key.getValue()));
     }
