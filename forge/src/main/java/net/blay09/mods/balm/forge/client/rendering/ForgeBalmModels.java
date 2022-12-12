@@ -64,11 +64,7 @@ public class ForgeBalmModels implements BalmModels {
         }
 
         @SubscribeEvent
-        public void onModelBakingCompleted(ModelEvent.BakingCompleted event) {
-            for (DeferredModel deferredModel : additionalModels) {
-                deferredModel.resolveAndSet(event.getModelBakery(), event.getModels());
-            }
-
+        public void onModelBakingCompleted(ModelEvent.ModifyBakingResult event) {
             for (Pair<Supplier<Block>, Supplier<BakedModel>> override : overrides) {
                 Block block = override.getFirst().get();
                 BakedModel bakedModel = override.getSecond().get();
@@ -76,6 +72,13 @@ public class ForgeBalmModels implements BalmModels {
                     ModelResourceLocation modelLocation = BlockModelShaper.stateToModelLocation(state);
                     event.getModels().put(modelLocation, bakedModel);
                 });
+            }
+        }
+
+        @SubscribeEvent
+        public void onModelBakingCompleted(ModelEvent.BakingCompleted event) {
+            for (DeferredModel deferredModel : additionalModels) {
+                deferredModel.resolveAndSet(event.getModelBakery(), event.getModels());
             }
         }
     }
