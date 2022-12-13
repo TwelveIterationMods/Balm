@@ -70,7 +70,7 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
                     // If we're going to retexture, we need to ensure the base model has already been baked to prevent circular parent references in the retextured model
                     if (textureMapFunction != null && !baseModelCache.containsKey(baseModelLocation)) {
                         final UnbakedModel baseModel = models.getUnbakedModelOrMissing(baseModelLocation);
-                        final BakedModel bakedBaseModel = baseModel.bake(models.createBaker(baseModelLocation),
+                        final BakedModel bakedBaseModel = baseModel.bake(models.createBaker(baseModelLocation, this::getSprite),
                                 Material::sprite,
                                 modelTransform,
                                 baseModelLocation);
@@ -80,7 +80,7 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
                     UnbakedModel retexturedBaseModel = textureMapFunction != null ? models.retexture(modelBakery,
                             baseModelLocation,
                             textureMapFunction.apply(state)) : models.getUnbakedModelOrMissing(baseModelLocation);
-                    bakedModel = retexturedBaseModel.bake(models.createBaker(location), Material::sprite, modelTransform, location);
+                    bakedModel = retexturedBaseModel.bake(models.createBaker(location, this::getSprite), Material::sprite, modelTransform, location);
                     cache.put(stateString, bakedModel);
 
                     if (particleTexture == null && bakedModel != null) {
@@ -132,4 +132,8 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
 
     public abstract List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand);
     public abstract List<RenderType> getItemRenderTypes(ItemStack itemStack, boolean fabulous);
+
+    private TextureAtlasSprite getSprite(ResourceLocation modelLocation, Material material) {
+        return material.sprite();
+    }
 }
