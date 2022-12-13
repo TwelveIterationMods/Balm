@@ -44,7 +44,7 @@ public class ForgeBalmModels implements BalmModels {
             try {
                 set(resolve(modelBakery, modelRegistry));
             } catch (Exception exception) {
-                LOGGER.warn("Unable to bake model: '{}': {}", getIdentifier(), exception);
+                LOGGER.warn("Unable to bake model: '{}':", getIdentifier(), exception);
                 set(modelBakery.getBakedTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION));
             }
         }
