@@ -5,7 +5,6 @@ import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
-import net.blay09.mods.balm.common.CachedDynamicModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -105,7 +104,7 @@ public class FabricBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery) {
-                return new CachedDynamicModel(bakery, effectiveModelFunction, null, textureMapFunction, transformFunction, identifier);
+                return new FabricCachedDynamicModel(bakery, effectiveModelFunction, null, textureMapFunction, transformFunction, identifier);
             }
         };
         modelsToBake.add(deferredModel);

@@ -1,8 +1,9 @@
-package net.blay09.mods.balm.common;
+package net.blay09.mods.balm.common.client.rendering;
 
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -13,8 +14,10 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -23,7 +26,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class CachedDynamicModel implements BakedModel {
+public abstract class AbstractCachedDynamicModel implements BakedModel {
 
     private final Map<String, BakedModel> cache = new HashMap<>();
     private final Map<ResourceLocation, BakedModel> baseModelCache = new HashMap<>();
@@ -37,7 +40,7 @@ public class CachedDynamicModel implements BakedModel {
 
     private TextureAtlasSprite particleTexture;
 
-    public CachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, ResourceLocation location) {
+    public AbstractCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, ResourceLocation location) {
         this.modelBakery = modelBakery;
         this.baseModelFunction = baseModelFunction;
         this.parts = parts;
@@ -121,4 +124,6 @@ public class CachedDynamicModel implements BakedModel {
         return ItemOverrides.EMPTY;
     }
 
+    public abstract List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand);
+    public abstract List<RenderType> getItemRenderTypes(ItemStack itemStack, boolean fabulous);
 }
