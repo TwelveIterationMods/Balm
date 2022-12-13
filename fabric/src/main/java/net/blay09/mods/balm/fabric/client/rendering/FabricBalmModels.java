@@ -39,7 +39,7 @@ public class FabricBalmModels implements BalmModels {
                 set(resolve(modelBakery));
             } catch (Exception exception) {
                 LOGGER.warn("Unable to bake model: '{}': {}", getIdentifier(), exception);
-                set(Minecraft.getInstance().getModelManager().getMissingModel());
+                set(modelBakery.getBakedTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION));
             }
         }
 

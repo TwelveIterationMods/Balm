@@ -45,7 +45,7 @@ public class ForgeBalmModels implements BalmModels {
                 set(resolve(modelBakery, modelRegistry));
             } catch (Exception exception) {
                 LOGGER.warn("Unable to bake model: '{}': {}", getIdentifier(), exception);
-                set(Minecraft.getInstance().getModelManager().getMissingModel());
+                set(modelBakery.getBakedTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION));
             }
         }
 
