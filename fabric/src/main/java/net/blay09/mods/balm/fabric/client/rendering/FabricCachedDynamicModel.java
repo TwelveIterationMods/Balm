@@ -19,8 +19,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class FabricCachedDynamicModel extends AbstractCachedDynamicModel {
-    public FabricCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, ResourceLocation location) {
-        super(modelBakery, baseModelFunction, parts, textureMapFunction, transformFunction, location);
+    public FabricCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ResourceLocation location) {
+        super(modelBakery, baseModelFunction, parts, textureMapFunction, transformFunction, renderTypes, location);
     }
 
     @Override

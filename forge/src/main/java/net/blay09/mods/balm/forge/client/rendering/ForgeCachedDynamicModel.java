@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -24,15 +23,17 @@ import java.util.function.Predicate;
 
 public class ForgeCachedDynamicModel extends AbstractCachedDynamicModel {
 
+    private final List<RenderType> renderTypes;
     private ChunkRenderTypeSet cachedChunkRenderTypeSet;
 
-    public ForgeCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, ResourceLocation location) {
-        super(modelBakery, baseModelFunction, parts, textureMapFunction, transformFunction, location);
+    public ForgeCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ResourceLocation location) {
+        super(modelBakery, baseModelFunction, parts, textureMapFunction, transformFunction, renderTypes, location);
+        this.renderTypes = renderTypes;
     }
 
     @Override
     public List<RenderType> getItemRenderTypes(ItemStack itemStack, boolean fabulous) {
-        return Collections.emptyList();
+        return renderTypes;
     }
 
     @Override
@@ -46,17 +47,17 @@ public class ForgeCachedDynamicModel extends AbstractCachedDynamicModel {
 
     @Override
     public List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand) {
-        return Collections.emptyList();
+        return renderTypes;
     }
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
         if (cachedChunkRenderTypeSet == null) {
             List<RenderType> result = getBlockRenderTypes(state, rand);
-            if (result.isEmpty()) {
-                cachedChunkRenderTypeSet = super.getRenderTypes(state, rand, data);
-            } else {
+            if (!result.isEmpty()) {
                 cachedChunkRenderTypeSet = ChunkRenderTypeSet.of(result);
+            } else {
+                cachedChunkRenderTypeSet = super.getRenderTypes(state, rand, data);
             }
         }
 

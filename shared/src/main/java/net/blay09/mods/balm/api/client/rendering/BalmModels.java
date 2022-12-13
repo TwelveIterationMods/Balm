@@ -3,6 +3,7 @@ package net.blay09.mods.balm.api.client.rendering;
 import com.mojang.datafixers.util.Either;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -15,10 +16,7 @@ import org.joml.Matrix4f;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -29,7 +27,11 @@ public interface BalmModels {
 
     DeferredObject<BakedModel> bakeModel(ResourceLocation identifier, UnbakedModel model);
 
-    DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction);
+    default DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction) {
+        return loadDynamicModel(identifier, modelFunction, textureMapFunction, transformFunction, Collections.emptyList());
+    }
+
+    DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes);
 
     DeferredObject<BakedModel> retexture(ResourceLocation identifier, Map<String, String> textureMap);
 
@@ -47,7 +49,13 @@ public interface BalmModels {
             replacedTexturesMapped.put(entry.getKey(), Either.left(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(entry.getValue()))));
         }
 
-        BlockModel blockModel = new BlockModel(identifier, Collections.emptyList(), replacedTexturesMapped, false, BlockModel.GuiLight.FRONT, ItemTransforms.NO_TRANSFORMS, Collections.emptyList());
+        BlockModel blockModel = new BlockModel(identifier,
+                Collections.emptyList(),
+                replacedTexturesMapped,
+                false,
+                BlockModel.GuiLight.FRONT,
+                ItemTransforms.NO_TRANSFORMS,
+                Collections.emptyList());
 
         // We have to resolve parents as that is usually done during stitching, which we're already past
         blockModel.resolveParents(bakery::getModel);
