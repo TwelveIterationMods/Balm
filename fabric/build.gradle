@@ -16,8 +16,8 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation project(path: ":shared", configuration: "namedElements")
-    implementation project(path: ":shared-bridge", configuration: "namedElements")
+    implementation project(":shared")
+    implementation project(":shared-bridge")
 
     implementation "org.jetbrains:annotations:22.0.0"
 }
