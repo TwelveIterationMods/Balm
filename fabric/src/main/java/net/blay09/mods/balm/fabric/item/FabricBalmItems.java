@@ -41,7 +41,7 @@ public class FabricBalmItems implements BalmItems {
             Item item = supplier.get();
             item = Registry.register(BuiltInRegistries.ITEM, identifier, item);
             if (creativeTab != null) {
-                managedCreativeTabs.add(creativeTab);
+                manageCreativeModeTab(creativeTab);
                 creativeTabContents.put(creativeTab, item);
             }
             return item;
