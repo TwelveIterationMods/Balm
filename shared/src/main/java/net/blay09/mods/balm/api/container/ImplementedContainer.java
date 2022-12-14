@@ -96,7 +96,7 @@ public interface ImplementedContainer extends Container {
      *
      * @param slot  The inventory slot of which to replace the itemstack.
      * @param stack The replacing itemstack. If the stack is too big for
-     *              this inventory ({@link Container#getMaxStackSize()()}),
+     *              this inventory ({@link Container#getMaxStackSize()}),
      *              it gets resized to this inventory's maximum amount.
      */
     @Override
