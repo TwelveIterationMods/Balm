@@ -29,7 +29,13 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
-    from("LICENSE") {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
+    }
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_id}" }
     }
 }
@@ -40,7 +46,15 @@ publishing {
             artifactId = mod_id + "-common"
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
-            from components.java
+            artifact jar
+
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+
+            artifact project.javadocJar {
+                classifier 'javadoc'
+            }
         }
     }
 

@@ -2,6 +2,12 @@ subprojects {
     apply plugin: 'java'
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+    java.withSourcesJar()
+    java.withJavadocJar()
+
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false // Do not publish custom metadata
+    }
 
     jar {
         manifest {
