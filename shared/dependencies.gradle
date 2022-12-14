@@ -1,0 +1,3 @@
+dependencies {
+    compileOnly "mcp.mobius.waila:wthit-api:mojmap-5.5.1"
+}
