@@ -5,6 +5,8 @@ import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -151,7 +153,8 @@ public class FabricBalmModels implements BalmModels {
     @Override
     public ModelBaker createBaker(ResourceLocation location, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
         try {
-            Class<?> clazz = Class.forName("net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl");
+            MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
+            Class<?> clazz = Class.forName(mappings.mapClassName("intermediary", "net.minecraft.class_1088"));
             Constructor<?> constructor = clazz.getDeclaredConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
             constructor.setAccessible(true);
             return (ModelBaker) constructor.newInstance(modelBakery, spriteBiFunction, location);
