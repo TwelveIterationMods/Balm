@@ -38,6 +38,16 @@ loom {
             ideConfigGenerated(true)
             runDir("run")
         }
+        data {
+            inherit client
+            setConfigName("fabric Data")
+            ideConfigGenerated(true)
+            runDir("build/datagen")
+
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+        }
     }
 }
 
@@ -51,7 +61,7 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(":shared").sourceSets.main.allSource)
     source(project(":shared-bridge").sourceSets.main.allSource)
 }

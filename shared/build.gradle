@@ -13,7 +13,7 @@ minecraft {
 }
 
 dependencies {
-    compileOnly 'org.spongepowered:mixin:0.8.5'
+    compileOnly "org.spongepowered:mixin:$mixin_version"
 
     compileOnly project(":shared-bridge")
 }
@@ -24,7 +24,7 @@ configurations {
     testImplementation.extendsFrom compileOnly
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(":shared-bridge").sourceSets.main.allSource)
 }
 

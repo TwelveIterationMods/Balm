@@ -5,8 +5,10 @@ subprojects {
     java.withSourcesJar()
     java.withJavadocJar()
 
-    tasks.withType(GenerateModuleMetadata) {
-        enabled = false // Do not publish custom metadata
+    tasks.withType(GenerateModuleMetadata).tap {
+        configureEach {
+            enabled = false // Do not publish dependencies in pom
+        }
     }
 
     jar {
@@ -31,18 +33,15 @@ subprojects {
     repositories {
         mavenCentral()
 
-        maven { url "https://www.cursemaven.com" }
+        maven {
+            url "https://www.cursemaven.com"
+
+            content {
+                includeGroup 'curse.maven'
+            }
+        }
 
         maven { url "https://nexus.twelveiterations.com/repository/maven-public/" }
-
-        // For JEI
-        maven { url "https://dvs1.progwml6.com/files/maven/" }
-
-        // For Cloth Config
-        maven { url "https://maven.shedaniel.me/" }
-
-        // For WTHIT
-        maven { url "https://maven.bai.lol" }
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -50,7 +49,9 @@ subprojects {
         it.options.release = java_version as int
     }
 
-    tasks.withType(Javadoc) {
-        failOnError false
+    tasks.withType(Javadoc).tap {
+        configureEach {
+            failOnError false
+        }
     }
 }
