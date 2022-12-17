@@ -11,6 +11,10 @@ subprojects {
         }
     }
 
+    configurations {
+        testImplementation.extendsFrom compileOnly
+    }
+
     jar {
         manifest {
             attributes([
@@ -42,6 +46,15 @@ subprojects {
         }
 
         maven { url "https://nexus.twelveiterations.com/repository/maven-public/" }
+
+        // For Cloth Config and REI
+        maven { url "https://maven.shedaniel.me/" }
+
+        // For JEI
+        maven { url "https://dvs1.progwml6.com/files/maven/" }
+
+        // For WTHIT
+        maven { url "https://maven.bai.lol" }
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -52,6 +65,12 @@ subprojects {
     tasks.withType(Javadoc).tap {
         configureEach {
             failOnError false
+        }
+    }
+
+    if (balm_version.endsWith("SNAPSHOT")) {
+        configurations.configureEach {
+            resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
         }
     }
 }

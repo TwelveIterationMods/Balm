@@ -1,19 +1,2 @@
-repositories {
-    // For JEI
-    maven { url "https://dvs1.progwml6.com/files/maven/" }
-
-    // For WTHIT
-    maven { url "https://maven.bai.lol" }
-
-    // For REI
-    maven { url "https://maven.shedaniel.me/" }
-}
-
 dependencies {
-    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
-    compileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
-        transitive = false
-    }
-
-    compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }

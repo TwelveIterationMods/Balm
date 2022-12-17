@@ -16,17 +16,17 @@ dependencies {
     compileOnly "org.spongepowered:mixin:$mixin_version"
 
     compileOnly project(":shared-bridge")
+
+    compileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
+        transitive = false
+    }
+
+    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
+
+    compileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
 apply from: 'dependencies.gradle'
-
-configurations {
-    testImplementation.extendsFrom compileOnly
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(":shared-bridge").sourceSets.main.allSource)
-}
 
 jar {
     from(rootProject.file("LICENSE")) {
