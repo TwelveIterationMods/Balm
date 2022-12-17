@@ -67,10 +67,4 @@ subprojects {
             failOnError false
         }
     }
-
-    if (balm_version.endsWith("SNAPSHOT")) {
-        configurations.configureEach {
-            resolutionStrategy.cacheChangingModulesFor 10, 'minutes'
-        }
-    }
 }
