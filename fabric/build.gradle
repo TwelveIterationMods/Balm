@@ -87,6 +87,7 @@ processResources {
 
 tasks.withType(JavaCompile) {
     source(project(":shared").sourceSets.main.allSource)
+    source(project(":shared-bridge").sourceSets.main.allSource)
 }
 
 jar {
