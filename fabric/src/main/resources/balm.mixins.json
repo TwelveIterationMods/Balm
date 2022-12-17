@@ -45,7 +45,7 @@
     "MouseHandlerMixin",
     "PlayerTabOverlayMixin",
     "ScreenAccessor",
-    "ModelManagerMixin"
+    "ModelBakeryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

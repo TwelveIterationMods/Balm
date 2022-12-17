@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -10,19 +10,33 @@ group = mod_group
 archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 version = mod_version
 
-repositories {
-    // For CurseForge
-    maven { url "https://www.cursemaven.com" }
-
-    // For Cloth Config
-    maven { url "https://maven.shedaniel.me/" }
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation project(":shared")
+    implementation project(":shared-bridge")
+
+    implementation "org.jetbrains:annotations:22.0.0"
+
+
+    modImplementation "curse.maven:modmenu-308702:$modmenu_version"
+
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version")
+
+    modImplementation "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
+    if (jei_minecraft_version == minecraft_version) {
+        modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"
+    }
+
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rei_version") {
+        transitive = false
+    }
+
+    modImplementation "curse.maven:jade-324717:$jade_forge_version"
+    modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$wthit_version"
 }
 
 apply from: 'dependencies.gradle'
@@ -41,10 +55,29 @@ loom {
             ideConfigGenerated(true)
             runDir("run")
         }
+        data {
+            inherit client
+            setConfigName("fabric Data")
+            ideConfigGenerated(true)
+            runDir("build/datagen")
+
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs 'src/generated/resources'
+        }
     }
 }
 
 processResources {
+    from project(":shared").sourceSets.main.resources
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
@@ -52,29 +85,13 @@ processResources {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs '../shared/java/'
-        }
-        resources {
-            srcDirs '../shared/resources/'
-        }
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    it.options.release = 17
-}
-
-java {
-    withSourcesJar()
+tasks.withType(JavaCompile) {
+    source(project(":shared").sourceSets.main.allSource)
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_id}" }
     }
 }
 
@@ -85,7 +102,6 @@ publishing {
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             from components.java
-            artifact jar
         }
     }
 
@@ -103,18 +119,17 @@ publishing {
 curseforge {
     apiKey = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
     project {
-        id = project.curseforge_fabric_project_id
-        releaseType = project.curseforge_release_type
+        id = curseforge_fabric_project_id
+        releaseType = curseforge_release_type
         changelogType = 'markdown'
         changelog = rootProject.file('CHANGELOG.md')
         project.minecraft_versions.split(',').each {
-            addGameVersion it
+            addGameVersion minecraft_version
         }
         addGameVersion 'Fabric'
 
         relations {
-            requiredLibrary 'fabric-api'
-            requiredLibrary 'cloth-config'
+            requiredLibrary 'balm-fabric'
         }
 
         mainArtifact(remapJar)
@@ -130,7 +145,7 @@ curseforge {
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_project_id
+    projectId = project.modrinth_fabric_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+fabric-" + project.minecraft_version
     uploadFile = remapJar
@@ -140,5 +155,6 @@ modrinth {
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"
+        required.project "balm"
     }
 }

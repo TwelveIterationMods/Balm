@@ -56,7 +56,6 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
     public void initialize(String modId, Runnable initializer) {
         ((ForgeBalmRenderers) renderers).register();
         ((ForgeBalmScreens) screens).register();
-        ((ForgeBalmTextures) textures).register();
         ((ForgeBalmModels) models).register();
         ((ForgeBalmKeyMappings) keyMappings).register();
 

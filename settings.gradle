@@ -12,4 +12,6 @@ pluginManagement {
     }
 }
 
-include("shared", "fabric", "forge")
+include("shared", "shared-bridge")
+include("fabric")
+include("forge")

@@ -2,6 +2,7 @@ package net.blay09.mods.balm.forge;
 
 import net.blay09.mods.balm.api.BalmHooks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -17,19 +18,22 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
 public class ForgeBalmHooks implements BalmHooks {
     @Override
-    public boolean saplingGrowTree(Level level, RandomSource random, BlockPos pos) {
-        return ForgeEventFactory.saplingGrowTree(level, random, pos);
+    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<? extends ConfiguredFeature<?, ?>> holder) {
+        return !ForgeEventFactory.blockGrowFeature(level, random, pos, holder).getResult().equals(Event.Result.DENY);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class ForgeBalmSounds implements BalmSounds {
     @Override
     public DeferredObject<SoundEvent> register(ResourceLocation identifier) {
         DeferredRegister<SoundEvent> register = DeferredRegisters.get(ForgeRegistries.SOUND_EVENTS, identifier.getNamespace());
-        RegistryObject<SoundEvent> registryObject = register.register(identifier.getPath(), () -> new SoundEvent(identifier));
+        RegistryObject<SoundEvent> registryObject = register.register(identifier.getPath(), () -> SoundEvent.createVariableRangeEvent(identifier));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 }

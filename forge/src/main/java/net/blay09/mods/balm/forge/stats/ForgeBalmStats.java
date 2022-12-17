@@ -1,7 +1,9 @@
 package net.blay09.mods.balm.forge.stats;
 
+import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
@@ -23,7 +25,7 @@ public class ForgeBalmStats implements BalmStats {
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> customStats.forEach(it -> {
-                Registry.register(Registry.CUSTOM_STAT, it.getPath(), it);
+                Registry.register(BuiltInRegistries.CUSTOM_STAT, it.getPath(), it);
                 Stats.CUSTOM.get(it, StatFormatter.DEFAULT);
             }));
         }

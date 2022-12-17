@@ -3,6 +3,8 @@ package net.blay09.mods.balm.fabric;
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.fabric.fluid.SimpleMilkFluid;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -18,52 +20,52 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public ResourceLocation getKey(Item item) {
-        return Registry.ITEM.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     @Override
     public ResourceLocation getKey(Block block) {
-        return Registry.BLOCK.getKey(block);
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     @Override
     public ResourceLocation getKey(Fluid fluid) {
-        return Registry.FLUID.getKey(fluid);
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
     @Override
     public ResourceLocation getKey(EntityType<?> entityType) {
-        return Registry.ENTITY_TYPE.getKey(entityType);
+        return BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
     }
 
     @Override
     public Item getItem(ResourceLocation key) {
-        return Registry.ITEM.get(key);
+        return BuiltInRegistries.ITEM.get(key);
     }
 
     @Override
     public Block getBlock(ResourceLocation key) {
-        return Registry.BLOCK.get(key);
+        return BuiltInRegistries.BLOCK.get(key);
     }
 
     @Override
     public Fluid getFluid(ResourceLocation key) {
-        return Registry.FLUID.get(key);
+        return BuiltInRegistries.FLUID.get(key);
     }
 
     @Override
     public MobEffect getMobEffect(ResourceLocation key) {
-        return Registry.MOB_EFFECT.get(key);
+        return BuiltInRegistries.MOB_EFFECT.get(key);
     }
 
     @Override
     public TagKey<Item> getItemTag(ResourceLocation key) {
-        return TagKey.create(Registry.ITEM_REGISTRY, key);
+        return TagKey.create(Registries.ITEM, key);
     }
 
     @Override
     public void enableMilkFluid() {
-        milkFluid = Registry.register(Registry.FLUID, new ResourceLocation("balm-fabric", "milk"), new SimpleMilkFluid());
+        milkFluid = Registry.register(BuiltInRegistries.FLUID, new ResourceLocation("balm-fabric", "milk"), new SimpleMilkFluid());
     }
 
     @Override
@@ -73,6 +75,6 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public Collection<ResourceLocation> getItemKeys() {
-        return Registry.ITEM.keySet();
+        return BuiltInRegistries.ITEM.keySet();
     }
 }

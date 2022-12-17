@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +19,7 @@ public class FabricBalmEntities implements BalmEntities {
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
         return new DeferredObject<>(identifier, () -> {
             EntityType<T> entityType = typeBuilder.build(identifier.toString());
-            return Registry.register(Registry.ENTITY_TYPE, identifier, entityType);
+            return Registry.register(BuiltInRegistries.ENTITY_TYPE, identifier, entityType);
         }).resolveImmediately();
     }
 
@@ -27,7 +28,7 @@ public class FabricBalmEntities implements BalmEntities {
         return new DeferredObject<>(identifier, () -> {
             EntityType<T> entityType = typeBuilder.build(identifier.toString());
             FabricDefaultAttributeRegistry.register(entityType, attributeBuilder.get());
-            return Registry.register(Registry.ENTITY_TYPE, identifier, entityType);
+            return Registry.register(BuiltInRegistries.ENTITY_TYPE, identifier, entityType);
         }).resolveImmediately();
     }
 }
