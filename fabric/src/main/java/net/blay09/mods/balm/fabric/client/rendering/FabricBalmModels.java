@@ -154,7 +154,7 @@ public class FabricBalmModels implements BalmModels {
     public ModelBaker createBaker(ResourceLocation location, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
         try {
             MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
-            Class<?> clazz = Class.forName(mappings.mapClassName("intermediary", "net.minecraft.class_1088"));
+            Class<?> clazz = Class.forName(mappings.mapClassName("intermediary", "net.minecraft.class_1088$class_7778"));
             Constructor<?> constructor = clazz.getDeclaredConstructor(ModelBakery.class, BiFunction.class, ResourceLocation.class);
             constructor.setAccessible(true);
             return (ModelBaker) constructor.newInstance(modelBakery, spriteBiFunction, location);
