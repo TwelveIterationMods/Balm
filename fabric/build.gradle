@@ -130,7 +130,8 @@ curseforge {
         addGameVersion 'Fabric'
 
         relations {
-            requiredLibrary 'balm-fabric'
+            requiredLibrary 'fabric-api'
+            requiredLibrary 'cloth-config'
         }
 
         mainArtifact(remapJar)
@@ -156,6 +157,6 @@ modrinth {
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"
-        required.project "balm"
+        required.project "cloth-config"
     }
 }
