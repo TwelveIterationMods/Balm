@@ -10,4 +10,9 @@ public class BalmClientProxy extends BalmProxy {
     public @Nullable Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
+
+    @Override
+    public boolean isConnectedToServer() {
+        return Minecraft.getInstance().getConnection() != null;
+    }
 }
