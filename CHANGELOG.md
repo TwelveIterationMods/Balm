@@ -1,1 +1,2 @@
-- Updated to Minecraft 1.19.3
+- Fixed sendToServer not checking for an active connection, resulting in errors with e.g. GravelMiner
+- Fixed OpenScreenEvent breaking screen replacements by other mods (e.g. when Hardcore Revival is used with Catalogue)
