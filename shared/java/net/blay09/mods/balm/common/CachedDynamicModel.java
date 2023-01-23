@@ -50,30 +50,35 @@ public class CachedDynamicModel implements BakedModel {
         if (state != null) {
             Matrix4f transform = BlockModelRotation.X0_Y0.getRotation().getMatrix();
             String stateString = state.toString();
-            BakedModel bakedModel = cache.get(stateString);
-            if (bakedModel == null) {
-                if(transformFunction != null) {
-                    transformFunction.accept(state, transform);
-                }
+            BakedModel bakedModel;
+            synchronized (cache) {
+                bakedModel = cache.get(stateString);
+                if (bakedModel == null) {
+                    if (transformFunction != null) {
+                        transformFunction.accept(state, transform);
+                    }
 
-                BalmModels models = BalmClient.getModels();
-                ModelState modelTransform = models.getModelState(new Transformation(transform));
+                    BalmModels models = BalmClient.getModels();
+                    ModelState modelTransform = models.getModelState(new Transformation(transform));
 
-                ResourceLocation baseModelLocation = baseModelFunction.apply(state);
+                    ResourceLocation baseModelLocation = baseModelFunction.apply(state);
 
-                // If we're going to retexture, we need to ensure the base model has already been baked to prevent circular parent references in the retextured model
-                if (textureMapFunction != null && !baseModelCache.containsKey(baseModelLocation)) {
-                    final UnbakedModel baseModel = models.getUnbakedModelOrMissing(baseModelLocation);
-                    final BakedModel bakedBaseModel = baseModel.bake(modelBakery, Material::sprite, modelTransform, baseModelLocation);
-                    baseModelCache.put(baseModelLocation, bakedBaseModel);
-                }
+                    // If we're going to retexture, we need to ensure the base model has already been baked to prevent circular parent references in the retextured model
+                    if (textureMapFunction != null && !baseModelCache.containsKey(baseModelLocation)) {
+                        final UnbakedModel baseModel = models.getUnbakedModelOrMissing(baseModelLocation);
+                        final BakedModel bakedBaseModel = baseModel.bake(modelBakery, Material::sprite, modelTransform, baseModelLocation);
+                        baseModelCache.put(baseModelLocation, bakedBaseModel);
+                    }
 
-                UnbakedModel retexturedBaseModel = textureMapFunction != null ? models.retexture(modelBakery, baseModelLocation, textureMapFunction.apply(state)) : models.getUnbakedModelOrMissing(baseModelLocation);
-                bakedModel = retexturedBaseModel.bake(modelBakery, Material::sprite, modelTransform, location);
-                cache.put(stateString, bakedModel);
+                    UnbakedModel retexturedBaseModel = textureMapFunction != null ? models.retexture(modelBakery,
+                            baseModelLocation,
+                            textureMapFunction.apply(state)) : models.getUnbakedModelOrMissing(baseModelLocation);
+                    bakedModel = retexturedBaseModel.bake(modelBakery, Material::sprite, modelTransform, location);
+                    cache.put(stateString, bakedModel);
 
-                if (particleTexture == null && bakedModel != null) {
-                    particleTexture = bakedModel.getParticleIcon();
+                    if (particleTexture == null && bakedModel != null) {
+                        particleTexture = bakedModel.getParticleIcon();
+                    }
                 }
             }
 
