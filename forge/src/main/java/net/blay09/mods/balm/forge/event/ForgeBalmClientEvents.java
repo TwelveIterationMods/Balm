@@ -287,7 +287,9 @@ public class ForgeBalmClientEvents {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ScreenOpenEvent orig) -> {
                 final OpenScreenEvent event = new OpenScreenEvent(orig.getScreen());
                 events.fireEventHandlers(priority, event);
-                orig.setScreen(event.getScreen());
+                if (event.getNewScreen() != null) {
+                    orig.setScreen(event.getNewScreen());
+                }
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
                 }

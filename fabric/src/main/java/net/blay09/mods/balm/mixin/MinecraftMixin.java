@@ -26,7 +26,7 @@ public class MinecraftMixin {
     public Screen modifyScreen(Screen screen) {
         OpenScreenEvent event = new OpenScreenEvent(screen);
         Balm.getEvents().fireEvent(event);
-        return event.getScreen();
+        return event.getNewScreen() != null ? event.getNewScreen() : screen;
     }
 
     @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
