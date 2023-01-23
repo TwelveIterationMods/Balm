@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.forge.network;
 
+import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.api.network.BalmNetworking;
@@ -114,6 +115,11 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
     @Override
     public <T> void sendToServer(T message) {
+        if (!Balm.getProxy().isConnectedToServer()) {
+            logger.debug("Skipping message {} because we're not connected to a server", message);
+            return;
+        }
+
         MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
 
         ResourceLocation identifier = messageRegistration.getIdentifier();
