@@ -8,4 +8,8 @@ public class BalmProxy {
     public Player getClientPlayer() {
         return null;
     }
+
+    public boolean isConnectedToServer() {
+        return false;
+    }
 }
