@@ -1,1 +1,3 @@
 - Fixed race condition in dynamic model baking resulting in occasional crashes
+- Fixed sendToServer not checking for an active connection, resulting in errors with e.g. GravelMiner
+- Fixed OpenScreenEvent breaking screen replacements by other mods (e.g. when Hardcore Revival is used with Catalogue)
