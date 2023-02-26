@@ -166,7 +166,7 @@ curseforge {
         id = project.curseforge_forge_project_id
         releaseType = project.curseforge_release_type
         changelogType = 'markdown'
-        changelog = rootProject.file('CHANGELOG.md')
+        changelog = rootProject.file('../CHANGELOG.md')
         project.minecraft_versions.split(',').each {
             addGameVersion it
         }
@@ -180,7 +180,7 @@ modrinth {
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
-    changelog = rootProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("../CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("modrinth.md").text
+    syncBodyFrom = rootProject.file("../modrinth.md").text
 }
