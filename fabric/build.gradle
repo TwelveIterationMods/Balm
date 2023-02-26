@@ -134,9 +134,9 @@ modrinth {
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+fabric-" + project.minecraft_version
     uploadFile = remapJar
-    changelog = rootProject.file("CHANGELOG.md").text
+    changelog = rootProject.file("../CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("modrinth.md").text
+    syncBodyFrom = rootProject.file("../modrinth.md").text
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"
