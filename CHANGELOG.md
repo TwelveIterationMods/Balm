@@ -1,2 +1,1 @@
-- Fixed sendToServer not checking for an active connection, resulting in errors with e.g. GravelMiner
-- Fixed OpenScreenEvent breaking screen replacements by other mods (e.g. when Hardcore Revival is used with Catalogue)
+- Fixed client-side options always being overwritten by the server
