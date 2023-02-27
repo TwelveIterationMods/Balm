@@ -19,13 +19,17 @@ public class ConfigReflection {
         List<Field> syncedFields = new ArrayList<>();
         Field[] fields = clazz.getFields();
         for (Field field : fields) {
-            boolean hasSyncedAnnotation = field.getAnnotation(Synced.class) != null;
-            boolean isObject = !field.getType().isPrimitive() && !field.getType().isEnum() && field.getType() != String.class && field.getType() != List.class;
-            if (hasSyncedAnnotation || isObject) {
+            if (isSyncedFieldOrObject(field)) {
                 syncedFields.add(field);
             }
         }
         return syncedFields;
+    }
+
+    public static boolean isSyncedFieldOrObject(Field field) {
+        boolean hasSyncedAnnotation = field.getAnnotation(Synced.class) != null;
+        boolean isObject = !field.getType().isPrimitive() && !field.getType().isEnum() && field.getType() != String.class && field.getType() != List.class;
+        return hasSyncedAnnotation || isObject;
     }
 
     public static Object deepCopy(Object from, Object to) {
