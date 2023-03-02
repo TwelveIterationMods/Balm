@@ -1,1 +1,1 @@
-- Fixed client-side options always being overwritten by the server
+- Fixed config failing to sync resulting in all kinds of weird errors
