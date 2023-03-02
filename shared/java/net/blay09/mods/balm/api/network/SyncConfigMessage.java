@@ -82,7 +82,7 @@ public class SyncConfigMessage<TData> {
     }
 
     private static <TData> void writeSyncedFields(FriendlyByteBuf buf, TData data, boolean forceSynced) {
-        List<Field> syncedFields = forceSynced ? ConfigReflection.getSyncedFields(data.getClass()) : Arrays.asList(data.getClass().getFields());
+        List<Field> syncedFields = !forceSynced ? ConfigReflection.getSyncedFields(data.getClass()) : Arrays.asList(data.getClass().getFields());
         syncedFields.sort(Comparator.comparing(Field::getName));
         for (Field field : syncedFields) {
             Class<?> type = field.getType();
