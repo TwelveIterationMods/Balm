@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.event.client.*;
 import net.blay09.mods.balm.api.event.client.RenderHandEvent;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -276,7 +277,8 @@ public class ForgeBalmClientEvents {
 
         events.registerEvent(RecipesUpdatedEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.client.event.RecipesUpdatedEvent orig) -> {
-                final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager());
+                RegistryAccess registryAccess = Minecraft.getInstance().level.registryAccess(); // same way that Minecraft does it in the packet handler
+                final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager(), registryAccess);
                 events.fireEventHandlers(priority, event);
             });
         });
