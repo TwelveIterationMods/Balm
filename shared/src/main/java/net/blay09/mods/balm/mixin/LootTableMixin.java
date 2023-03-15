@@ -20,9 +20,7 @@ public class LootTableMixin {
         var drops = callbackInfo.getReturnValue();
         var lootModifiers = ((CommonBalmLootTables) Balm.getLootTables()).lootModifiers;
         for (BalmLootModifier modifier : lootModifiers.values()) {
-            drops = modifier.apply(lootContext, drops);
+            modifier.apply(lootContext, drops);
         }
-
-        callbackInfo.setReturnValue(drops);
     }
 }

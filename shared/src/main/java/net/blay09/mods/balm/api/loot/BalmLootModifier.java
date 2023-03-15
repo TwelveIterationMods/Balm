@@ -7,5 +7,5 @@ import java.util.List;
 
 @FunctionalInterface
 public interface BalmLootModifier {
-    List<ItemStack> apply(LootContext context, List<ItemStack> loot);
+    void apply(LootContext context, List<ItemStack> loot);
 }
