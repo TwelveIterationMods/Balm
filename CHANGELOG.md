@@ -1,1 +1,2 @@
-- Fixed client-side options always being overwritten by the server
+- Update to Minecraft 1.19.4
+- Fixed loot table modifiers preventing other mods from modifying loot tables dynamically
