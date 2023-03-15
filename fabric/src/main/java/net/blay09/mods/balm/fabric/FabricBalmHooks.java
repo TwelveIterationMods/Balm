@@ -44,7 +44,7 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
-    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<? extends ConfiguredFeature<?, ?>> holder) {
+    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<ConfiguredFeature<?, ?>> holder) {
         return true;
     }
 

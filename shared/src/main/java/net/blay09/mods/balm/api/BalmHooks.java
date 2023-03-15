@@ -23,7 +23,7 @@ public interface BalmHooks {
     /**
      * Forge fires SaplingGrowTreeEvent, Fabric NOPs
      */
-    boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<? extends ConfiguredFeature<?, ?>> holder);
+    boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<ConfiguredFeature<?, ?>> holder);
 
     /**
      * Forge adds player-sensitive version, Fabric uses normal version

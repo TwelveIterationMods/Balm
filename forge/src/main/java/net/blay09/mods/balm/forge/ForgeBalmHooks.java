@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ForgeBalmHooks implements BalmHooks {
     @Override
-    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<? extends ConfiguredFeature<?, ?>> holder) {
+    public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<ConfiguredFeature<?, ?>> holder) {
         return !ForgeEventFactory.blockGrowFeature(level, random, pos, holder).getResult().equals(Event.Result.DENY);
     }
 

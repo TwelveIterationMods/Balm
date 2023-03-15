@@ -7,7 +7,6 @@
   "mixins": [
     "CropBlockMixin",
     "StemBlockMixin",
-    "DamageSourceAccessor",
     "ReloadableServerResourcesMixin",
     "SlotAccessor",
     "MinecraftServerMixin"

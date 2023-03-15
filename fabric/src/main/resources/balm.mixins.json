@@ -7,7 +7,6 @@
     "BalmConfigDataMixin",
     "ChunkMapMixin",
     "CropBlockMixin",
-    "DamageSourceAccessor",
     "EntityMixin",
     "FabricCropBlockMixin",
     "FabricStemBlockMixin",

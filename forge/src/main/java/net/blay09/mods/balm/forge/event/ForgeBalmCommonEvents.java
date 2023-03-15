@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -143,7 +144,7 @@ public class ForgeBalmCommonEvents {
 
                 if (event.getFallDamageOverride() != null) {
                     orig.setDamageMultiplier(0f);
-                    event.getEntity().hurt(DamageSource.FALL, event.getFallDamageOverride());
+                    event.getEntity().hurt(event.getEntity().getLevel().damageSources().fall(), event.getFallDamageOverride());
                 }
 
                 if (event.isCanceled()) {
