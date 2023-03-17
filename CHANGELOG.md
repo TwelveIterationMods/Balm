@@ -1,2 +1,1 @@
-- Update to Minecraft 1.19.4
-- Fixed loot table modifiers preventing other mods from modifying loot tables dynamically
+- Fixed UseBlock and UseItem events on Fabric not respecting cancellation, causing an issue in Hardcore Revival
