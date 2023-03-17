@@ -22,7 +22,5 @@ public class LootTableMixin {
         for (BalmLootModifier modifier : lootModifiers.values()) {
             drops = modifier.apply(lootContext, drops);
         }
-
-        callbackInfo.setReturnValue(drops);
     }
 }
