@@ -1,1 +1,2 @@
-- Fixed client-side options always being overwritten by the server
+- Fixed UseBlock and UseItem events on Fabric not respecting cancellation, causing an issue in Hardcore Revival
+- Fixed loot table modifiers preventing other mods from modifying loot tables dynamically
