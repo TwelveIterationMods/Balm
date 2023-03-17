@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 
 import java.util.ArrayList;
@@ -27,8 +28,12 @@ public class FabricBalmCommonEvents {
     public static void registerEvents(FabricBalmEvents events) {
         events.registerTickEvent(TickType.Server, TickPhase.Start, (ServerTickHandler handler) -> ServerTickEvents.START_SERVER_TICK.register(handler::handle));
         events.registerTickEvent(TickType.Server, TickPhase.End, (ServerTickHandler handler) -> ServerTickEvents.END_SERVER_TICK.register(handler::handle));
-        events.registerTickEvent(TickType.ServerLevel, TickPhase.Start, (ServerLevelTickHandler handler) -> ServerTickEvents.START_WORLD_TICK.register(handler::handle));
-        events.registerTickEvent(TickType.ServerLevel, TickPhase.End, (ServerLevelTickHandler handler) -> ServerTickEvents.END_WORLD_TICK.register(handler::handle));
+        events.registerTickEvent(TickType.ServerLevel,
+                TickPhase.Start,
+                (ServerLevelTickHandler handler) -> ServerTickEvents.START_WORLD_TICK.register(handler::handle));
+        events.registerTickEvent(TickType.ServerLevel,
+                TickPhase.End,
+                (ServerLevelTickHandler handler) -> ServerTickEvents.END_WORLD_TICK.register(handler::handle));
 
         events.registerTickEvent(TickType.ServerPlayer, TickPhase.Start, (ServerPlayerTickHandler handler) -> {
             if (serverTickStartListener == null) {
@@ -75,6 +80,10 @@ public class FabricBalmCommonEvents {
         events.registerEvent(UseBlockEvent.class, () -> UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             final UseBlockEvent event = new UseBlockEvent(player, world, hand, hitResult);
             events.fireEventHandlers(event);
+            if (event.isCanceled()) {
+                return InteractionResult.FAIL;
+            }
+
             return event.getInteractionResult();
         }));
 
@@ -82,6 +91,10 @@ public class FabricBalmCommonEvents {
             UseItemCallback.EVENT.register((player, world, hand) -> {
                 final UseItemEvent event = new UseItemEvent(player, world, hand);
                 events.fireEventHandlers(event);
+                if (event.isCanceled()) {
+                    return InteractionResultHolder.fail(player.getItemInHand(hand));
+                }
+
                 return new InteractionResultHolder<>(event.getInteractionResult(), player.getItemInHand(hand));
             });
         });

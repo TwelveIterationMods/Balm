@@ -1,1 +1,2 @@
-- Fixed config failing to sync resulting in all kinds of weird errors
+- Fixed UseBlock and UseItem events on Fabric not respecting cancellation, causing an issue in Hardcore Revival
+- Fixed loot table modifiers preventing other mods from modifying loot tables dynamically
