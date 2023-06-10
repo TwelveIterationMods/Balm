@@ -169,4 +169,9 @@ public class FabricBalmHooks implements BalmHooks {
     public MinecraftServer getServer() {
         return currentServer.get();
     }
+
+    @Override
+    public double getBlockReachDistance(Player player) {
+        return 0;
+    }
 }

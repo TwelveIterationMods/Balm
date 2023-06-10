@@ -67,4 +67,5 @@ public interface BalmHooks {
 
     MinecraftServer getServer();
 
+    double getBlockReachDistance(Player player);
 }
