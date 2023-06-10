@@ -10,7 +10,6 @@ import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -55,7 +54,7 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public CompoundTag getPersistentData(Entity entity) {
-        return ((BalmEntity) entity).getBalmData();
+        return ((BalmEntity) entity).getFabricBalmData();
     }
 
     @Override
@@ -84,7 +83,7 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public boolean canItemsStack(ItemStack first, ItemStack second) {
-        return !first.isEmpty() && first.sameItem(second) && first.hasTag() == second.hasTag() && (!first.hasTag() || first.getTag().equals(second.getTag()));
+        return !first.isEmpty() && ItemStack.isSameItemSameTags(first, second);
     }
 
     @Override

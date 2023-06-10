@@ -1,49 +1,62 @@
 package net.blay09.mods.balm.fabric.config;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.ConfigHolder;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
-import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
+import net.blay09.mods.balm.api.config.Config;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.world.InteractionResult;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FabricBalmConfig extends AbstractBalmConfig {
 
+    private static final Logger logger = LogUtils.getLogger();
+    private final Map<Class<?>, BalmConfigData> configs = new HashMap<>();
+
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        ConfigHolder<? extends ConfigData> configHolder = AutoConfig.register(configDataClass, Toml4jConfigSerializer::new);
-        configHolder.registerSaveListener((holder, configData) -> {
-            Balm.getEvents().fireEvent(new ConfigReloadedEvent());
-            return InteractionResult.SUCCESS;
-        });
-        configHolder.registerLoadListener((holder, configData) -> {
-            Balm.getEvents().fireEvent(new ConfigReloadedEvent());
-            return InteractionResult.SUCCESS;
-        });
-        return (T) AutoConfig.getConfigHolder(configDataClass).getConfig();
+        Config configAnnotation = clazz.getAnnotation(Config.class);
+        if (configAnnotation == null) {
+            throw new IllegalArgumentException("Config class " + clazz.getName() + " is missing @Config annotation");
+        }
+        var configName = configAnnotation.value();
+        var configFile = getConfigFile(configName);
+        var configData = createConfigDataInstance(clazz);
+        try {
+            FabricConfigLoader.load(configFile, configData);
+        } catch (IOException e) {
+            logger.error("Failed to load config file {}", configFile, e);
+        }
+        configs.put(clazz, configData);
+        return configData;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T getBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        return (T) AutoConfig.getConfigHolder(configDataClass).getConfig();
+        return (T) configs.get(clazz);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> void saveBackingConfig(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        AutoConfig.getConfigHolder(configDataClass).save();
+        Config configAnnotation = clazz.getAnnotation(Config.class);
+        if (configAnnotation == null) {
+            throw new IllegalArgumentException("Config class " + clazz.getName() + " is missing @Config annotation");
+        }
+
+        var configName = configAnnotation.value();
+        var configFile = getConfigFile(configName);
+        try {
+            FabricConfigSaver.save(configFile, configs.get(clazz));
+        } catch (IOException e) {
+            logger.error("Failed to save config file {}", configFile, e);
+        }
     }
 
     @Override
@@ -51,9 +64,10 @@ public class FabricBalmConfig extends AbstractBalmConfig {
         return FabricLoader.getInstance().getConfigDir().toFile();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends BalmConfigData> ConfigScreenFactory<?> getConfigScreen(Class<T> clazz) {
-        var configDataClass = (Class<? extends ConfigData>) clazz;
-        return parent -> AutoConfig.getConfigScreen(configDataClass, parent).get();
+
+
+    @NotNull
+    private static File getConfigFile(String configName) {
+        return new File(Balm.getConfig().getConfigDir(), configName + "-common.toml");
     }
 }

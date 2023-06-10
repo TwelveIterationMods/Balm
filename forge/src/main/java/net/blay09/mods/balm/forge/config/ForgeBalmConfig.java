@@ -185,16 +185,6 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
         return initialData;
     }
 
-    @NotNull
-    private <T> T createConfigDataInstance(Class<T> clazz) {
-        try {
-            return clazz.newInstance();
-
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException("Config class or sub-class missing a public no-arg constructor.", e);
-        }
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BalmConfigData> T getBackingConfig(Class<T> clazz) {

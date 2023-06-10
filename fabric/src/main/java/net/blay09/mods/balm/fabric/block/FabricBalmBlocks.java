@@ -3,25 +3,22 @@ package net.blay09.mods.balm.fabric.block;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class FabricBalmBlocks implements BalmBlocks {
     @Override
-    public BlockBehaviour.Properties blockProperties(Material material) {
-        return FabricBlockSettings.of(material);
+    public BlockBehaviour.Properties blockProperties() {
+        return FabricBlockSettings.create();
     }
 
     @Override

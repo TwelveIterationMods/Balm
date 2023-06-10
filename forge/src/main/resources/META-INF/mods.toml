@@ -1,12 +1,12 @@
 modLoader="javafml"
-loaderVersion="[45,)"
+loaderVersion="[46,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/TwelveIterationMods/Balm/issues"
 [[mods]]
 modId="balm"
 version="${file.jarVersion}"
 displayName="Balm"
-displayURL="https://blay09.net/"
+displayURL="https://mods.twelveiterations.com/"
 logoFile="balm-icon.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
@@ -16,12 +16,12 @@ Abstraction Layer (but not really)™ for Blay's multiplatform mods
 [[dependencies.balm]]
     modId="forge"
     mandatory=true
-    versionRange="[45.0.0,)"
+    versionRange="[46.0.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.balm]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="[1.20,1.21)"
     ordering="NONE"
     side="BOTH"

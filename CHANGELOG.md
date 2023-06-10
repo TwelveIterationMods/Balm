@@ -1,1 +1,4 @@
-- Fixed UseBlock and UseItem events on Fabric not respecting cancellation, causing an issue in Hardcore Revival
+- Updated to Minecraft 1.20
+- The Fabric version now also loads the config from `waystones-common.toml` (instead of `waystones.toml`)
+- `cloth-config` is no longer a hard dependency (but still recommended if you want a config screen)
+- 

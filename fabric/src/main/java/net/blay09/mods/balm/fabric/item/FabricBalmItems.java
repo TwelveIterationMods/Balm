@@ -10,7 +10,9 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -52,10 +54,12 @@ public class FabricBalmItems implements BalmItems {
     public DeferredObject<CreativeModeTab> registerCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
         return new DeferredObject<>(identifier, () -> {
             Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
-            return FabricItemGroup.builder(identifier)
+            CreativeModeTab creativeModeTab = FabricItemGroup.builder()
                     .title(displayName)
                     .icon(iconSupplier)
                     .build();
+            creativeModeTab = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, identifier, creativeModeTab);
+            return creativeModeTab;
         }).resolveImmediately();
     }
 
@@ -69,7 +73,7 @@ public class FabricBalmItems implements BalmItems {
 
     private void manageCreativeModeTab(ResourceLocation creativeTab) {
         if (!managedCreativeTabs.contains(creativeTab)) {
-            ItemGroupEvents.modifyEntriesEvent(creativeTab).register(entries -> {
+            ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, creativeTab)).register(entries -> {
                 Collection<ItemLike> itemStacks = creativeTabContents.get(creativeTab);
                 synchronized (creativeTabContents) {
                     itemStacks.forEach(entries::accept);

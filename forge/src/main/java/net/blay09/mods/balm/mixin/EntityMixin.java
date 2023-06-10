@@ -12,32 +12,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin implements BalmEntity {
 
-    private CompoundTag balmData = new CompoundTag();
+    private CompoundTag fabricBalmData = new CompoundTag();
 
     @Inject(method = "load(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void load(CompoundTag compound, CallbackInfo callbackInfo) {
         if (compound.contains("BalmData")) {
-            balmData = compound.getCompound("BalmData");
-            if (balmData.size() == 0) {
-                CompoundTag forgeData = compound.getCompound("ForgeData");
-                CompoundTag playerPersisted = forgeData.getCompound("PlayerPersisted");
-                balmData = playerPersisted.getCompound("BalmData");
-            }
+            fabricBalmData = compound.getCompound("BalmData");
         }
     }
 
     @Inject(method = "saveWithoutId(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("HEAD"))
     private void saveWithoutId(CompoundTag compound, CallbackInfoReturnable<CompoundTag> callbackInfo) {
-        compound.put("BalmData", balmData);
+        compound.put("BalmData", fabricBalmData);
     }
 
     @Override
     public CompoundTag getFabricBalmData() {
-        return balmData;
+        return fabricBalmData;
     }
 
     @Override
     public void setFabricBalmData(CompoundTag tag) {
-        this.balmData = tag;
+        this.fabricBalmData = tag;
     }
 }

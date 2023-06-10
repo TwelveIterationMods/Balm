@@ -9,7 +9,8 @@
     "StemBlockMixin",
     "ReloadableServerResourcesMixin",
     "SlotAccessor",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "EntityMixin"
   ],
   "client": [
     "AbstractContainerScreenAccessor",

@@ -1,8 +1,8 @@
 package net.blay09.mods.balm.api.event.client;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.minecraft.client.gui.GuiGraphics;
 
 public abstract class GuiDrawEvent extends BalmEvent {
 
@@ -16,12 +16,12 @@ public abstract class GuiDrawEvent extends BalmEvent {
     }
 
     private final Window window;
-    private final PoseStack poseStack;
+    private final GuiGraphics guiGraphics;
     private final Element element;
 
-    public GuiDrawEvent(Window window, PoseStack poseStack, Element element) {
+    public GuiDrawEvent(Window window, GuiGraphics guiGraphics, Element element) {
         this.window = window;
-        this.poseStack = poseStack;
+        this.guiGraphics = guiGraphics;
         this.element = element;
     }
 
@@ -29,8 +29,8 @@ public abstract class GuiDrawEvent extends BalmEvent {
         return window;
     }
 
-    public PoseStack getPoseStack() {
-        return poseStack;
+    public GuiGraphics getGuiGraphics() {
+        return guiGraphics;
     }
 
     public Element getElement() {
@@ -38,14 +38,14 @@ public abstract class GuiDrawEvent extends BalmEvent {
     }
 
     public static class Pre extends GuiDrawEvent {
-        public Pre(Window window, PoseStack poseStack, Element element) {
-            super(window, poseStack, element);
+        public Pre(Window window, GuiGraphics guiGraphics, Element element) {
+            super(window, guiGraphics, element);
         }
     }
 
     public static class Post extends GuiDrawEvent {
-        public Post(Window window, PoseStack poseStack, Element element) {
-            super(window, poseStack, element);
+        public Post(Window window, GuiGraphics guiGraphics, Element element) {
+            super(window, guiGraphics, element);
         }
     }
 }

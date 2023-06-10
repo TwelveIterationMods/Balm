@@ -24,7 +24,7 @@ public class ChunkMapMixin {
 
     @Inject(method = "updateChunkTracking(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/level/ChunkPos;Lorg/apache/commons/lang3/mutable/MutableObject;ZZ)V", at = @At("HEAD"))
     void updateChunkTracking(ServerPlayer player, ChunkPos chunkPos, MutableObject<ClientboundLevelChunkWithLightPacket> packet, boolean wasLoaded, boolean shouldLoad, CallbackInfo callbackInfo) {
-        if (wasLoaded != shouldLoad && player.level == level) {
+        if (wasLoaded != shouldLoad && player.level() == level) {
             if (shouldLoad) {
                 Balm.getEvents().fireEvent(new ChunkTrackingEvent.Start(level, player, chunkPos));
             } else {

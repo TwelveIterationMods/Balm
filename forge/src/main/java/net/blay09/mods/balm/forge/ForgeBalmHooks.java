@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge;
 
 import net.blay09.mods.balm.api.BalmHooks;
+import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -55,6 +56,10 @@ public class ForgeBalmHooks implements BalmHooks {
         }
 
         CompoundTag balmData = persistentData.getCompound("BalmData");
+        if (balmData.size() == 0) {
+            // If we have no data, try to import from Fabric in case the world was migrated
+            balmData = ((BalmEntity) entity).getFabricBalmData();
+        }
         persistentData.put("BalmData", balmData);
 
         return balmData;

@@ -4,15 +4,12 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.entity.BalmEntity;
-import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -25,8 +22,8 @@ public class FabricBalm implements ModInitializer {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
-            CompoundTag data = ((BalmEntity) oldPlayer).getBalmData();
-            ((BalmEntity) newPlayer).setBalmData(data);
+            CompoundTag data = ((BalmEntity) oldPlayer).getFabricBalmData();
+            ((BalmEntity) newPlayer).setFabricBalmData(data);
         });
 
         var providers = ((FabricBalmProviders) Balm.getProviders());

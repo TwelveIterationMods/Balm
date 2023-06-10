@@ -48,7 +48,7 @@ repositories {
 dependencies {
     // Replace ${balm_version} with the version you want to depend on. 
     // You may also have to change the Minecraft version in the artifact name.
-    // You can find the latest version for a given Minecraft version at https://nexus.twelveiterations.com/#browse/browse:maven-public:net%2Fblay09%2Fmods
+    // You can find the latest version for a given Minecraft version at https://maven.twelveiterations.com/service/rest/repository/browse/maven-public/net/blay09/mods/
     // Forge: implementation fg.deobf("net.blay09.mods:balm-forge-1.19.2:${balm_version}")
     // Fabric: modImplementation "net.blay09.mods:balm-fabric-1.19.2:${balm_version}"
 }

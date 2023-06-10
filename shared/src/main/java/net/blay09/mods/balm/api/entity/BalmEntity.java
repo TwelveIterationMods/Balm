@@ -4,8 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 
 public interface BalmEntity {
 
-    CompoundTag getBalmData();
+    CompoundTag getFabricBalmData();
 
-    void setBalmData(CompoundTag tag);
+    void setFabricBalmData(CompoundTag tag);
 
 }

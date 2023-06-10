@@ -144,7 +144,7 @@ public class ForgeBalmCommonEvents {
 
                 if (event.getFallDamageOverride() != null) {
                     orig.setDamageMultiplier(0f);
-                    event.getEntity().hurt(event.getEntity().getLevel().damageSources().fall(), event.getFallDamageOverride());
+                    event.getEntity().hurt(event.getEntity().level().damageSources().fall(), event.getFallDamageOverride());
                 }
 
                 if (event.isCanceled()) {

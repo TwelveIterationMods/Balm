@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.event.PlayerLoginEvent;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,6 +105,16 @@ public abstract class AbstractBalmConfig implements BalmConfig {
     public void resetToBackingConfigs() {
         for (Class<?> clazz : activeConfigs.keySet()) {
             resetToBackingConfig((Class<? extends BalmConfigData>) clazz);
+        }
+    }
+
+    @NotNull
+    protected <T> T createConfigDataInstance(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException("Config class or sub-class missing a public no-arg constructor.", e);
         }
     }
 }

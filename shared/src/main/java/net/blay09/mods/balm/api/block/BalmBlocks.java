@@ -3,17 +3,15 @@ package net.blay09.mods.balm.api.block;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public interface BalmBlocks {
-    BlockBehaviour.Properties blockProperties(Material material);
+    BlockBehaviour.Properties blockProperties();
 
     DeferredObject<Block> registerBlock(Supplier<Block> supplier, ResourceLocation identifier);
 

@@ -1,19 +1,19 @@
 package net.blay09.mods.balm.api.event.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.event.BalmEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 public abstract class ScreenDrawEvent extends BalmEvent {
     private final Screen screen;
-    private final PoseStack poseStack;
+    private final GuiGraphics guiGraphics;
     private final int mouseX;
     private final int mouseY;
     private final float tickDelta;
 
-    public ScreenDrawEvent(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
+    public ScreenDrawEvent(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         this.screen = screen;
-        this.poseStack = poseStack;
+        this.guiGraphics = guiGraphics;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.tickDelta = tickDelta;
@@ -23,8 +23,8 @@ public abstract class ScreenDrawEvent extends BalmEvent {
         return screen;
     }
 
-    public PoseStack getPoseStack() {
-        return poseStack;
+    public GuiGraphics getGuiGraphics() {
+        return guiGraphics;
     }
 
     public int getMouseX() {
@@ -40,14 +40,14 @@ public abstract class ScreenDrawEvent extends BalmEvent {
     }
 
     public static class Pre extends ScreenDrawEvent {
-        public Pre(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
-            super(screen, poseStack, mouseX, mouseY, tickDelta);
+        public Pre(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+            super(screen, guiGraphics, mouseX, mouseY, tickDelta);
         }
     }
 
     public static class Post extends ScreenDrawEvent {
-        public Post(Screen screen, PoseStack poseStack, int mouseX, int mouseY, float tickDelta) {
-            super(screen, poseStack, mouseX, mouseY, tickDelta);
+        public Post(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
+            super(screen, guiGraphics, mouseX, mouseY, tickDelta);
         }
     }
 }

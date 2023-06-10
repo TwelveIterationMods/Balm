@@ -1,10 +1,10 @@
 package net.blay09.mods.balm.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.client.GuiDrawEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,31 +19,31 @@ public class GuiMixin {
     @Shadow
     private Minecraft minecraft;
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;F)V", at = @At("HEAD"), cancellable = true)
-    public void renderAllPre(PoseStack poseStack, float partialTicks, CallbackInfo callbackInfo) {
-        GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.ALL);
+    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;F)V", at = @At("HEAD"), cancellable = true)
+    public void renderAllPre(GuiGraphics guiGraphics, float partialTicks, CallbackInfo callbackInfo) {
+        GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(minecraft.getWindow(), guiGraphics, GuiDrawEvent.Element.ALL);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {
             callbackInfo.cancel();
         }
     }
 
-    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;F)V", at = @At("TAIL"))
-    public void renderAllPost(PoseStack poseStack, float partialTicks, CallbackInfo callbackInfo) {
-        Balm.getEvents().fireEvent(new GuiDrawEvent.Post(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.ALL));
+    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;F)V", at = @At("TAIL"))
+    public void renderAllPost(GuiGraphics guiGraphics, float partialTicks, CallbackInfo callbackInfo) {
+        Balm.getEvents().fireEvent(new GuiDrawEvent.Post(minecraft.getWindow(), guiGraphics, GuiDrawEvent.Element.ALL));
     }
 
-    @Inject(method = "renderPlayerHealth(Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("HEAD"), cancellable = true)
-    public void renderPlayerHealthPre(PoseStack poseStack, CallbackInfo callbackInfo) {
-        GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.HEALTH);
+    @Inject(method = "renderPlayerHealth(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"), cancellable = true)
+    public void renderPlayerHealthPre(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
+        GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(minecraft.getWindow(), guiGraphics, GuiDrawEvent.Element.HEALTH);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {
             callbackInfo.cancel();
         }
     }
 
-    @Inject(method = "renderPlayerHealth(Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("TAIL"))
-    public void renderPlayerHealthPost(PoseStack poseStack, CallbackInfo callbackInfo) {
-        Balm.getEvents().fireEvent(new GuiDrawEvent.Post(minecraft.getWindow(), poseStack, GuiDrawEvent.Element.HEALTH));
+    @Inject(method = "renderPlayerHealth(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("TAIL"))
+    public void renderPlayerHealthPost(GuiGraphics guiGraphics, CallbackInfo callbackInfo) {
+        Balm.getEvents().fireEvent(new GuiDrawEvent.Post(minecraft.getWindow(), guiGraphics, GuiDrawEvent.Element.HEALTH));
     }
 }

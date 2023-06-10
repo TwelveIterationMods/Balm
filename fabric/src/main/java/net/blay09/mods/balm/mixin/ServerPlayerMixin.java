@@ -34,7 +34,7 @@ public class ServerPlayerMixin {
     @Inject(method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("HEAD"))
     public void changeDimensionHead(ServerLevel level, CallbackInfoReturnable<Entity> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
-        fromDimHolder.set(player.level.dimension());
+        fromDimHolder.set(player.level().dimension());
     }
 
     @Inject(method = "changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;", at = @At("RETURN"))
