@@ -1,4 +1,4 @@
 - Updated to Minecraft 1.20
 - The Fabric version now also loads the config from `waystones-common.toml` (instead of `waystones.toml`)
 - `cloth-config` is no longer a hard dependency (but still recommended if you want a config screen)
-- 
+- Added a fallback for loading custom player data between Forge and Fabric in case of world migrations 
