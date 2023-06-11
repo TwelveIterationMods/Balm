@@ -69,7 +69,12 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return new ItemStack(itemStack.getItem().getCraftingRemainingItem());
+        Item craftingRemainingItem = itemStack.getItem().getCraftingRemainingItem();
+        if (craftingRemainingItem != null) {
+            return new ItemStack(craftingRemainingItem);
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     @Override
