@@ -160,7 +160,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     compileOnly project(":shared")
 
-    implementation "org.jetbrains:annotations:22.0.0"
+    compileOnly "org.jetbrains:annotations:22.0.0"
 
     compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
     if (jei_minecraft_version == minecraft_version) {
