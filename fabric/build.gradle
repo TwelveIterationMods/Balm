@@ -125,9 +125,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.addRequirement("fabric-api")
-    mainFile.addRequirement("cloth-config")
-    mainFile.addRequirement("balm-fabric")
-    mainFile.addGameVersion(project.minecraft_versions.split(','))
+    // TODO not sure if necessary mainFile.addGameVersion(project.minecraft_versions.split(','))
 }
 
 modrinth {
