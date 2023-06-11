@@ -117,7 +117,7 @@ publishing {
     }
 }
 
-task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     description = 'Publishes the Fabric build to CurseForge.'
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
