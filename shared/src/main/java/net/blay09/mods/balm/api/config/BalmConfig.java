@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.api.config;
 
+import com.google.common.collect.Table;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.world.entity.player.Player;
 
@@ -29,4 +30,8 @@ public interface BalmConfig {
     File getConfigDir();
 
     File getConfigFile(String configName);
+
+    <T extends BalmConfigData> Table<String, String, BalmConfigProperty<?>> getConfigProperties(Class<T> clazz);
+
+    <T extends BalmConfigData> String getConfigName(Class<T> clazz);
 }

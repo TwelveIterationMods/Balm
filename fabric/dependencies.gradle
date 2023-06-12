@@ -1,2 +1,4 @@
 dependencies {
+    modRuntimeOnly "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
+    modRuntimeOnly "com.terraformersmc:modmenu:7.0.1"
 }

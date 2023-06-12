@@ -3,7 +3,6 @@ package net.blay09.mods.balm.fabric.config;
 import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
-import net.blay09.mods.balm.api.config.Config;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 
@@ -19,11 +18,7 @@ public class FabricBalmConfig extends AbstractBalmConfig {
 
     @Override
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
-        Config configAnnotation = clazz.getAnnotation(Config.class);
-        if (configAnnotation == null) {
-            throw new IllegalArgumentException("Config class " + clazz.getName() + " is missing @Config annotation");
-        }
-        var configName = configAnnotation.value();
+        var configName = getConfigName(clazz);
         var configFile = getConfigFile(configName);
         var configData = createConfigDataInstance(clazz);
         if(configFile.exists()) {
@@ -51,12 +46,7 @@ public class FabricBalmConfig extends AbstractBalmConfig {
 
     @Override
     public <T extends BalmConfigData> void saveBackingConfig(Class<T> clazz) {
-        Config configAnnotation = clazz.getAnnotation(Config.class);
-        if (configAnnotation == null) {
-            throw new IllegalArgumentException("Config class " + clazz.getName() + " is missing @Config annotation");
-        }
-
-        var configName = configAnnotation.value();
+        var configName = getConfigName(clazz);
         var configFile = getConfigFile(configName);
         try {
             FabricConfigSaver.save(configFile, configs.get(clazz));

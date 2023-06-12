@@ -1,5 +1,7 @@
 package net.blay09.mods.balm.api.config;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
@@ -9,7 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -17,6 +21,7 @@ import java.util.function.Function;
 public abstract class AbstractBalmConfig implements BalmConfig {
 
     private final Map<Class<?>, BalmConfigData> activeConfigs = new HashMap<>();
+    private final Map<Class<?>, BalmConfigData> defaultConfigs = new HashMap<>();
     private final Map<Class<?>, Function<?, ?>> syncMessageFactories = new HashMap<>();
 
     public void initialize() {
@@ -73,6 +78,7 @@ public abstract class AbstractBalmConfig implements BalmConfig {
     @Override
     public <T extends BalmConfigData> void registerConfig(Class<T> clazz, Function<T, SyncConfigMessage<T>> syncMessageFactory) {
         setActiveConfig(clazz, Balm.getConfig().initializeBackingConfig(clazz));
+        defaultConfigs.put(clazz, createConfigDataInstance(clazz));
         if (syncMessageFactory != null) {
             registerSyncMessageFactory(clazz, syncMessageFactory);
         }
@@ -122,5 +128,51 @@ public abstract class AbstractBalmConfig implements BalmConfig {
     @Override
     public File getConfigFile(String configName) {
         return new File(getConfigDir(), configName + "-common.toml");
+    }
+
+    @Override
+    public <T extends BalmConfigData> String getConfigName(Class<T> clazz) {
+        Config configAnnotation = clazz.getAnnotation(Config.class);
+        if (configAnnotation == null) {
+            throw new IllegalArgumentException("Config class " + clazz.getName() + " is missing @Config annotation");
+        }
+        return configAnnotation.value();
+    }
+
+    @Override
+    public <T extends BalmConfigData> Table<String, String, BalmConfigProperty<?>> getConfigProperties(Class<T> clazz) {
+        var backingConfig = Balm.getConfig().getBackingConfig(clazz);
+        var defaultConfig = defaultConfigs.get(clazz);
+        Table<String, String, BalmConfigProperty<?>> properties = HashBasedTable.create();
+        for (Field rootField : clazz.getFields()) {
+            var category = "";
+            Class<?> fieldType = rootField.getType();
+            if (isPropertyType(fieldType)) {
+                var property = rootField.getName();
+                properties.put(category, property, createConfigProperty(backingConfig, null, rootField, defaultConfig));
+            } else {
+                category = rootField.getName();
+                for (Field propertyField : fieldType.getFields()) {
+                    var property = propertyField.getName();
+                    properties.put(category, property, createConfigProperty(backingConfig, rootField, propertyField, defaultConfig));
+                }
+            }
+        }
+        return properties;
+    }
+
+    private static BalmConfigProperty<?> createConfigProperty(BalmConfigData configData, Field categoryField, Field propertyField, BalmConfigData defaultConfig) {
+        return new BalmConfigPropertyImpl<String>(configData, categoryField, propertyField, defaultConfig);
+    }
+
+    private static boolean isPropertyType(Class<?> type) {
+        return type.isPrimitive()
+                || type == String.class
+                || type == Integer.class
+                || type == Boolean.class
+                || type == Float.class
+                || type == Double.class
+                || type == List.class
+                || Enum.class.isAssignableFrom(type);
     }
 }

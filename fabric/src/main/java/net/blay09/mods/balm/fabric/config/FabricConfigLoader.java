@@ -113,6 +113,8 @@ public class FabricConfigLoader {
     private static String getExpectedValueTypeMessage(Class<?> type, Class<?> innerType) {
         if (type == Integer.class || type == Integer.TYPE) {
             return "integer";
+        } else if (type == Long.class || type == Long.TYPE) {
+            return "integer";
         } else if (type == Double.class || type == Double.TYPE || type == Float.class || type == Float.TYPE) {
             return "floating point number";
         } else if (type == Boolean.class || type == Boolean.TYPE) {
@@ -135,6 +137,16 @@ public class FabricConfigLoader {
             } else if (value instanceof String) {
                 try {
                     return Integer.parseInt((String) value);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid integer value: '" + value + "'", e);
+                }
+            }
+        } else if (type == Long.class || type == Long.TYPE) {
+            if (value instanceof Number) {
+                return ((Number) value).longValue();
+            } else if (value instanceof String) {
+                try {
+                    return Long.parseLong((String) value);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid integer value: '" + value + "'", e);
                 }
