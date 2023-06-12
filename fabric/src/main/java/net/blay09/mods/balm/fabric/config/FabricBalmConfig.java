@@ -1,12 +1,10 @@
 package net.blay09.mods.balm.fabric.config;
 
 import com.mojang.logging.LogUtils;
-import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Config;
 import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -28,10 +26,18 @@ public class FabricBalmConfig extends AbstractBalmConfig {
         var configName = configAnnotation.value();
         var configFile = getConfigFile(configName);
         var configData = createConfigDataInstance(clazz);
-        try {
-            FabricConfigLoader.load(configFile, configData);
-        } catch (IOException e) {
-            logger.error("Failed to load config file {}", configFile, e);
+        if(configFile.exists()) {
+            try {
+                FabricConfigLoader.load(configFile, configData);
+            } catch (IOException e) {
+                logger.error("Failed to load config file {}", configFile, e);
+            }
+        } else {
+            try {
+                FabricConfigSaver.save(configFile, configData);
+            } catch (IOException e) {
+                logger.error("Failed to generate config file {}", configFile, e);
+            }
         }
         configs.put(clazz, configData);
         return configData;
@@ -62,12 +68,5 @@ public class FabricBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return FabricLoader.getInstance().getConfigDir().toFile();
-    }
-
-
-
-    @NotNull
-    private static File getConfigFile(String configName) {
-        return new File(Balm.getConfig().getConfigDir(), configName + "-common.toml");
     }
 }

@@ -27,4 +27,6 @@ public interface BalmConfig {
     void resetToBackingConfigs();
 
     File getConfigDir();
+
+    File getConfigFile(String configName);
 }

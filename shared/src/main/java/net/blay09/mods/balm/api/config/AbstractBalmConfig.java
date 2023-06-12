@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -116,5 +117,10 @@ public abstract class AbstractBalmConfig implements BalmConfig {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("Config class or sub-class missing a public no-arg constructor.", e);
         }
+    }
+
+    @Override
+    public File getConfigFile(String configName) {
+        return new File(getConfigDir(), configName + "-common.toml");
     }
 }

@@ -15,6 +15,7 @@ import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.blay09.mods.balm.config.ExampleConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -24,6 +25,10 @@ import java.util.function.Consumer;
 public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeSpi.create();
     private static final SidedProxy<BalmProxy> proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
+
+    static {
+        ExampleConfig.initialize();
+    }
 
     @Deprecated
     public static void initialize(String modId) {
