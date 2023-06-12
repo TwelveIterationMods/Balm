@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -58,8 +59,9 @@ public class ForgeBalmItems implements BalmItems {
     }
 
     @Override
-    public DeferredObject<CreativeModeTab> registerCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
-        return new DeferredObject<>(identifier, () -> {
+    public DeferredObject<CreativeModeTab> registerCreativeModeTab(Supplier<ItemStack> iconSupplier, ResourceLocation identifier) {
+        DeferredRegister<CreativeModeTab> register = DeferredRegisters.get(Registries.CREATIVE_MODE_TAB, identifier.getNamespace());
+        RegistryObject<CreativeModeTab> registryObject = register.register(identifier.getPath(), () -> {
             Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
             final var registrations = getActiveRegistrations();
             CreativeModeTab creativeModeTab = CreativeModeTab.builder()
@@ -69,7 +71,8 @@ public class ForgeBalmItems implements BalmItems {
                     .build();
             creativeModeTab = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, identifier, creativeModeTab);
             return creativeModeTab;
-        }).resolveImmediately();
+        });
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override

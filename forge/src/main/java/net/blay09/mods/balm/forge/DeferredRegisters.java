@@ -3,6 +3,8 @@ package net.blay09.mods.balm.forge;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -10,10 +12,14 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.Collection;
 
 public class DeferredRegisters {
-    private static final Table<IForgeRegistry<?>, String, DeferredRegister<?>> deferredRegisters = Tables.synchronizedTable(HashBasedTable.create());
+    private static final Table<ResourceKey<?>, String, DeferredRegister<?>> deferredRegisters = Tables.synchronizedTable(HashBasedTable.create());
+
+    public static <T> DeferredRegister<T> get(IForgeRegistry<T> registry, String modId) {
+        return get(registry.getRegistryKey(), modId);
+    }
 
     @SuppressWarnings("unchecked")
-    public static <T> DeferredRegister<T> get(IForgeRegistry<T> registry, String modId) {
+    public static <T> DeferredRegister<T> get(ResourceKey<Registry<T>> registry, String modId) {
         DeferredRegister<?> register = deferredRegisters.get(registry, modId);
         if (register == null) {
             register = DeferredRegister.create(registry, modId);
