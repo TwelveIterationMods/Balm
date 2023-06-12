@@ -1,11 +1,10 @@
 # Balm
 
-Abstraction Layer (but not really)™ for Blay's multiplatform mods.
+Minecraft Mod. Abstraction Layer (but not really)™ for Blay's multiplatform mods.
 
-I do not recommend other modders to build on this as I will ruthlessly break backwards-compatibility as needed for my
-mods.
+This is a library mod that allows Blay's mods to be built for both Forge and Fabric without needing separate codebases.
 
-See [the license](LICENSE) for modpack permissions etc.
+- [Modpack Permissions](https://mods.twelveiterations.com/permissions)
 
 #### Forge
 
@@ -36,7 +35,7 @@ dependencies {
 }
 ```
 
-### Using Maven
+### Using Twelve Iterations Maven (includes snapshot versions)
 
 Add the following to your `build.gradle`:
 
@@ -48,8 +47,18 @@ repositories {
 dependencies {
     // Replace ${balm_version} with the version you want to depend on. 
     // You may also have to change the Minecraft version in the artifact name.
-    // You can find the latest version for a given Minecraft version at https://maven.twelveiterations.com/service/rest/repository/browse/maven-public/net/blay09/mods/
-    // Forge: implementation fg.deobf("net.blay09.mods:balm-forge-1.19.2:${balm_version}")
-    // Fabric: modImplementation "net.blay09.mods:balm-fabric-1.19.2:${balm_version}"
+    // You can find the latest version for a given Minecraft version at https://maven.twelveiterations.com/service/rest/repository/browse/maven-public/net/blay09/mods/balm-common/
+    // Common (mojmap): implementation "net.blay09.mods:balm-common:${balm_version}"
+    // Forge: implementation fg.deobf("net.blay09.mods:balm-forge:${balm_version}")
+    // Fabric: modImplementation "net.blay09.mods:balm-fabric:${balm_version}"
 }
 ```
+
+## Contributing
+
+If you're interested in contributing to the mod, you can check out [issues labelled as "help wanted"](https://github.com/TwelveIterationMods/Balm/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22). 
+
+When it comes to new features, it's best to confer with me first to ensure we share the same vision. You can join us on [Discord](https://discord.gg/VAfZ2Nau6j) if you'd like to talk.
+
+Contributions must be done through pull requests. I will not be able to accept translations, code or other assets through any other channels.
+
