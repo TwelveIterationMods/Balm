@@ -1,5 +1,7 @@
 package net.blay09.mods.balm.fabric.config;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -14,13 +16,16 @@ public class NotomlSerializer {
     private static String serializeToString(Map<String, Map<String, Object>> data, Map<String, String> comments) {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Map<String, Object>> category : data.entrySet()) {
+        var sortedCategories = data.entrySet().stream().map(Pair::of).sorted(Map.Entry.comparingByKey()).toList();
+        for (Pair<String, Map<String, Object>> category : sortedCategories) {
             String categoryComment = comments.get(category.getKey());
             if (categoryComment != null) {
                 sb.append("# ").append(categoryComment).append("\n");
             }
 
-            sb.append("[").append(category.getKey()).append("]").append("\n");
+            if (!category.getKey().isEmpty()) {
+                sb.append("[").append(category.getKey()).append("]").append("\n");
+            }
 
             for (Map.Entry<String, Object> entry : category.getValue().entrySet()) {
                 String propertyComment = comments.get(category.getKey() + "." + entry.getKey());

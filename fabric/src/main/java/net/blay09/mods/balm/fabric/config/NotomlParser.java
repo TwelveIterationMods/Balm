@@ -12,6 +12,7 @@ public class NotomlParser {
         String line;
         Map<String, Map<String, Object>> categoryMap = new HashMap<>();
         String currentCategory = "";
+        categoryMap.put(currentCategory, new HashMap<>());
 
         int lineNumber = 0;
         while ((line = bufferedReader.readLine()) != null) {
@@ -42,6 +43,9 @@ public class NotomlParser {
         }
 
         bufferedReader.close();
+        if (categoryMap.get("").isEmpty()) {
+            categoryMap.remove("");
+        }
         return categoryMap;
     }
 

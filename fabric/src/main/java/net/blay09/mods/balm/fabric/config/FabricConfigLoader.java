@@ -1,7 +1,9 @@
 package net.blay09.mods.balm.fabric.config;
 
+import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.ExpectedType;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class FabricConfigLoader {
+
+    private static final Logger logger = LogUtils.getLogger();
+
     public static void load(File configFile, BalmConfigData configData) throws IOException {
         Map<String, Map<String, Object>> categories = Collections.emptyMap();
         if (configFile.exists()) {
@@ -23,22 +28,36 @@ public class FabricConfigLoader {
             var category = categoryEntry.getKey();
             var properties = categoryEntry.getValue();
             try {
-                var categoryField = configData.getClass().getField(category);
-                var categoryInstance = categoryField.get(configData);
+                Object categoryInstance;
+                if (category.isEmpty()) {
+                    categoryInstance = configData;
+                } else {
+                    var categoryField = configData.getClass().getField(category);
+                    categoryInstance = categoryField.get(configData);
+                }
+
                 for (Map.Entry<String, Object> propertyEntry : properties.entrySet()) {
                     var property = propertyEntry.getKey();
                     var value = propertyEntry.getValue();
-                    var propertyField = categoryInstance.getClass().getField(property);
-                    var expectedTypeAnnotation = propertyField.getAnnotation(ExpectedType.class);
-                    Object convertedValue = convertValue(value,
-                            propertyField.getType(),
-                            expectedTypeAnnotation != null ? expectedTypeAnnotation.value() : null);
-                    if (convertedValue != null) {
-                        propertyField.set(categoryInstance, convertedValue);
+                    try {
+                        var propertyField = categoryInstance.getClass().getField(property);
+                        var expectedTypeAnnotation = propertyField.getAnnotation(ExpectedType.class);
+                        Object convertedValue = convertValue(value,
+                                propertyField.getType(),
+                                expectedTypeAnnotation != null ? expectedTypeAnnotation.value() : null);
+                        if (convertedValue != null) {
+                            propertyField.set(categoryInstance, convertedValue);
+                        }
+                    } catch (NoSuchFieldException e) {
+                        logger.error("Unknown config property {} in category {}", property, category, e);
+                    } catch (Exception e) {
+                        logger.error("Failed to load config property {} in category {}", property, category, e);
                     }
                 }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+            } catch (NoSuchFieldException e) {
+                logger.error("Unknown config category {}", category, e);
+            } catch (Exception e) {
+                logger.error("Failed to load config category {}", category, e);
             }
         }
     }
