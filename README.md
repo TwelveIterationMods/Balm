@@ -41,7 +41,13 @@ Add the following to your `build.gradle`:
 
 ```groovy
 repositories {
-    maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
+    maven { 
+        url "https://maven.twelveiterations.com/repository/maven-public/" 
+        
+        content {
+            includeGroup "net.blay09.mods"
+        }
+    }
 }
 
 dependencies {
