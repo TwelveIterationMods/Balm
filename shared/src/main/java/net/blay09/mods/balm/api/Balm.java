@@ -26,11 +26,6 @@ public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeSpi.create();
     private static final SidedProxy<BalmProxy> proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
 
-    static {
-        ExampleConfig.initialize();
-    }
-
-    @Deprecated
     public static void initialize(String modId) {
         runtime.initialize(modId, () -> {
         });
