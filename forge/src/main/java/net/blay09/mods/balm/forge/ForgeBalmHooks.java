@@ -128,6 +128,6 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public double getBlockReachDistance(Player player) {
-        return 4.5 + (player.isCreative() ? 0.5 : 0);
+        return player.getBlockReach();
     }
 }
