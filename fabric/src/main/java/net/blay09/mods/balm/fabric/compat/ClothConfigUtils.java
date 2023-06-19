@@ -24,12 +24,13 @@ public class ClothConfigUtils {
 
             var properties = Balm.getConfig().getConfigProperties(clazz);
             for (String category : properties.rowKeySet()) {
-                var categoryDisplayName = category.isEmpty() ? Component.translatable("config." + configName) : Component.translatable("config." + configName + "." + category);
+                var categoryI18nBase = category.isEmpty() ? "config." + configName : "config." + configName + "." + category;
+                var categoryDisplayName = Component.translatable(categoryI18nBase);
                 ConfigCategory categoryInstance = builder.getOrCreateCategory(categoryDisplayName);
                 for (Map.Entry<String, BalmConfigProperty<?>> entry : properties.row(category).entrySet()) {
                     var property = entry.getKey();
-                    var displayName = Component.translatable("config." + configName + "." + category + "." + property);
-                    var tooltip = Component.translatable("config." + configName + "." + category + "." + property + ".tooltip");
+                    var displayName = Component.translatable(categoryI18nBase + "." + property);
+                    var tooltip = Component.translatable(categoryI18nBase + "." + property + ".tooltip");
                     var backingProperty = entry.getValue();
                     if (backingProperty.getType() == String.class) {
                         categoryInstance.addEntry(

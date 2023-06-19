@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.energy.EnergyStorage;
 import net.blay09.mods.balm.api.fluid.FluidTank;
+import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.forge.client.ForgeBalmClient;
 import net.blay09.mods.balm.forge.provider.ForgeBalmProviders;
 import net.minecraft.world.Container;
@@ -20,6 +21,7 @@ public class ForgeBalm {
 
     public ForgeBalm() {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
+        ExampleConfig.initialize();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeBalmClient::onInitializeClient);
 

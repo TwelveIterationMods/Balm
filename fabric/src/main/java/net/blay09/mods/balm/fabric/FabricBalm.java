@@ -5,6 +5,8 @@ import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.fluid.FluidTank;
+import net.blay09.mods.balm.config.ExampleConfig;
+import net.blay09.mods.balm.config.ExampleConfigData;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -20,6 +22,7 @@ public class FabricBalm implements ModInitializer {
     public void onInitialize() {
         ((FabricBalmHooks) Balm.getHooks()).initialize();
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
+        ExampleConfig.initialize();
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
             CompoundTag data = ((BalmEntity) oldPlayer).getFabricBalmData();
