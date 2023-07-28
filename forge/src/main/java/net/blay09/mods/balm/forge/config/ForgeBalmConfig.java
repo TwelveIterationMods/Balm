@@ -65,7 +65,10 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                     logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
                 }
 
-                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")), () -> ((List<?>) defaultValue), it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()));
+                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")),
+                        () -> ((List<?>) defaultValue),
+                        it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()) || (expectedType.value().isEnum() && Arrays.stream(
+                                expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it))));
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
@@ -105,6 +108,24 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                     field.set(instance, config.getConfigData().getInt(path));
                 } else if (hasValue && Long.TYPE.isAssignableFrom(type)) {
                     field.set(instance, config.getConfigData().getLong(path));
+                } else if (hasValue && Float.TYPE.isAssignableFrom(type)) {
+                    Object value = config.getConfigData().get(path);
+                    if (value instanceof Double doubleValue) {
+                        field.set(instance, doubleValue.floatValue());
+                    } else if (value instanceof Float floatValue) {
+                        field.set(instance, floatValue);
+                    } else {
+                        logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
+                    }
+                } else if (hasValue && Double.TYPE.isAssignableFrom(type)) {
+                    Object value = config.getConfigData().get(path);
+                    if (value instanceof Double doubleValue) {
+                        field.set(instance, doubleValue);
+                    } else if (value instanceof Float floatValue) {
+                        field.set(instance, floatValue.doubleValue());
+                    } else {
+                        logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
+                    }
                 } else if (hasValue && (type.isPrimitive() || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type))) {
                     Object raw = config.getConfigData().getRaw(path);
                     if (raw != null) {
