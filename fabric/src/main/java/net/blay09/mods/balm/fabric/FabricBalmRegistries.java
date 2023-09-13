@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -76,5 +77,10 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public Collection<ResourceLocation> getItemKeys() {
         return BuiltInRegistries.ITEM.keySet();
+    }
+
+    @Override
+    public Attribute getAttribute(ResourceLocation key) {
+        return BuiltInRegistries.ATTRIBUTE.get(key);
     }
 }
