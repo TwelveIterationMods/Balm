@@ -6,6 +6,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -73,5 +74,10 @@ public class ForgeBalmRegistries implements BalmRegistries {
     @Override
     public Fluid getMilkFluid() {
         return ForgeMod.MILK.get();
+    }
+
+    @Override
+    public Attribute getAttribute(ResourceLocation key) {
+        return ForgeRegistries.ATTRIBUTES.getValue(key);
     }
 }
