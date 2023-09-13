@@ -10,7 +10,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FabricBalmKeyMappings implements BalmKeyMappings {
+
+    private final Map<KeyMapping, KeyConflictContext> contextAwareKeyMappings = new HashMap<>();
 
     @Override
     public KeyMapping registerKeyMapping(String name, int keyCode, String category) {
@@ -24,17 +29,26 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, int keyCode, String category) {
-        return KeyBindingHelper.registerKeyBinding(new KeyMapping(name, InputConstants.Type.KEYSYM, keyCode, category));
+        KeyMapping keyMapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(name, InputConstants.Type.KEYSYM, keyCode, category));
+        contextAwareKeyMappings.put(keyMapping, conflictContext);
+        return keyMapping;
     }
 
     @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category) {
-        return KeyBindingHelper.registerKeyBinding(new KeyMapping(name, type, keyCode, category));
+        KeyMapping keyBinding = new KeyMapping(name, type, keyCode, category);
+        contextAwareKeyMappings.put(keyBinding, conflictContext);
+        return KeyBindingHelper.registerKeyBinding(keyBinding);
     }
 
     @Override
     public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Key input) {
         if (keyMapping == null) {
+            return false;
+        }
+
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
             return false;
         }
 
@@ -46,7 +60,16 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
 
     @Override
     public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
-        return keyMapping != null && keyMapping.matches(keyCode, scanCode);
+        if (keyMapping == null) {
+            return false;
+        }
+
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
+            return false;
+        }
+
+        return keyMapping.matches(keyCode, scanCode);
     }
 
     @Override
@@ -55,12 +78,26 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
             return false;
         }
 
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
+            return false;
+        }
+
         return type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode);
     }
 
     @Override
     public boolean isActiveAndWasPressed(@Nullable KeyMapping keyMapping) {
-        return keyMapping != null && keyMapping.consumeClick();
+        if (keyMapping == null) {
+            return false;
+        }
+
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
+            return false;
+        }
+
+        return keyMapping.consumeClick();
     }
 
     private boolean isActiveAndMatchesStrictModifier(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
@@ -69,6 +106,11 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
                 return false;
             }
         }*/
+
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
+            return false;
+        }
 
         return keyMapping != null && keyMapping.matches(keyCode, scanCode);
     }
@@ -91,10 +133,22 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
             return false;
         }
 
+        KeyConflictContext conflictContext = contextAwareKeyMappings.getOrDefault(keyMapping, KeyConflictContext.UNIVERSAL);
+        if (!isContextActive(conflictContext)) {
+            return false;
+        }
+
         InputConstants.Key key = ((KeyMappingAccessor) keyMapping).getKey();
         return keyMapping.isDown() || (key.getValue() != -1 && key.getType() == InputConstants.Type.KEYSYM && InputConstants.isKeyDown(Minecraft.getInstance()
                 .getWindow()
                 .getWindow(), key.getValue()));
     }
 
+    private boolean isContextActive(KeyConflictContext conflictContext) {
+        return switch (conflictContext) {
+            case GUI -> Minecraft.getInstance().screen != null;
+            case INGAME -> Minecraft.getInstance().screen == null;
+            default -> true;
+        };
+    }
 }
