@@ -17,7 +17,6 @@
     "CheckboxAccessor",
     "ImageButtonAccessor",
     "KeyMappingAccessor",
-    "ModelLayersAccessor",
     "MouseHandlerAccessor",
     "ScreenAccessor",
     "MinecraftMixin",

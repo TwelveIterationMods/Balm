@@ -40,7 +40,6 @@
     "KeyMappingAccessor",
     "LevelRendererMixin",
     "MinecraftMixin",
-    "ModelLayersAccessor",
     "MouseHandlerAccessor",
     "MouseHandlerMixin",
     "PlayerTabOverlayMixin",
