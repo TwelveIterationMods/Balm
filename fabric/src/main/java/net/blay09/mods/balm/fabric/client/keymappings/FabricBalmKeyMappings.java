@@ -4,18 +4,19 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.keymappings.KeyConflictContext;
 import net.blay09.mods.balm.api.client.keymappings.KeyModifier;
+import net.blay09.mods.balm.api.client.keymappings.KeyModifiers;
 import net.blay09.mods.balm.mixin.KeyMappingAccessor;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FabricBalmKeyMappings implements BalmKeyMappings {
 
-    private final Map<KeyMapping, KeyConflictContext> contextAwareKeyMappings = new HashMap<>();
+    private final Map<KeyMapping, KeyConflictContext> contextAwareKeyMappings = new ConcurrentHashMap<>();
 
     @Override
     public KeyMapping registerKeyMapping(String name, int keyCode, String category) {
@@ -35,7 +36,21 @@ public class FabricBalmKeyMappings implements BalmKeyMappings {
     }
 
     @Override
+    public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifiers modifiers, int keyCode, String category) {
+        KeyMapping keyMapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(name, InputConstants.Type.KEYSYM, keyCode, category));
+        contextAwareKeyMappings.put(keyMapping, conflictContext);
+        return keyMapping;
+    }
+
+    @Override
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category) {
+        KeyMapping keyBinding = new KeyMapping(name, type, keyCode, category);
+        contextAwareKeyMappings.put(keyBinding, conflictContext);
+        return KeyBindingHelper.registerKeyBinding(keyBinding);
+    }
+
+    @Override
+    public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifiers modifiers, InputConstants.Type type, int keyCode, String category) {
         KeyMapping keyBinding = new KeyMapping(name, type, keyCode, category);
         contextAwareKeyMappings.put(keyBinding, conflictContext);
         return KeyBindingHelper.registerKeyBinding(keyBinding);

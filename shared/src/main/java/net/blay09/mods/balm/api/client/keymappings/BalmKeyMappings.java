@@ -11,7 +11,11 @@ public interface BalmKeyMappings {
 
     KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, int keyCode, String category);
 
+    KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifiers modifiers, int keyCode, String category);
+
     KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category);
+
+    KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifiers modifiers, InputConstants.Type type, int keyCode, String category);
 
     default boolean isActiveAndMatches(KeyMapping keyMapping, int keyCode, int scanCode) {
         return isActiveAndMatches(keyMapping, InputConstants.getKey(keyCode, scanCode));
