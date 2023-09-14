@@ -12,6 +12,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +24,11 @@ public class FabricBalmKeyMappings extends CommonBalmKeyMappings {
     public KeyMapping registerKeyMapping(String name, KeyConflictContext conflictContext, KeyModifier modifier, InputConstants.Type type, int keyCode, String category) {
         KeyMapping keyBinding = new KeyMapping(name, type, keyCode, category);
         contextAwareKeyMappings.put(keyBinding, conflictContext);
-        return KeyBindingHelper.registerKeyBinding(keyBinding);
+        KeyMapping keyMapping = KeyBindingHelper.registerKeyBinding(keyBinding);
+        if (modifier != KeyModifier.NONE) {
+            registerModifierKeyMappings(keyMapping, conflictContext, Collections.singletonList(modifier));
+        }
+        return keyMapping;
     }
 
     @Override
