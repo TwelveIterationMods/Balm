@@ -2,7 +2,8 @@ package net.blay09.mods.balm.api.client.keymappings;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.player.Input;
+
+import java.util.Optional;
 
 public interface BalmKeyMappings {
     KeyMapping registerKeyMapping(String name, int keyCode, String category);
@@ -32,4 +33,8 @@ public interface BalmKeyMappings {
     boolean isKeyDownIgnoreContext(KeyMapping keyMapping);
 
     boolean isActiveAndKeyDown(KeyMapping keyMapping);
+
+    Optional<Boolean> conflictsWith(KeyMapping first, KeyMapping second);
+
+    void ignoreConflicts(KeyMapping keyMapping);
 }

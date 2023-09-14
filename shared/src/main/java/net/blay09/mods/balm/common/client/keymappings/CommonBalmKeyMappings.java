@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.common.client.keymappings;
 
+import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.keymappings.KeyConflictContext;
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
+    private final Set<KeyMapping> ignoreConflicts = Sets.newConcurrentHashSet();
     private final Map<KeyMapping, Set<KeyMapping>> multiModifierKeyMappings = new ConcurrentHashMap<>();
 
     @Override
@@ -166,6 +168,19 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
     @Override
     public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
         return isActive(keyMapping) && (type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode));
+    }
+
+    @Override
+    public Optional<Boolean> conflictsWith(KeyMapping first, KeyMapping second) {
+        if (ignoreConflicts.contains(first) || ignoreConflicts.contains(second)) {
+            return Optional.of(false);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void ignoreConflicts(KeyMapping keyMapping) {
+        ignoreConflicts.add(keyMapping);
     }
 
     protected abstract boolean isContextActive(KeyMapping keyMapping);
