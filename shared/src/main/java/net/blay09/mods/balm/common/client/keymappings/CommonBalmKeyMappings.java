@@ -73,7 +73,7 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
         };
     }
 
-    protected boolean areMultiModifiersActive(KeyMapping keyMapping) {
+    protected boolean areModifiersActive(KeyMapping keyMapping) {
         Set<KeyMapping> modifierMappings = multiModifierKeyMappings.getOrDefault(keyMapping, Collections.emptySet());
         for (KeyMapping modifierMapping : modifierMappings) {
             if (modifierMapping.matches(InputConstants.KEY_LSHIFT, 0) || modifierMapping.matches(InputConstants.KEY_RSHIFT, 0)) {
@@ -134,7 +134,7 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
             return false;
         }
 
-        return isContextActive(keyMapping) && areMultiModifiersActive(keyMapping);
+        return isContextActive(keyMapping) && areModifiersActive(keyMapping);
     }
 
     @Contract("null -> false")
@@ -143,8 +143,38 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
             return false;
         }
 
-        return areMultiModifiersActive(keyMapping);
+        return areModifiersActive(keyMapping);
+    }
+
+    @Override
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Key input) {
+        if (!isActive(keyMapping)) {
+            return false;
+        }
+
+        return input.getType() == InputConstants.Type.MOUSE
+                ? keyMapping.matchesMouse(input.getValue())
+                : keyMapping.matches(input.getType() == InputConstants.Type.KEYSYM ? input.getValue() : InputConstants.UNKNOWN.getValue(),
+                input.getType() == InputConstants.Type.SCANCODE ? input.getValue() : InputConstants.UNKNOWN.getValue());
+    }
+
+    @Override
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
+        return isActive(keyMapping) && keyMapping.matches(keyCode, scanCode);
+    }
+
+    @Override
+    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
+        return isActive(keyMapping) && (type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode));
     }
 
     protected abstract boolean isContextActive(KeyMapping keyMapping);
+
+    protected boolean isContextActive(KeyConflictContext conflictContext) {
+        return switch (conflictContext) {
+            case GUI -> Minecraft.getInstance().screen != null;
+            case INGAME -> Minecraft.getInstance().screen == null;
+            default -> true;
+        };
+    }
 }

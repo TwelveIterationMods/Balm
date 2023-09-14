@@ -14,13 +14,19 @@ import net.blay09.mods.balm.fabric.client.rendering.FabricBalmModels;
 import net.blay09.mods.balm.fabric.client.rendering.FabricBalmRenderers;
 import net.blay09.mods.balm.fabric.client.rendering.FabricBalmTextures;
 import net.blay09.mods.balm.fabric.client.screen.FabricBalmScreens;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class FabricBalmClientRuntime implements BalmClientRuntime {
+
+    private static final Logger logger = LoggerFactory.getLogger(FabricBalmClientRuntime.class);
 
     private final BalmRenderers renderers = new FabricBalmRenderers();
     private final BalmTextures textures = new FabricBalmTextures();
     private final BalmScreens screens = new FabricBalmScreens();
-    private final BalmKeyMappings keyMappings = new FabricBalmKeyMappings();
+    private final BalmKeyMappings keyMappings = createKeyMappingsBindings();
     private final BalmModels models = new FabricBalmModels();
 
     public FabricBalmClientRuntime() {
@@ -55,5 +61,22 @@ public class FabricBalmClientRuntime implements BalmClientRuntime {
     @Override
     public void initialize(String modId, Runnable initializer) {
         initializer.run();
+    }
+
+    private static BalmKeyMappings createKeyMappingsBindings() {
+        if (Balm.isModLoaded("amecs")) {
+            try {
+                Class.forName("de.siphalor.amecs.api.AmecsKeyBinding");
+                try {
+                    Class<?> amecs = Class.forName("net.blay09.mods.balm.fabric.compat.AmecsBalmKeyMappings");
+                    return (BalmKeyMappings) amecs.getConstructor().newInstance();
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    logger.error("Failed to initialize amecs key mappings for Balm", e);
+                }
+            } catch (ClassNotFoundException ignored) {
+                // we silently ignore amecs if the api is missing which would only really be the case in a devenv pulling from cursemaven
+            }
+        }
+        return new FabricBalmKeyMappings();
     }
 }

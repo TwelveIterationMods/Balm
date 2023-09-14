@@ -40,28 +40,6 @@ public class FabricBalmKeyMappings extends CommonBalmKeyMappings {
         return KeyBindingHelper.registerKeyBinding(keyMapping);
     }
 
-    @Override
-    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Key input) {
-        if (!isActive(keyMapping)) {
-            return false;
-        }
-
-        return input.getType() == InputConstants.Type.MOUSE
-                ? keyMapping.matchesMouse(input.getValue())
-                : keyMapping.matches(input.getType() == InputConstants.Type.KEYSYM ? input.getValue() : InputConstants.UNKNOWN.getValue(),
-                input.getType() == InputConstants.Type.SCANCODE ? input.getValue() : InputConstants.UNKNOWN.getValue());
-    }
-
-    @Override
-    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
-        return isActive(keyMapping) && keyMapping.matches(keyCode, scanCode);
-    }
-
-    @Override
-    public boolean isActiveAndMatches(@Nullable KeyMapping keyMapping, InputConstants.Type type, int keyCode, int scanCode) {
-        return isActive(keyMapping) && (type == InputConstants.Type.MOUSE ? keyMapping.matchesMouse(keyCode) : keyMapping.matches(keyCode, scanCode));
-    }
-
     private boolean isActiveAndMatchesStrictModifier(@Nullable KeyMapping keyMapping, int keyCode, int scanCode) {
         return isActive(keyMapping) && keyMapping.matches(keyCode, scanCode);
     }
@@ -72,11 +50,4 @@ public class FabricBalmKeyMappings extends CommonBalmKeyMappings {
         return isContextActive(conflictContext);
     }
 
-    private boolean isContextActive(KeyConflictContext conflictContext) {
-        return switch (conflictContext) {
-            case GUI -> Minecraft.getInstance().screen != null;
-            case INGAME -> Minecraft.getInstance().screen == null;
-            default -> true;
-        };
-    }
 }
