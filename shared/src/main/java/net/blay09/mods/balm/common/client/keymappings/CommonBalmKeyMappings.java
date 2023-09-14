@@ -181,6 +181,7 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
     @Override
     public void ignoreConflicts(KeyMapping keyMapping) {
         ignoreConflicts.add(keyMapping);
+        ignoreConflicts.addAll(multiModifierKeyMappings.getOrDefault(keyMapping, Collections.emptySet()));
     }
 
     protected abstract boolean isContextActive(KeyMapping keyMapping);
