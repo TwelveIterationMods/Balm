@@ -79,6 +79,6 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public Attribute getAttribute(ResourceLocation key) {
-        return BuiltInRegistries.ATTRIBUTE.get(key);
+        return Registry.ATTRIBUTE.get(key);
     }
 }
