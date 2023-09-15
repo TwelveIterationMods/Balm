@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -37,6 +38,11 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(EntityType<?> entityType) {
         return BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+    }
+
+    @Override
+    public ResourceLocation getKey(MenuType<?> menuType) {
+        return BuiltInRegistries.MENU.getKey(menuType);
     }
 
     @Override

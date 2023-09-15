@@ -5,6 +5,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -19,6 +20,8 @@ public interface BalmRegistries {
     ResourceLocation getKey(Fluid fluid);
 
     ResourceLocation getKey(EntityType<?> entityType);
+
+    ResourceLocation getKey(MenuType<?> menuType);
 
     Collection<ResourceLocation> getItemKeys();
 
