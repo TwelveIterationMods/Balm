@@ -37,4 +37,6 @@ public interface BalmKeyMappings {
     Optional<Boolean> conflictsWith(KeyMapping first, KeyMapping second);
 
     void ignoreConflicts(KeyMapping keyMapping);
+
+    boolean shouldIgnoreConflicts(KeyMapping keyMapping);
 }
