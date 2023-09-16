@@ -55,13 +55,6 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {
-        // Mod loading context may be null if something in load process errored before // TODO can we move this to FMLCommonLoadEvent to avoid this null check?
-        if (FMLJavaModLoadingContext.get() != null) {
-            var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
-            registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
-            registry.register(FMLJavaModLoadingContext.get().getModEventBus());
-        }
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -112,5 +105,13 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     private Registrations getActiveRegistrations() {
         return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
+    }
+
+    public static void initializeBalmBiomeModifiers(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
+            registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
+            registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        });
     }
 }
