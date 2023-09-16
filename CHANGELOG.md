@@ -1,3 +1,4 @@
+- Hotfix: Fixed Inventory Essentials keybindings preventing others from working on Fabric if Amecs is not installed
 - Hotfix: Fixed crash on world creation when used with Essentials
 - Added context-aware keybindings support for Fabric
 - Added support for Amecs key modifiers, mainly to allow configurable bindings in Inventory Essentials
