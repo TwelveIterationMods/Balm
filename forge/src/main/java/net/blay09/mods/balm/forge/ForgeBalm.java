@@ -24,7 +24,7 @@ public class ForgeBalm {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
         ExampleConfig.initialize();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeBalmWorldGen::initializeBalmBiomeModifiers);
+        ForgeBalmWorldGen.initializeBalmBiomeModifiers();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ForgeBalmClient::onInitializeClient);
 
         ForgeBalmProviders providers = (ForgeBalmProviders) Balm.getProviders();

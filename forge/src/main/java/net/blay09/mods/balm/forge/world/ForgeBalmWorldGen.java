@@ -107,11 +107,9 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
     }
 
-    public static void initializeBalmBiomeModifiers(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
-            registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
-            registry.register(FMLJavaModLoadingContext.get().getModEventBus());
-        });
+    public static void initializeBalmBiomeModifiers() {
+        var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
+        registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
+        registry.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }
