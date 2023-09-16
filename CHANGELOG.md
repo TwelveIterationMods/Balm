@@ -1,3 +1,4 @@
+- Hotfix: Fixed crash on world creation when used with Essentials
 - Added context-aware keybindings support for Fabric
 - Added support for Amecs key modifiers, mainly to allow configurable bindings in Inventory Essentials
 - Added limited support for multiple key modifiers within supported mods (mainly Inventory Essentials)
