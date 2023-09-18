@@ -50,6 +50,7 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
                     toKeyCode(keyModifiers.get(i)),
                     baseMapping.getCategory());
             multiModifierKeyMappings.computeIfAbsent(baseMapping, it -> new HashSet<>()).add(subKeyMapping);
+            ignoreConflicts.add(subKeyMapping);
         }
     }
 
@@ -63,6 +64,7 @@ public abstract class CommonBalmKeyMappings implements BalmKeyMappings {
                     keyModifiers.get(i).getValue(),
                     baseMapping.getCategory());
             multiModifierKeyMappings.computeIfAbsent(baseMapping, it -> new HashSet<>()).add(subKeyMapping);
+            ignoreConflicts.add(subKeyMapping);
         }
     }
 
