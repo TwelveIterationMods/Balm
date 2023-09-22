@@ -1,38 +1,38 @@
 package net.blay09.mods.balm.forge.network;
 
+import com.google.common.collect.Sets;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.SimpleChannel;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 public class NetworkChannels {
-    private static final String version = "1.0"; // all mods will just have same version for now until I clean this up
     private static final Map<String, SimpleChannel> channels = new ConcurrentHashMap<>();
-    private static final Map<String, Predicate<String>> acceptedClientVersions = new ConcurrentHashMap<>();
-    private static final Map<String, Predicate<String>> acceptedServerVersions = new ConcurrentHashMap<>();
+    private static final Set<String> clientOnlyMods = Sets.newConcurrentHashSet();
+    private static final Set<String> serverOnlyMods = Sets.newConcurrentHashSet();
 
     public static SimpleChannel get(String modId) {
         return channels.computeIfAbsent(modId, key -> {
             ResourceLocation channelName = new ResourceLocation(key, "network");
-            return NetworkRegistry.newSimpleChannel(channelName,
-                    () -> version,
-                    it -> acceptedClientVersions.getOrDefault(modId, NetworkChannels::defaultVersionCheck).test(it),
-                    it -> acceptedServerVersions.getOrDefault(modId, NetworkChannels::defaultVersionCheck).test(it));
+            ChannelBuilder builder = ChannelBuilder.named(channelName);
+            if (serverOnlyMods.contains(modId)) {
+                builder = builder.optionalClient();
+            }
+            if (clientOnlyMods.contains(modId)) {
+                builder = builder.optionalServer();
+            }
+            return builder.simpleChannel();
         });
     }
 
     public static void allowClientOnly(String modId) {
-        acceptedClientVersions.put(modId, it -> true);
+        clientOnlyMods.add(modId);
     }
 
     public static void allowServerOnly(String modId) {
-        acceptedServerVersions.put(modId, it -> true);
-    }
-
-    private static boolean defaultVersionCheck(String it) {
-        return it.equals(version);
+        serverOnlyMods.add(modId);
     }
 }

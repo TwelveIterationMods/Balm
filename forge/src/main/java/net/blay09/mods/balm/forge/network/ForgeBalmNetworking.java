@@ -1,7 +1,6 @@
 package net.blay09.mods.balm.forge.network;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.network.ClientboundMessageRegistration;
@@ -16,11 +15,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.SimpleChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +35,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
     private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
     private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
-    private static NetworkEvent.Context replyContext;
+    private static CustomPayloadEvent.Context replyContext;
 
     @Override
     public void allowClientOnly(String modId) {
@@ -51,11 +49,11 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
-        if (player instanceof ServerPlayer) {
+        if (player instanceof ServerPlayer serverPlayer) {
             if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
-                NetworkHooks.openScreen((ServerPlayer) player, menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
+                serverPlayer.openMenu(menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
             } else {
-                NetworkHooks.openScreen((ServerPlayer) player, menuProvider);
+                serverPlayer.openMenu(menuProvider);
             }
         }
     }
@@ -80,7 +78,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.send(PacketDistributor.PLAYER.with(() -> ((ServerPlayer) player)), message);
+        channel.send(message, PacketDistributor.PLAYER.with((ServerPlayer) player));
     }
 
     @Override
@@ -90,7 +88,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), message);
+        channel.send(message, PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos)));
     }
 
     @Override
@@ -100,7 +98,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+        channel.send(message, PacketDistributor.TRACKING_ENTITY.with(entity));
     }
 
     @Override
@@ -110,7 +108,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.send(PacketDistributor.ALL.noArg(), message);
+        channel.send(message, PacketDistributor.ALL.noArg());
     }
 
     @Override
@@ -125,7 +123,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         ResourceLocation identifier = messageRegistration.getIdentifier();
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.sendToServer(message);
+        channel.send(message, PacketDistributor.SERVER.noArg());
     }
 
     @SuppressWarnings("unchecked")
@@ -145,18 +143,11 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
-            NetworkEvent.Context context = contextSupplier.get();
-            if (context.getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
-                logger.warn("Received {} on incorrect side {}", identifier, context.getDirection());
-                return;
-            }
-
-            context.enqueueWork(() -> {
-                handler.accept(BalmClient.getClientPlayer(), message);
-            });
-            context.setPacketHandled(true);
-        });
+        channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(decodeFunc)
+                .encoder(encodeFunc)
+                .consumerMainThread((packet, context) -> handler.accept(Balm.getProxy().getClientPlayer(), packet))
+                .add();
     }
 
     @Override
@@ -167,21 +158,15 @@ public class ForgeBalmNetworking implements BalmNetworking {
         messagesByIdentifier.put(identifier, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
-        channel.registerMessage(nextDiscriminator(identifier.getNamespace()), clazz, encodeFunc, decodeFunc, (message, contextSupplier) -> {
-            NetworkEvent.Context context = contextSupplier.get();
-            if (context.getDirection() != NetworkDirection.PLAY_TO_SERVER) {
-                logger.warn("Received {} on incorrect side {}", identifier, context.getDirection());
-                return;
-            }
-
-            context.enqueueWork(() -> {
-                replyContext = context;
-                ServerPlayer player = context.getSender();
-                handler.accept(player, message);
-                replyContext = null;
-            });
-            context.setPacketHandled(true);
-        });
+        channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(decodeFunc)
+                .encoder(encodeFunc)
+                .consumerMainThread((packet, context) -> {
+                    replyContext = context;
+                    handler.accept(context.getSender(), packet);
+                    replyContext = null;
+                })
+                .add();
     }
 
     private static int nextDiscriminator(String modId) {

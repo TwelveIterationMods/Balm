@@ -1,6 +1,5 @@
 package net.blay09.mods.balm.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.client.screen.ContainerScreenDrawEvent;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractContainerScreen.class)
 public class AbstractContainerScreenMixin {
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", shift = At.Shift.AFTER))
+    @Inject(method = "renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At(value = "RETURN"))
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, CallbackInfo callbackInfo) {
         Screen screen = (Screen) (Object) this;
         Balm.getEvents().fireEvent(new ContainerScreenDrawEvent.Background(screen, guiGraphics, mouseX, mouseY));
