@@ -166,12 +166,6 @@ dependencies {
     if (jei_minecraft_version == minecraft_version) {
         runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
     }
-
-    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:$cloth_config_version")
-
-    compileOnly fg.deobf("curse.maven:jade-324717:$jade_forge_version")
-    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-$wthit_version")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:$theoneprobe_version")
 }
 
 apply from: 'dependencies.gradle'
@@ -242,7 +236,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
 modrinth {
     token = project.findProperty("modrinth.token") ?: System.getenv("MODRINTH_TOKEN") ?: "none"
-    projectId = project.modrinth_forge_project_id
+    projectId = project.modrinth_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
     uploadFile = jar
