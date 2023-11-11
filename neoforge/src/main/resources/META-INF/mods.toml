@@ -1,25 +1,23 @@
 modLoader="javafml"
 loaderVersion="${neoforge_loader_version_range}"
-license="All rights reserved"
+license="${license}"
 issueTrackerURL="https://github.com/TwelveIterationMods/Balm/issues"
 [[mods]]
-modId="balm"
-version="${mod_version}"
-displayName="Balm"
+modId="${mod_id}"
+version="${version}"
+displayName="${mod_name}"
 displayURL="https://mods.twelveiterations.com/"
-logoFile="balm-icon.png"
+logoFile="${mod_id}.png"
 credits="BlayTheNinth"
 authors="BlayTheNinth"
-description='''
-Abstraction Layer (but not really)™ for Blay's multiplatform mods
-'''
-[[dependencies.balm]]
+description='''${description}'''
+[[dependencies.${mod_id}]]
 modId="neoforge"
 mandatory=true
 versionRange="${neoforge_version_range}"
 ordering="NONE"
 side="BOTH"
-[[dependencies.balm]]
+[[dependencies.${mod_id}]]
 modId="minecraft"
 mandatory=true
 versionRange="${minecraft_version_range}"

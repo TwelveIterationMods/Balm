@@ -3,22 +3,13 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.41'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
-    id "com.modrinth.minotaur" version "2.+"
-}
-
-version = mod_version
-group = mod_group
-
-repositories {
-    mavenLocal()
+    id 'net.darkhax.curseforgegradle'
+    id "com.modrinth.minotaur"
 }
 
 base {
     archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
     minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -96,31 +87,6 @@ tasks.named("sourcesJar", Jar) {
 
 tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
     from project(":shared").sourceSets.main.resources
-}
-
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-        neoforge_version: neoforge_version, neoforge_version_range: neoforge_version_range,
-        neoforge_loader_version_range: neoforge_loader_version_range,
-        mod_id: mod_id, mod_version: mod_version
-]
-tasks.withType(ProcessResources).configureEach {
-    inputs.properties replaceProperties
-
-    filesMatching(resourceTargets) {
-        expand replaceProperties
-    }
-}
-
-jar {
-    from(rootProject.file("LICENSE")) {
-        rename { "${it}_${mod_id}" }
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
 publishing {
