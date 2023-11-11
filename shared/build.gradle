@@ -1,8 +1,8 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'org.spongepowered.gradle.vanilla'
     id 'maven-publish'
+    id 'org.spongepowered.gradle.vanilla'
 }
 
 base {

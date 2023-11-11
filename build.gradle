@@ -14,11 +14,14 @@ subprojects {
     java.withJavadocJar()
 
     jar {
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod_id}" }
+        }
         manifest {
             attributes([
                     "Specification-Title"     : mod_id,
                     "Specification-Vendor"    : "BlayTheNinth",
-                    "Specification-Version"   : "1",
+                    "Specification-Version"   : project.jar.archiveVersion,
                     "Implementation-Title"    : project.name,
                     "Implementation-Version"  : project.jar.archiveVersion,
                     "Implementation-Vendor"   : "BlayTheNinth"

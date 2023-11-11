@@ -153,7 +153,7 @@ publishing {
         }
     }
 }
-3
+
 task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     dependsOn('build')
     description = 'Publishes the Forge build to CurseForge.'
