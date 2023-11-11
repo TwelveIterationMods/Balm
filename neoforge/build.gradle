@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.5'
+    id 'net.neoforged.gradle.userdev' version '7.0.41'
     id 'net.darkhax.curseforgegradle' version '1.0.14'
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -20,6 +20,9 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+    minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
+}
 runs {
     configureEach {
         // Recommended logging data for a userdev environment
@@ -70,17 +73,29 @@ dependencies {
     compileOnly project(":shared")
 
     compileOnly "org.jetbrains:annotations:22.0.0"
-
-    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
-    if (jei_minecraft_version == minecraft_version) {
-        runtimeOnly "mezz.jei:jei-$jei_minecraft_version-forge:$jei_version"
-    }
 }
 
 apply from: 'dependencies.gradle'
 
-tasks.withType(JavaCompile) {
+// NeoGradle compiles the game, but we don't want to add our common code to the game's code
+TaskCollection.metaClass.excludingNeoTasks = { ->
+    delegate.matching { !it.name.startsWith("neo") }
+}
+
+tasks.withType(JavaCompile).excludingNeoTasks().configureEach {
     source(project(":shared").sourceSets.main.allSource)
+}
+
+tasks.withType(Javadoc).excludingNeoTasks().configureEach {
+    source(project(":shared").sourceSets.main.allJava)
+}
+
+tasks.named("sourcesJar", Jar) {
+    from(project(":shared").sourceSets.main.allSource)
+}
+
+tasks.withType(ProcessResources).excludingNeoTasks().configureEach {
+    from project(":shared").sourceSets.main.resources
 }
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
