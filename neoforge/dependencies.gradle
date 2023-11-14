@@ -1,0 +1,6 @@
+dependencies {
+    compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
+    if (jei_minecraft_version == minecraft_version) {
+        runtimeOnly "mezz.jei:jei-$jei_minecraft_version-forge:$jei_version"
+    }
+}

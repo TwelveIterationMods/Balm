@@ -22,9 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidUtil;
@@ -73,7 +71,7 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public boolean isFakePlayer(Player player) {
-        return player instanceof FakePlayer;
+        return false;
     }
 
     @Override
