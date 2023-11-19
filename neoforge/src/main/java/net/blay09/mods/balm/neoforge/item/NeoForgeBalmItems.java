@@ -15,9 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -50,18 +47,18 @@ public class NeoForgeBalmItems implements BalmItems {
 
     @Override
     public DeferredObject<Item> registerItem(Supplier<Item> supplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
-        DeferredRegister<Item> register = DeferredRegisters.get(ForgeRegistries.ITEMS, identifier.getNamespace());
-        RegistryObject<Item> registryObject = register.register(identifier.getPath(), supplier);
+        final var register = DeferredRegisters.get(Registries.ITEM, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
         if (creativeTab != null) {
             getActiveRegistrations().creativeTabContents.put(creativeTab, () -> new ItemLike[]{registryObject.get()});
         }
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     @Override
     public DeferredObject<CreativeModeTab> registerCreativeModeTab(Supplier<ItemStack> iconSupplier, ResourceLocation identifier) {
-        DeferredRegister<CreativeModeTab> register = DeferredRegisters.get(Registries.CREATIVE_MODE_TAB, identifier.getNamespace());
-        RegistryObject<CreativeModeTab> registryObject = register.register(identifier.getPath(), () -> {
+        final var register = DeferredRegisters.get(Registries.CREATIVE_MODE_TAB, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), () -> {
             Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
             final var registrations = getActiveRegistrations();
             CreativeModeTab creativeModeTab = CreativeModeTab.builder()
@@ -72,7 +69,7 @@ public class NeoForgeBalmItems implements BalmItems {
             creativeModeTab = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, identifier, creativeModeTab);
             return creativeModeTab;
         });
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     @Override

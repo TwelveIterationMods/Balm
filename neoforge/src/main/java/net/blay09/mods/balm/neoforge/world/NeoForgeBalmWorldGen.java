@@ -24,8 +24,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
@@ -60,9 +59,9 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends Feature<?>> DeferredObject<T> registerFeature(ResourceLocation identifier, Supplier<T> supplier) {
-        DeferredRegister<Feature<?>> register = DeferredRegisters.get(ForgeRegistries.FEATURES, identifier.getNamespace());
-        RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        final var register = DeferredRegisters.get(Registries.FEATURE, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
     }
 
     public static void initializeBalmBiomeModifiers() {
-        var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
+        var registry = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
         registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
         registry.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

@@ -3,6 +3,7 @@ package net.blay09.mods.balm.neoforge.entity;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.neoforge.DeferredRegisters;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,8 +14,6 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,21 +38,21 @@ public class NeoForgeBalmEntities implements BalmEntities {
 
     @Override
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
-        DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
-        RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(identifier.toString()));
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        final var register = DeferredRegisters.get(Registries.ENTITY_TYPE, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(identifier.toString()));
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     @Override
     public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
-        final DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
-        final Registrations registrations = getActiveRegistrations();
-        final RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
+        final var register = DeferredRegisters.get(Registries.ENTITY_TYPE, identifier.getNamespace());
+        final var registrations = getActiveRegistrations();
+        final var registryObject = register.register(identifier.getPath(), () -> {
             EntityType<T> entityType = typeBuilder.build(identifier.toString());
             registrations.attributeSuppliers.put(entityType, attributeBuilder.get().build());
             return entityType;
         });
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     public void register() {

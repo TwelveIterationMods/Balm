@@ -4,14 +4,12 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -24,9 +22,9 @@ public class NeoForgeBalmBlocks implements BalmBlocks {
 
     @Override
     public DeferredObject<Block> registerBlock(Supplier<Block> supplier, ResourceLocation identifier) {
-        DeferredRegister<Block> register = DeferredRegisters.get(ForgeRegistries.BLOCKS, identifier.getNamespace());
-        RegistryObject<Block> registryObject = register.register(identifier.getPath(), supplier);
-        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+        final var register = DeferredRegisters.get(Registries.BLOCK, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     @Override

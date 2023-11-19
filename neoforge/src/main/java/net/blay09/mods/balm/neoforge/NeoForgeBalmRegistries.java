@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.neoforge;
 
 import net.blay09.mods.balm.api.BalmRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -12,59 +13,58 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.Collection;
 
 public class NeoForgeBalmRegistries implements BalmRegistries {
     @Override
     public ResourceLocation getKey(Item item) {
-        return ForgeRegistries.ITEMS.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     @Override
     public ResourceLocation getKey(Block block) {
-        return ForgeRegistries.BLOCKS.getKey(block);
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     @Override
     public ResourceLocation getKey(Fluid fluid) {
-        return ForgeRegistries.FLUIDS.getKey(fluid);
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
     @Override
     public ResourceLocation getKey(EntityType<?> entityType) {
-        return ForgeRegistries.ENTITY_TYPES.getKey(entityType);
+        return BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
     }
 
     @Override
     public ResourceLocation getKey(MenuType<?> menuType) {
-        return ForgeRegistries.MENU_TYPES.getKey(menuType);
+        return BuiltInRegistries.MENU.getKey(menuType);
     }
 
     @Override
     public Collection<ResourceLocation> getItemKeys() {
-        return ForgeRegistries.ITEMS.getKeys();
+        return BuiltInRegistries.ITEM.keySet();
     }
 
     @Override
     public Item getItem(ResourceLocation key) {
-        return ForgeRegistries.ITEMS.getValue(key);
+        return BuiltInRegistries.ITEM.get(key);
     }
 
     @Override
     public Block getBlock(ResourceLocation key) {
-        return ForgeRegistries.BLOCKS.getValue(key);
+        return BuiltInRegistries.BLOCK.get(key);
     }
 
     @Override
     public Fluid getFluid(ResourceLocation key) {
-        return ForgeRegistries.FLUIDS.getValue(key);
+        return BuiltInRegistries.FLUID.get(key);
     }
 
     @Override
     public MobEffect getMobEffect(ResourceLocation key) {
-        return ForgeRegistries.MOB_EFFECTS.getValue(key);
+        return BuiltInRegistries.MOB_EFFECT.get(key);
     }
 
     @Override
@@ -84,6 +84,6 @@ public class NeoForgeBalmRegistries implements BalmRegistries {
 
     @Override
     public Attribute getAttribute(ResourceLocation key) {
-        return ForgeRegistries.ATTRIBUTES.getValue(key);
+        return BuiltInRegistries.ATTRIBUTE.get(key);
     }
 }

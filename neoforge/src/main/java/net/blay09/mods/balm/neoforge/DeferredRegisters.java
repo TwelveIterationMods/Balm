@@ -7,19 +7,18 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 
 import java.util.Collection;
 
 public class DeferredRegisters {
     private static final Table<ResourceKey<?>, String, DeferredRegister<?>> deferredRegisters = Tables.synchronizedTable(HashBasedTable.create());
 
-    public static <T> DeferredRegister<T> get(IForgeRegistry<T> registry, String modId) {
-        return get(registry.getRegistryKey(), modId);
+    public static <T> DeferredRegister<T> get(Registry<T> registry, String modId) {
+        return get(registry.key(), modId);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> DeferredRegister<T> get(ResourceKey<Registry<T>> registry, String modId) {
+    public static <T> DeferredRegister<T> get(ResourceKey<? extends Registry<T>> registry, String modId) {
         DeferredRegister<?> register = deferredRegisters.get(registry, modId);
         if (register == null) {
             register = DeferredRegister.create(registry, modId);
