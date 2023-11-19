@@ -16,6 +16,7 @@ import net.blay09.mods.balm.api.network.BalmNetworking;
 import net.blay09.mods.balm.api.provider.BalmProviders;
 import net.blay09.mods.balm.api.proxy.ProxyResolutionException;
 import net.blay09.mods.balm.api.proxy.SidedProxy;
+import net.blay09.mods.balm.api.recipe.BalmRecipes;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
@@ -31,6 +32,7 @@ import net.blay09.mods.balm.neoforge.item.NeoForgeBalmItems;
 import net.blay09.mods.balm.neoforge.menu.NeoForgeBalmMenus;
 import net.blay09.mods.balm.neoforge.network.NeoForgeBalmNetworking;
 import net.blay09.mods.balm.neoforge.provider.NeoForgeBalmProviders;
+import net.blay09.mods.balm.neoforge.recipe.NeoForgeBalmRecipes;
 import net.blay09.mods.balm.neoforge.sound.NeoForgeBalmSounds;
 import net.blay09.mods.balm.neoforge.stats.NeoForgeBalmStats;
 import net.blay09.mods.balm.neoforge.world.NeoForgeBalmWorldGen;
@@ -68,6 +70,7 @@ public class NeoForgeBalmRuntime implements BalmRuntime {
     private final BalmCommands commands = new NeoForgeBalmCommands();
     private final BalmLootTables lootTables = new CommonBalmLootTables();
     private final BalmStats stats = new NeoForgeBalmStats();
+    private final BalmRecipes recipes = new NeoForgeBalmRecipes();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -153,6 +156,11 @@ public class NeoForgeBalmRuntime implements BalmRuntime {
     @Override
     public BalmStats getStats() {
         return stats;
+    }
+
+    @Override
+    public BalmRecipes getRecipes() {
+        return recipes;
     }
 
     @Override
