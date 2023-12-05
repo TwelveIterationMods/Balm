@@ -53,10 +53,6 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
     public static final Codec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = Codec.unit(BalmBiomeModifier.INSTANCE);
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
-    public NeoForgeBalmWorldGen() {
-        NeoForge.EVENT_BUS.register(this);
-    }
-
     @Override
     public <T extends Feature<?>> DeferredObject<T> registerFeature(ResourceLocation identifier, Supplier<T> supplier) {
         final var register = DeferredRegisters.get(Registries.FEATURE, identifier.getNamespace());
