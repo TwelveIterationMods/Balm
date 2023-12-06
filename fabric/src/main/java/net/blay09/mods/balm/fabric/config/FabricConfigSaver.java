@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.fabric.config.notoml.Notoml;
 import net.blay09.mods.balm.fabric.config.notoml.NotomlSerializer;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 public class FabricConfigSaver {
 
@@ -80,6 +82,8 @@ public class FabricConfigSaver {
                 || type == Float.class
                 || type == Double.class
                 || type == List.class
+                || type == Set.class
+                || type == ResourceLocation.class
                 || Enum.class.isAssignableFrom(type);
     }
 }

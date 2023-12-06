@@ -6,15 +6,13 @@ import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.fabric.config.notoml.Notoml;
 import net.blay09.mods.balm.fabric.config.notoml.NotomlError;
 import net.blay09.mods.balm.fabric.config.notoml.NotomlParser;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FabricConfigLoader {
 
@@ -121,8 +119,12 @@ public class FabricConfigLoader {
             return "boolean (true or false)";
         } else if (type == String.class) {
             return "string";
+        } else if (type == ResourceLocation.class) {
+            return "resource location";
         } else if (type == List.class) {
             return "list of " + getExpectedValueTypeMessage(innerType, null);
+        } else if (type == Set.class) {
+            return "set of " + getExpectedValueTypeMessage(innerType, null);
         } else if (Enum.class.isAssignableFrom(type)) {
             Enum<?>[] enumConstants = (Enum<?>[]) type.getEnumConstants();
             return "enum value (" + String.join(", ", Arrays.stream(enumConstants).map(Enum::name).toArray(String[]::new)) + ")";
@@ -177,6 +179,12 @@ public class FabricConfigLoader {
             } else {
                 return value.toString();
             }
+        } else if (type == ResourceLocation.class) {
+            if (value instanceof String stringValue) {
+                return new ResourceLocation(stringValue);
+            } else {
+                return new ResourceLocation(value.toString());
+            }
         } else if (type == Boolean.class || type == Boolean.TYPE) {
             if (value instanceof Number) {
                 return ((Number) value).intValue() != 0;
@@ -192,8 +200,7 @@ public class FabricConfigLoader {
                 return value;
             }
         } else if (type == List.class) {
-            if (value instanceof List<?>) {
-                List<?> list = (List<?>) value;
+            if (value instanceof List<?> list) {
                 List<Object> convertedList = new ArrayList<>();
                 for (Object entry : list) {
                     Object convertedEntry = convertValue(entry, innerType, null);
@@ -204,6 +211,23 @@ public class FabricConfigLoader {
                 return convertedList;
             } else if (value.getClass() == innerType) {
                 List<Object> list = new ArrayList<>();
+                list.add(value);
+                return list;
+            } else {
+                throw new IllegalArgumentException("Invalid list value: '" + value + "'");
+            }
+        } else if (type == Set.class) {
+            if (value instanceof Collection<?> collection) {
+                Set<Object> convertedSet = new HashSet<>();
+                for (Object entry : collection) {
+                    Object convertedEntry = convertValue(entry, innerType, null);
+                    if (convertedEntry != null) {
+                        convertedSet.add(convertedEntry);
+                    }
+                }
+                return convertedSet;
+            } else if (value.getClass() == innerType) {
+                Set<Object> list = new HashSet<>();
                 list.add(value);
                 return list;
             } else {

@@ -20,10 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
@@ -56,7 +53,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
             if (String.class.isAssignableFrom(type)) {
                 builder.define(path, (String) defaultValue);
-            } else if (List.class.isAssignableFrom(type)) {
+            } else if (Collection.class.isAssignableFrom(type)) {
                 ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                 if (expectedType == null) {
                     logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
@@ -123,7 +120,22 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                     } else {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
-                } else if (hasValue && (type.isPrimitive() || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type))) {
+                } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
+                    Object raw = config.getConfigData().getRaw(path);
+                    if (raw instanceof List<?> list) {
+                        try {
+                            if (List.class.isAssignableFrom(type)) {
+                                field.set(instance, list);
+                            } else if (Set.class.isAssignableFrom(type)) {
+                                field.set(instance, new HashSet<>(list));
+                            }
+                        } catch (IllegalArgumentException e) {
+                            logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + raw.getClass());
+                        }
+                    } else {
+                        logger.error("Null config value for " + path + ", falling back to default");
+                    }
+                } else if (hasValue && (type.isPrimitive() || String.class.isAssignableFrom(type))) {
                     Object raw = config.getConfigData().getRaw(path);
                     if (raw != null) {
                         try {
@@ -162,6 +174,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             Object value = field.get(instance);
             if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
                 config.getConfigData().set(path, value);
+            } else if(Set.class.isAssignableFrom(type)) {
+                config.getConfigData().set(path, new ArrayList<>((Set<?>) value));
             } else {
                 writeConfigValues(path + ".", config, field.get(instance));
             }

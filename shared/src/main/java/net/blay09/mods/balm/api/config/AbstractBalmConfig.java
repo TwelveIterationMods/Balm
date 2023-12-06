@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +16,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -173,6 +175,8 @@ public abstract class AbstractBalmConfig implements BalmConfig {
                 || type == Float.class
                 || type == Double.class
                 || type == List.class
+                || type == Set.class
+                || type == ResourceLocationException.class
                 || Enum.class.isAssignableFrom(type);
     }
 }

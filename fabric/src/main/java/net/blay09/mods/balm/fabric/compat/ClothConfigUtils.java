@@ -8,10 +8,8 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.BalmConfigProperty;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClothConfigUtils {
     public static <T extends BalmConfigData> ConfigScreenFactory<?> getConfigScreen(Class<T> clazz) {
@@ -82,7 +80,8 @@ public class ClothConfigUtils {
                         );
                     } else if (Enum.class.isAssignableFrom(backingProperty.getType())) {
                         categoryInstance.addEntry(
-                                builder.entryBuilder().startEnumSelector(displayName, (Class<Enum<?>>) backingProperty.getType(), (Enum<?>) backingProperty.getValue())
+                                builder.entryBuilder()
+                                        .startEnumSelector(displayName, (Class<Enum<?>>) backingProperty.getType(), (Enum<?>) backingProperty.getValue())
                                         .setDefaultValue((Enum<?>) backingProperty.getDefaultValue())
                                         .setTooltip(tooltip)
                                         .setSaveConsumer(value -> ((BalmConfigProperty<Enum<?>>) backingProperty).setValue(value))
@@ -126,6 +125,46 @@ public class ClothConfigUtils {
                                         .setDefaultValue((List<Double>) backingProperty.getDefaultValue())
                                         .setTooltip(tooltip)
                                         .setSaveConsumer(value -> ((BalmConfigProperty<List<Double>>) backingProperty).setValue(value))
+                                        .build()
+                        );
+                    } else if (Set.class.isAssignableFrom(backingProperty.getType()) && backingProperty.getInnerType() == String.class) {
+                        categoryInstance.addEntry(
+                                builder.entryBuilder().startStrList(displayName, new ArrayList<>((Set<String>) backingProperty.getValue()))
+                                        .setDefaultValue(new ArrayList<>((Set<String>) backingProperty.getDefaultValue()))
+                                        .setTooltip(tooltip)
+                                        .setSaveConsumer(value -> ((BalmConfigProperty<Set<String>>) backingProperty).setValue(new HashSet<>(value)))
+                                        .build()
+                        );
+                    } else if (Set.class.isAssignableFrom(backingProperty.getType()) && backingProperty.getInnerType() == Integer.class) {
+                        categoryInstance.addEntry(
+                                builder.entryBuilder().startIntList(displayName, new ArrayList<>((Set<Integer>) backingProperty.getValue()))
+                                        .setDefaultValue(new ArrayList<>((Set<Integer>) backingProperty.getDefaultValue()))
+                                        .setTooltip(tooltip)
+                                        .setSaveConsumer(value -> ((BalmConfigProperty<Set<Integer>>) backingProperty).setValue(new HashSet<>(value)))
+                                        .build()
+                        );
+                    } else if (Set.class.isAssignableFrom(backingProperty.getType()) && backingProperty.getInnerType() == Long.class) {
+                        categoryInstance.addEntry(
+                                builder.entryBuilder().startLongList(displayName, new ArrayList<>((Set<Long>) backingProperty.getValue()))
+                                        .setDefaultValue(new ArrayList<>((Set<Long>) backingProperty.getDefaultValue()))
+                                        .setTooltip(tooltip)
+                                        .setSaveConsumer(value -> ((BalmConfigProperty<Set<Long>>) backingProperty).setValue(new HashSet<>(value)))
+                                        .build()
+                        );
+                    } else if (Set.class.isAssignableFrom(backingProperty.getType()) && backingProperty.getInnerType() == Float.class) {
+                        categoryInstance.addEntry(
+                                builder.entryBuilder().startFloatList(displayName, new ArrayList<>((Set<Float>) backingProperty.getValue()))
+                                        .setDefaultValue(new ArrayList<>((Set<Float>) backingProperty.getDefaultValue()))
+                                        .setTooltip(tooltip)
+                                        .setSaveConsumer(value -> ((BalmConfigProperty<Set<Float>>) backingProperty).setValue(new HashSet<>(value)))
+                                        .build()
+                        );
+                    } else if (Set.class.isAssignableFrom(backingProperty.getType()) && backingProperty.getInnerType() == Double.class) {
+                        categoryInstance.addEntry(
+                                builder.entryBuilder().startDoubleList(displayName, new ArrayList<>((Set<Double>) backingProperty.getValue()))
+                                        .setDefaultValue(new ArrayList<>((Set<Double>) backingProperty.getDefaultValue()))
+                                        .setTooltip(tooltip)
+                                        .setSaveConsumer(value -> ((BalmConfigProperty<Set<Double>>) backingProperty).setValue(new HashSet<>(value)))
                                         .build()
                         );
                     }

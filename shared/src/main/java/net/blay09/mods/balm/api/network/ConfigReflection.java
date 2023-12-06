@@ -1,13 +1,11 @@
 package net.blay09.mods.balm.api.network;
 
 import net.blay09.mods.balm.api.config.Synced;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class ConfigReflection {
 
@@ -28,7 +26,7 @@ public class ConfigReflection {
 
     public static boolean isSyncedFieldOrObject(Field field) {
         boolean hasSyncedAnnotation = field.getAnnotation(Synced.class) != null;
-        boolean isObject = !field.getType().isPrimitive() && !field.getType().isEnum() && field.getType() != String.class && field.getType() != List.class;
+        boolean isObject = !field.getType().isPrimitive() && !field.getType().isEnum() && field.getType() != String.class && field.getType() != List.class && field.getType() != Set.class && field.getType() != ResourceLocation.class;
         return hasSyncedAnnotation || isObject;
     }
 
@@ -41,10 +39,12 @@ public class ConfigReflection {
 
             Class<?> type = field.getType();
             try {
-                if (String.class.isAssignableFrom(type) || Enum.class.isAssignableFrom(type) || type.isPrimitive()) {
+                if (String.class.isAssignableFrom(type) || ResourceLocation.class.isAssignableFrom(type) || Enum.class.isAssignableFrom(type) || type.isPrimitive()) {
                     field.set(to, field.get(from));
                 } else if (List.class.isAssignableFrom(type)) {
                     field.set(to, new ArrayList((Collection) field.get(from)));
+                } else if (Set.class.isAssignableFrom(type)) {
+                    field.set(to, new HashSet(((Collection) field.get(from))));
                 } else {
                     field.set(to, deepCopy(field.get(from), field.get(to)));
                 }
