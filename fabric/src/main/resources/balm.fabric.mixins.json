@@ -19,7 +19,8 @@
     "ServerPlayerMixin",
     "SlotAccessor",
     "StemBlockMixin",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "PlayerListMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",

@@ -99,7 +99,7 @@ public class FabricBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerLoginEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+        events.registerEvent(PlayerConnectedEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
             final PlayerLoginEvent event = new PlayerLoginEvent(listener.player);
             events.fireEventHandlers(event);
         }));
