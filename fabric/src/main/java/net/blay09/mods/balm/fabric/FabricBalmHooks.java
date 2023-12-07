@@ -7,6 +7,8 @@ import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.blay09.mods.balm.api.fluid.FluidTank;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
+import net.fabricmc.fabric.api.item.v1.FabricItemStack;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -69,6 +71,10 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        if ((Object) itemStack instanceof FabricItemStack fabricItemStack) {
+            return fabricItemStack.getRecipeRemainder();
+        }
+
         Item craftingRemainingItem = itemStack.getItem().getCraftingRemainingItem();
         if (craftingRemainingItem != null) {
             return new ItemStack(craftingRemainingItem);
