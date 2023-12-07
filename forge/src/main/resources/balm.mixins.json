@@ -10,7 +10,8 @@
     "ReloadableServerResourcesMixin",
     "SlotAccessor",
     "MinecraftServerMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "PlayerListMixin"
   ],
   "client": [
     "AbstractContainerScreenAccessor",
