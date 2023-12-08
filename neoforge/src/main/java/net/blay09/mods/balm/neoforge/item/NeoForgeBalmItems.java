@@ -78,7 +78,8 @@ public class NeoForgeBalmItems implements BalmItems {
     }
 
     public void register() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+        // No longer needed since we have no SubscribeEvents
+        // FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
     }
 
     private Registrations getActiveRegistrations() {
