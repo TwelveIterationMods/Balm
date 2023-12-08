@@ -1,1 +1,4 @@
-- Updated to Minecraft 1.20.2
+- Added support for ItemStack-aware remainders in Fabric
+- Added PlayerConnectedEvent that fires on Fabric's JOIN
+- Moved PlayerLoginEvent on Fabric to the same place it fires on Forge
+- Added support for sets and ResourceLocations in config data
