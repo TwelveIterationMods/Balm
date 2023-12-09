@@ -1,8 +1,11 @@
 package net.blay09.mods.balm.neoforge.stats;
 
+import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.stats.BalmStats;
+import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
@@ -24,7 +27,6 @@ public class NeoForgeBalmStats implements BalmStats {
         @SubscribeEvent
         public void commonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> customStats.forEach(it -> {
-                Registry.register(BuiltInRegistries.CUSTOM_STAT, it.getPath(), it);
                 Stats.CUSTOM.get(it, StatFormatter.DEFAULT);
             }));
         }
@@ -34,7 +36,8 @@ public class NeoForgeBalmStats implements BalmStats {
 
     @Override
     public void registerCustomStat(ResourceLocation identifier) {
-        getActiveRegistrations().customStats.add(identifier);
+        final var register = DeferredRegisters.get(Registries.CUSTOM_STAT, identifier.getNamespace());
+        register.register(identifier.getPath(), () -> identifier);
     }
 
     public void register() {
