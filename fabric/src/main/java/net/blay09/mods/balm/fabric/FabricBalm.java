@@ -4,12 +4,15 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
 import net.blay09.mods.balm.api.entity.BalmEntity;
+import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.config.ExampleConfigData;
+import net.blay09.mods.balm.fabric.fluid.BalmFluidStorage;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +39,17 @@ public class FabricBalm implements ModInitializer {
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof BalmContainerProvider containerProvider) {
                 return InventoryStorage.of(containerProvider.getContainer(direction), direction);
+            }
+
+            return null;
+        });
+
+        FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+            if (blockEntity instanceof BalmFluidTankProvider fluidTankProvider) {
+                final var fluidTank = fluidTankProvider.getFluidTank(direction);
+                if (fluidTank != null) {
+                    return new BalmFluidStorage(fluidTank);
+                }
             }
 
             return null;
