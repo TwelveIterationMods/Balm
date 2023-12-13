@@ -1,10 +1,14 @@
 package net.blay09.mods.balm.api.config;
 
+import com.google.gson.Gson;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +37,10 @@ public class ConfigJsonExport {
             }
         }
         return properties;
+    }
+
+    public static void exportToFile(Class<?> configDataClass, File file) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+        Files.writeString(file.toPath(), new Gson().toJson(export(configDataClass)));
     }
 
     @Nullable
