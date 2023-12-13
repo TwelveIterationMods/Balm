@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    {"id":"#c:stones", "required": false},
     "minecraft:andesite",
     "minecraft:diorite",
     "minecraft:granite",
