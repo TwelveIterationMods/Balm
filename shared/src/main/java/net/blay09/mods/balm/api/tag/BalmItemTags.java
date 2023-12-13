@@ -16,6 +16,14 @@ public class BalmItemTags {
     public static final TagKey<Item> EGGS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "eggs"));
     public static final TagKey<Item> EMERALDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "emeralds"));
     public static final TagKey<Item> GEMS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gems"));
+    public static final TagKey<Item> GOLD_NUGGETS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gold_nuggets"));
+    public static final TagKey<Item> GRAY_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gray_dyes"));
+    public static final TagKey<Item> GREEN_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "green_dyes"));
+    public static final TagKey<Item> INGOTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "ingots"));
+    public static final TagKey<Item> IRON_INGOTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "iron_ingots"));
+    public static final TagKey<Item> IRON_NUGGETS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "iron_nuggets"));
+    public static final TagKey<Item> LIGHT_BLUE_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "light_blue_dyes"));
+    public static final TagKey<Item> LIGHT_GRAY_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "light_gray_dyes"));
     public static final TagKey<Item> LIME_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "lime_dyes"));
     public static final TagKey<Item> MAGENTA_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "magenta_dyes"));
     public static final TagKey<Item> NUGGETS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "nuggets"));
