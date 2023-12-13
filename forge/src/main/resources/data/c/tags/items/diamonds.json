@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    {"id":"#forge:gems/diamonds", "required": false},
+    "minecraft:diamond"
+  ]
+}
