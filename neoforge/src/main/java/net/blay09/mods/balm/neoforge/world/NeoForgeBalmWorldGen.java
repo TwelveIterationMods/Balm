@@ -7,7 +7,6 @@ import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,11 +15,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,29 +24,11 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class NeoForgeBalmWorldGen implements BalmWorldGen {
 
-    private static class Registrations {
-        public final List<DeferredObject<?>> configuredFeatures = new ArrayList<>();
-        public final List<DeferredObject<?>> placedFeatures = new ArrayList<>();
-        public final List<DeferredObject<?>> placementModifiers = new ArrayList<>();
-
-        @SubscribeEvent
-        public void commonSetup(FMLCommonSetupEvent event) {
-            event.enqueueWork(() -> {
-                placementModifiers.forEach(DeferredObject::resolve);
-                configuredFeatures.forEach(DeferredObject::resolve);
-                placedFeatures.forEach(DeferredObject::resolve);
-            });
-        }
-    }
-
     public static final Codec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = Codec.unit(BalmBiomeModifier.INSTANCE);
-    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     @Override
     public <T extends Feature<?>> DeferredObject<T> registerFeature(ResourceLocation identifier, Supplier<T> supplier) {
@@ -62,13 +39,9 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(ResourceLocation identifier, Supplier<T> supplier) {
-        DeferredObject<T> deferredObject = new DeferredObject<>(identifier, () -> {
-            T placementModifierType = supplier.get();
-            Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, identifier, placementModifierType);
-            return placementModifierType;
-        });
-        getActiveRegistrations().placementModifiers.add(deferredObject);
-        return deferredObject;
+        final var register = DeferredRegisters.get(Registries.PLACEMENT_MODIFIER_TYPE, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
@@ -92,14 +65,6 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
                 }
             }
         }
-    }
-
-    public void register() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
-    }
-
-    private Registrations getActiveRegistrations() {
-        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
     }
 
     public static void initializeBalmBiomeModifiers() {
