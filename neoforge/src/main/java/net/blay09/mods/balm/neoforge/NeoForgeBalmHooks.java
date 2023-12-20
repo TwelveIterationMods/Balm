@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.EventHooks;
@@ -67,7 +69,11 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public void curePotionEffects(LivingEntity entity, ItemStack curativeItem) {
-        entity.curePotionEffects(curativeItem);
+        if (curativeItem.getItem() == Items.MILK_BUCKET) {
+            entity.removeEffectsCuredBy(EffectCures.MILK);
+        } else if (curativeItem.getItem() == Items.HONEY_BOTTLE) {
+            entity.removeEffectsCuredBy(EffectCures.HONEY);
+        }
     }
 
     @Override

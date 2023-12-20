@@ -40,7 +40,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -53,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class NeoForgeBalmRuntime implements BalmRuntime {
+public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     private final BalmWorldGen worldGen = new NeoForgeBalmWorldGen();
     private final BalmBlocks blocks = new NeoForgeBalmBlocks();
     private final BalmBlockEntities blockEntities = new NeoForgeBalmBlockEntities();
@@ -175,16 +174,20 @@ public class NeoForgeBalmRuntime implements BalmRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
+        initialize(modId, new NeoForgeLoadContext(FMLJavaModLoadingContext.get().getModEventBus()), initializer);
+    }
+
+    @Override
+    public void initialize(String modId, NeoForgeLoadContext context, Runnable initializer) {
         ((NeoForgeBalmItems) items).register();
         ((NeoForgeBalmEntities) entities).register();
-        ((NeoForgeBalmWorldGen) worldGen).register();
         ((NeoForgeBalmStats) stats).register();
 
         initializer.run();
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener((FMLLoadCompleteEvent event) -> initializeAddons());
-        DeferredRegisters.register(modId, modEventBus);
+        final var modBus = context.modBus();
+        modBus.addListener((FMLLoadCompleteEvent event) -> initializeAddons());
+        DeferredRegisters.register(modId, modBus);
     }
 
     @Override

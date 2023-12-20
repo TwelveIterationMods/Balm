@@ -3,6 +3,7 @@ package net.blay09.mods.balm.forge;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
@@ -51,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ForgeBalmRuntime implements BalmRuntime {
+public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     private final BalmWorldGen worldGen = new ForgeBalmWorldGen();
     private final BalmBlocks blocks = new ForgeBalmBlocks();
     private final BalmBlockEntities blockEntities = new ForgeBalmBlockEntities();
@@ -173,6 +174,11 @@ public class ForgeBalmRuntime implements BalmRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
+        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
+    }
+
+    @Override
+    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
         ((ForgeBalmItems) items).register();
         ((ForgeBalmEntities) entities).register();
         ((ForgeBalmWorldGen) worldGen).register();

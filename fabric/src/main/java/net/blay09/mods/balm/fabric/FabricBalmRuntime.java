@@ -3,6 +3,7 @@ package net.blay09.mods.balm.fabric;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
@@ -52,7 +53,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-public class FabricBalmRuntime implements BalmRuntime {
+public class FabricBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     private final BalmWorldGen worldGen = new FabricBalmWorldGen();
     private final BalmBlocks blocks = new FabricBalmBlocks();
     private final BalmBlockEntities blockEntities = new FabricBalmBlockEntities();
@@ -188,6 +189,11 @@ public class FabricBalmRuntime implements BalmRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
+        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
+    }
+
+    @Override
+    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
         initializer.run();
     }
 
