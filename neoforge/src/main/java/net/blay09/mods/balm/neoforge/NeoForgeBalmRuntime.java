@@ -177,7 +177,6 @@ public class NeoForgeBalmRuntime implements BalmRuntime {
     public void initialize(String modId, Runnable initializer) {
         ((NeoForgeBalmItems) items).register();
         ((NeoForgeBalmEntities) entities).register();
-        ((NeoForgeBalmWorldGen) worldGen).register();
         ((NeoForgeBalmStats) stats).register();
 
         initializer.run();
