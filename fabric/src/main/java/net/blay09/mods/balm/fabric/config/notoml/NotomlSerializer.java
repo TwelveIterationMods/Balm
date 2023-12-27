@@ -1,8 +1,10 @@
 package net.blay09.mods.balm.fabric.config.notoml;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class NotomlSerializer {
@@ -44,7 +46,9 @@ public class NotomlSerializer {
                     } else {
                         sb.append("\"").append(stringValue.replace("\"", "\\\"")).append("\"");
                     }
-                } else if (value instanceof List<?> listValue) {
+                } else if (value instanceof ResourceLocation resourceLocationValue) {
+                    sb.append("\"").append(resourceLocationValue).append("\"");
+                } else if (value instanceof Collection<?> listValue) {
                     serializeList(listValue, sb);
                 } else if (value instanceof Enum<?> enumValue) {
                     sb.append("\"").append(enumValue.name()).append("\"");
@@ -59,31 +63,37 @@ public class NotomlSerializer {
         return sb.toString();
     }
 
-    private static String serializeList(List<?> list, StringBuilder sb) {
+    private static String serializeList(Collection<?> list, StringBuilder sb) {
         sb.append("[ ");
         boolean newLines = list.size() > 3;
-        if (newLines) {
-            sb.append("\n");
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (newLines) {
-                sb.append("    ");
-            }
-            if (list.get(i) instanceof String) {
-                sb.append("\"").append(((String) list.get(i)).replace("\"", "\\\"")).append("\"");
-            } else if (list.get(i) instanceof Enum<?>) {
-                sb.append("\"").append(((Enum<?>) list.get(i)).name()).append("\"");
-            } else {
-                sb.append(list.get(i));
-            }
-            if (i != list.size() - 1) {
+        var first = true;
+        for (final var value : list) {
+            if (!first) {
                 sb.append(", ");
             }
+            first = false;
+
             if (newLines) {
                 sb.append("\n");
             }
+            if (newLines) {
+                sb.append("    ");
+            }
+            if (value instanceof String stringValue) {
+                sb.append("\"").append(stringValue.replace("\"", "\\\"")).append("\"");
+            } else if (value instanceof ResourceLocation resourceLocationValue) {
+                sb.append("\"").append(resourceLocationValue).append("\"");
+            } else if (value instanceof Enum<?> enumValue) {
+                sb.append("\"").append(enumValue.name()).append("\"");
+            } else {
+                sb.append(value);
+            }
         }
-        sb.append(" ]");
+        if (newLines) {
+            sb.append("\n]");
+        } else {
+            sb.append(" ]");
+        }
         return sb.toString();
     }
 

@@ -4,9 +4,11 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.config.Config;
 import net.blay09.mods.balm.api.config.ExpectedType;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Config("balm")
 public class ExampleConfigData implements BalmConfigData {
@@ -24,6 +26,8 @@ public class ExampleConfigData implements BalmConfigData {
     public ExampleEnum exampleEnum = ExampleEnum.Hello;
     @ExpectedType(String.class)
     public List<String> exampleStringList = Arrays.asList("Hello", "World");
+    @ExpectedType(ResourceLocation.class)
+    public Set<ResourceLocation> exampleResourceLocationSet = Set.of(new ResourceLocation("dirt"), new ResourceLocation("diamond"));
     @ExpectedType(Integer.class)
     public List<Integer> exampleIntList = Arrays.asList(12, 24);
     @ExpectedType(ExampleEnum.class)
