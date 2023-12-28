@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.fml.config.ModConfig;
@@ -53,7 +54,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
             if (String.class.isAssignableFrom(type)) {
                 builder.define(path, (String) defaultValue);
-            } else if (Collection.class.isAssignableFrom(type)) {
+            } else if (ResourceLocation.class.isAssignableFrom(type)) {
+                builder.define(path, ((ResourceLocation) defaultValue).toString());
+            } else if (List.class.isAssignableFrom(type)) {
                 ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                 if (expectedType == null) {
                     logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
@@ -61,6 +64,16 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
                 builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")),
                         () -> ((List<?>) defaultValue),
+                        it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()) || (expectedType.value().isEnum() && Arrays.stream(
+                                expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it))));
+            } else if (Set.class.isAssignableFrom(type)) {
+                ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
+                if (expectedType == null) {
+                    logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
+                }
+
+                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")),
+                        () -> (((Set<?>) defaultValue).stream().toList()),
                         it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()) || (expectedType.value().isEnum() && Arrays.stream(
                                 expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it))));
             } else if (Enum.class.isAssignableFrom(type)) {
