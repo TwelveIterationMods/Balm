@@ -1,4 +1,2 @@
-- Added support for ItemStack-aware remainders in Fabric
-- Added PlayerConnectedEvent that fires on Fabric's JOIN
-- Moved PlayerLoginEvent on Fabric to the same place it fires on Forge
-- Added support for sets and ResourceLocations in config data
+- Fixed startup failure due to broken config loading in Forge and NeoForge
+- Fixed config saving of ResourceLocation and Set types on Fabric
