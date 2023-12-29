@@ -22,6 +22,10 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
@@ -56,26 +60,23 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                 builder.define(path, (String) defaultValue);
             } else if (ResourceLocation.class.isAssignableFrom(type)) {
                 builder.define(path, ((ResourceLocation) defaultValue).toString());
-            } else if (List.class.isAssignableFrom(type)) {
+            } else if (Collection.class.isAssignableFrom(type)) {
                 ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                 if (expectedType == null) {
                     logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
                 }
 
-                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")),
-                        () -> ((List<?>) defaultValue),
-                        it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()) || (expectedType.value().isEnum() && Arrays.stream(
-                                expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it))));
-            } else if (Set.class.isAssignableFrom(type)) {
-                ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
-                if (expectedType == null) {
-                    logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
+                Supplier<List<?>> defaultSupplier = () -> new ArrayList<>((Collection<?>) defaultValue);
+                Predicate<Object> validator = (Object it) -> expectedType == null || expectedType.value()
+                        .isAssignableFrom(it.getClass()) || (expectedType.value()
+                        .isEnum() && Arrays.stream(
+                        expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it)));
+                if (expectedType != null && ResourceLocation.class.isAssignableFrom(expectedType.value())) {
+                    defaultSupplier = () -> ((Collection<?>) defaultValue).stream().map(it -> ((ResourceLocation) it).toString()).collect(Collectors.toList());
+                    validator = (Object it) -> it instanceof String stringValue && ResourceLocation.tryParse(stringValue) != null;
                 }
 
-                builder.defineListAllowEmpty(Arrays.asList(path.split("\\.")),
-                        () -> (((Set<?>) defaultValue).stream().toList()),
-                        it -> expectedType == null || expectedType.value().isAssignableFrom(it.getClass()) || (expectedType.value().isEnum() && Arrays.stream(
-                                expectedType.value().getEnumConstants()).anyMatch(constant -> constant.toString().equals(it))));
+                builder.defineListAllowEmpty(List.of(path.split("\\.")), defaultSupplier, validator);
             } else if (Enum.class.isAssignableFrom(type)) {
                 builder.defineEnum(path, (Enum) defaultValue);
             } else if (int.class.isAssignableFrom(type)) {
@@ -133,14 +134,21 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                     } else {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
+                } else if (hasValue && ResourceLocation.class.isAssignableFrom(type)) {
+                    field.set(instance, new ResourceLocation(config.getConfigData().get(path)));
                 } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
                     Object raw = config.getConfigData().getRaw(path);
                     if (raw instanceof List<?> list) {
+                        ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
+                        Function<Object, Object> mapper = (it) -> it;
+                        if (expectedType != null && ResourceLocation.class.isAssignableFrom(expectedType.value())) {
+                            mapper = (it) -> new ResourceLocation((String) it);
+                        }
                         try {
                             if (List.class.isAssignableFrom(type)) {
-                                field.set(instance, list);
+                                field.set(instance, list.stream().map(mapper).collect(Collectors.toList()));
                             } else if (Set.class.isAssignableFrom(type)) {
-                                field.set(instance, new HashSet<>(list));
+                                field.set(instance, list.stream().map(mapper).collect(Collectors.toSet()));
                             }
                         } catch (IllegalArgumentException e) {
                             logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + raw.getClass());
@@ -185,10 +193,12 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             String path = parentPath + field.getName();
             Class<?> type = field.getType();
             Object value = field.get(instance);
-            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type) || List.class.isAssignableFrom(type)) {
+            if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type)) {
                 config.getConfigData().set(path, value);
-            } else if(Set.class.isAssignableFrom(type)) {
-                config.getConfigData().set(path, new ArrayList<>((Set<?>) value));
+            } else if (ResourceLocation.class.isAssignableFrom(type)) {
+                config.getConfigData().set(path, ((ResourceLocation) value).toString());
+            } else if(Collection.class.isAssignableFrom(type)) {
+                config.getConfigData().set(path, new ArrayList<>((Collection<?>) value));
             } else {
                 writeConfigValues(path + ".", config, field.get(instance));
             }

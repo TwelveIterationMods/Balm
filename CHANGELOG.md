@@ -1,2 +1,3 @@
+- Fixed startup failure due to broken config loading in Forge and NeoForge again
 - Fixed startup failure due to broken config loading in Forge and NeoForge
 - Fixed config saving of ResourceLocation and Set types on Fabric
