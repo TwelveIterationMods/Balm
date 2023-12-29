@@ -255,6 +255,16 @@ public class ForgeBalmCommonEvents {
                 events.fireEventHandlers(priority, event);
             });
         });
+
+        events.registerEvent(CommandEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.CommandEvent orig) -> {
+                final CommandEvent event = new CommandEvent(orig.getParseResults());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
     }
 
 }

@@ -253,6 +253,16 @@ public class NeoForgeBalmCommonEvents {
                 events.fireEventHandlers(priority, event);
             });
         });
+
+        events.registerEvent(CommandEvent.class, priority -> {
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.CommandEvent orig) -> {
+                final CommandEvent event = new CommandEvent(orig.getParseResults());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
     }
 
 }
