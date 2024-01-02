@@ -37,6 +37,7 @@ public class EnergyStorage {
         int filled = Math.min(capacity - energy, Math.min(this.maxFill, maxFill));
         if (!simulate) {
             energy += filled;
+            setChanged();
         }
         return filled;
     }
@@ -49,6 +50,7 @@ public class EnergyStorage {
         int drained = Math.min(energy, Math.min(this.maxDrain, maxDrain));
         if (!simulate) {
             energy -= drained;
+            setChanged();
         }
         return drained;
     }
@@ -59,6 +61,7 @@ public class EnergyStorage {
 
     public void setEnergy(int energy) {
         this.energy = energy;
+        setChanged();
     }
 
     public int getCapacity() {
@@ -84,5 +87,8 @@ public class EnergyStorage {
 
     public void deserialize(Tag tag) {
         energy = ((IntTag) tag).getAsInt();
+    }
+
+    public void setChanged() {
     }
 }
