@@ -21,7 +21,7 @@ public class NeoForgeBalm {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
         ExampleConfig.initialize();
 
-        NeoForgeBalmWorldGen.initializeBalmBiomeModifiers();
+        NeoForgeBalmWorldGen.initializeBalmBiomeModifiers(modBus);
         modBus.addListener(NeoForgeBalmClient::onInitializeClient);
 
         NeoForgeBalmProviders providers = (NeoForgeBalmProviders) Balm.getProviders();

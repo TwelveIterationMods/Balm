@@ -1,12 +1,14 @@
 package net.blay09.mods.balm.neoforge.client;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.BalmRuntimeLoadContext;
 import net.blay09.mods.balm.api.client.BalmClientRuntime;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
+import net.blay09.mods.balm.neoforge.NeoForgeLoadContext;
 import net.blay09.mods.balm.neoforge.event.NeoForgeBalmEvents;
 import net.blay09.mods.balm.neoforge.client.keymappings.NeoForgeBalmKeyMappings;
 import net.blay09.mods.balm.neoforge.client.rendering.NeoForgeBalmModels;
@@ -14,8 +16,9 @@ import net.blay09.mods.balm.neoforge.client.rendering.NeoForgeBalmRenderers;
 import net.blay09.mods.balm.neoforge.client.rendering.NeoForgeBalmTextures;
 import net.blay09.mods.balm.neoforge.client.screen.NeoForgeBalmScreens;
 import net.blay09.mods.balm.neoforge.event.NeoForgeBalmClientEvents;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class NeoForgeBalmClientRuntime implements BalmClientRuntime {
+public class NeoForgeBalmClientRuntime implements BalmClientRuntime<NeoForgeLoadContext> {
 
     private final BalmRenderers renderers = new NeoForgeBalmRenderers();
     private final BalmTextures textures = new NeoForgeBalmTextures();
@@ -54,10 +57,15 @@ public class NeoForgeBalmClientRuntime implements BalmClientRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
-        ((NeoForgeBalmRenderers) renderers).register();
-        ((NeoForgeBalmScreens) screens).register();
-        ((NeoForgeBalmModels) models).register();
-        ((NeoForgeBalmKeyMappings) keyMappings).register();
+        initialize(modId, new NeoForgeLoadContext(FMLJavaModLoadingContext.get().getModEventBus()), initializer);
+    }
+
+    @Override
+    public void initialize(String modId, NeoForgeLoadContext context, Runnable initializer) {
+        ((NeoForgeBalmRenderers) renderers).register(modId, context.modBus());
+        ((NeoForgeBalmScreens) screens).register(modId, context.modBus());
+        ((NeoForgeBalmModels) models).register(modId, context.modBus());
+        ((NeoForgeBalmKeyMappings) keyMappings).register(modId, context.modBus());
 
         initializer.run();
     }

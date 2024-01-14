@@ -27,13 +27,19 @@ public class Balm {
     private static final BalmRuntime runtime = BalmRuntimeSpi.create();
     private static final SidedProxy<BalmProxy> proxy = sidedProxy("net.blay09.mods.balm.api.BalmProxy", "net.blay09.mods.balm.api.client.BalmClientProxy");
 
+    @Deprecated
     public static void initialize(String modId) {
         runtime.initialize(modId, () -> {
         });
     }
 
+    @Deprecated
     public static void initialize(String modId, Runnable initializer) {
         runtime.initialize(modId, initializer);
+    }
+
+    public static void initialize(String modId, BalmRuntimeLoadContext context, Runnable initializer) {
+        runtime.initialize(modId, context, initializer);
     }
 
     public static boolean isModLoaded(String modId) {

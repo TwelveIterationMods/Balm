@@ -14,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -75,11 +74,6 @@ public class NeoForgeBalmItems implements BalmItems {
     @Override
     public void addToCreativeModeTab(ResourceLocation tabIdentifier, Supplier<ItemLike[]> itemsSupplier) {
         getActiveRegistrations().creativeTabContents.put(tabIdentifier, itemsSupplier);
-    }
-
-    public void register() {
-        // No longer needed since we have no SubscribeEvents
-        // FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
     }
 
     private Registrations getActiveRegistrations() {

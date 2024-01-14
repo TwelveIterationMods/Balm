@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
@@ -67,9 +68,9 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
         }
     }
 
-    public static void initializeBalmBiomeModifiers() {
+    public static void initializeBalmBiomeModifiers(IEventBus modBus) {
         var registry = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
         registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
-        registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        registry.register(modBus);
     }
 }

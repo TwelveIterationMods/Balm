@@ -173,15 +173,16 @@ public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     }
 
     @Override
+    @Deprecated
     public void initialize(String modId, Runnable initializer) {
         initialize(modId, new NeoForgeLoadContext(FMLJavaModLoadingContext.get().getModEventBus()), initializer);
     }
 
     @Override
     public void initialize(String modId, NeoForgeLoadContext context, Runnable initializer) {
-        ((NeoForgeBalmItems) items).register();
-        ((NeoForgeBalmEntities) entities).register();
-        ((NeoForgeBalmStats) stats).register();
+        ((NeoForgeBalmNetworking) networking).register(modId, context.modBus());
+        ((NeoForgeBalmEntities) entities).register(modId, context.modBus());
+        ((NeoForgeBalmStats) stats).register(modId, context.modBus());
 
         initializer.run();
 
