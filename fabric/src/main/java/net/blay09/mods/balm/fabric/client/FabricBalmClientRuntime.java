@@ -1,6 +1,8 @@
 package net.blay09.mods.balm.fabric.client;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.BalmRuntimeLoadContext;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClientRuntime;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
@@ -19,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class FabricBalmClientRuntime implements BalmClientRuntime {
+public class FabricBalmClientRuntime implements BalmClientRuntime<EmptyLoadContext> {
 
     private static final Logger logger = LoggerFactory.getLogger(FabricBalmClientRuntime.class);
 
@@ -60,6 +62,11 @@ public class FabricBalmClientRuntime implements BalmClientRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
+        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
+    }
+
+    @Override
+    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
         initializer.run();
     }
 

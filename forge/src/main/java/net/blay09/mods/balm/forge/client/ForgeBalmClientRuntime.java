@@ -1,6 +1,8 @@
 package net.blay09.mods.balm.forge.client;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.BalmRuntimeLoadContext;
+import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClientRuntime;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
@@ -15,7 +17,7 @@ import net.blay09.mods.balm.forge.client.rendering.ForgeBalmTextures;
 import net.blay09.mods.balm.forge.client.screen.ForgeBalmScreens;
 import net.blay09.mods.balm.forge.event.ForgeBalmClientEvents;
 
-public class ForgeBalmClientRuntime implements BalmClientRuntime {
+public class ForgeBalmClientRuntime implements BalmClientRuntime<EmptyLoadContext> {
 
     private final BalmRenderers renderers = new ForgeBalmRenderers();
     private final BalmTextures textures = new ForgeBalmTextures();
@@ -54,6 +56,11 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime {
 
     @Override
     public void initialize(String modId, Runnable initializer) {
+        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
+    }
+
+    @Override
+    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
         ((ForgeBalmRenderers) renderers).register();
         ((ForgeBalmScreens) screens).register();
         ((ForgeBalmModels) models).register();
