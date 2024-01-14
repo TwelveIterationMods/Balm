@@ -76,13 +76,13 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
                     final var message = messageRegistration.getDecodeFunc().apply(buf);
                     return new WrappedPacket(messageId, message, (BiConsumer<Object, FriendlyByteBuf>) messageRegistration.getEncodeFunc());
                 }, it -> {
-                    if (entry instanceof ServerboundMessageRegistration<?> serverboundMessageRegistration) {
+                    if (messageRegistration instanceof ServerboundMessageRegistration<?> serverboundMessageRegistration) {
                         it.server((payload, context) -> context.workHandler().execute(() -> {
                             replyHandler = context.replyHandler();
                             handleServerboundPacket(serverboundMessageRegistration, payload, context);
                             replyHandler = null;
                         }));
-                    } else if (entry instanceof ClientboundMessageRegistration<?> clientboundMessageRegistration) {
+                    } else if (messageRegistration instanceof ClientboundMessageRegistration<?> clientboundMessageRegistration) {
                         it.client(((payload, context) -> context.workHandler().execute(() -> {
                             replyHandler = context.replyHandler();
                             handleClientboundPacket(clientboundMessageRegistration, payload, context);
