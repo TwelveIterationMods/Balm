@@ -1,4 +1,1 @@
-- Fixed world load failure due to broken mixin in Fabric
-- Fixed startup failure due to broken config loading in Forge and NeoForge again
-- Fixed startup failure due to broken config loading in Forge and NeoForge
-- Fixed config saving of ResourceLocation and Set types on Fabric
+- Updated to new Networking API on NeoForge
