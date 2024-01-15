@@ -212,19 +212,10 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
         registrations.messagesByIdentifier.put(identifier, messageRegistration);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void sendPacket(PacketDistributor.PacketTarget target, T message) {
         MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-        target.send(new CustomPacketPayload() {
-            @Override
-            public void write(FriendlyByteBuf buf) {
-                messageRegistration.getEncodeFunc().accept(message, buf);
-            }
-
-            @Override
-            public ResourceLocation id() {
-                return messageRegistration.getIdentifier();
-            }
-        });
+        target.send(new WrappedPacket(messageRegistration.getIdentifier(), message, (BiConsumer<Object, FriendlyByteBuf>) messageRegistration.getEncodeFunc()));
     }
 
     public void register(String modId, IEventBus eventBus) {
