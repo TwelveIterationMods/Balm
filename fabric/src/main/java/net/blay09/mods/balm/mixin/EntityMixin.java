@@ -28,7 +28,9 @@ public class EntityMixin implements BalmEntity {
 
     @Inject(method = "saveWithoutId(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("HEAD"))
     private void saveWithoutId(CompoundTag compound, CallbackInfoReturnable<CompoundTag> callbackInfo) {
-        compound.put("BalmData", balmData);
+        if (!balmData.isEmpty()) {
+            compound.put("BalmData", balmData);
+        }
     }
 
     @Override
