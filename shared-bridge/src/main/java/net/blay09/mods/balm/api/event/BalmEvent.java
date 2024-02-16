@@ -1,6 +1,6 @@
 package net.blay09.mods.balm.api.event;
 
-public class BalmEvent {
+public abstract class BalmEvent {
     private boolean canceled;
 
     public boolean isCanceled() {
