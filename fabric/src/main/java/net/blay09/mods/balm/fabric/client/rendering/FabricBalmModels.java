@@ -1,10 +1,10 @@
 package net.blay09.mods.balm.fabric.client.rendering;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.client.renderer.RenderType;
@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -26,38 +25,37 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FabricBalmModels implements BalmModels {
-
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
 
     private static abstract class DeferredModel extends DeferredObject<BakedModel> {
         public DeferredModel(ResourceLocation identifier) {
             super(identifier);
         }
 
-        public void resolveAndSet(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
-            try {
-                set(resolve(modelBakery, spriteBiFunction));
-            } catch (Exception exception) {
-                LOGGER.warn("Unable to bake model: '{}':", getIdentifier(), exception);
-                set(modelBakery.getBakedTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION));
-            }
-        }
-
         public abstract BakedModel resolve(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction);
+
+        @Override
+        public void set(BakedModel object) {
+            super.set(object);
+        }
     }
 
-
+    private final List<ResourceLocation> additionalModels = Collections.synchronizedList(new ArrayList<>());
     private final List<DeferredModel> modelsToBake = Collections.synchronizedList(new ArrayList<>());
     public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = Collections.synchronizedList(new ArrayList<>());
     private ModelBakery modelBakery;
+
+    @Override
+    public void onInitializeModelLoader(Context context) {
+        context.addModels(additionalModels);
+    }
 
     public void onBakeModels(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
         this.modelBakery = modelBakery;
 
         synchronized (modelsToBake) {
             for (DeferredModel model : modelsToBake) {
-                model.resolveAndSet(modelBakery, spriteBiFunction);
+                model.set(model.resolve(modelBakery, spriteBiFunction));
             }
         }
 
@@ -78,13 +76,10 @@ public class FabricBalmModels implements BalmModels {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
-                UnbakedModel model = bakery.getModel(identifier);
-                ModelBaker baker = createBaker(identifier, spriteBiFunction);
-                Function<Material, TextureAtlasSprite> modelTextureGetter = createModelTextureGetter(identifier, spriteBiFunction);
-                return model.bake(baker, modelTextureGetter, getModelState(Transformation.identity()), identifier);
+                return modelBakery.getBakedTopLevelModels().get(identifier);
             }
         };
-        modelsToBake.add(deferredModel);
+        additionalModels.add(identifier);
         return deferredModel;
     }
 
