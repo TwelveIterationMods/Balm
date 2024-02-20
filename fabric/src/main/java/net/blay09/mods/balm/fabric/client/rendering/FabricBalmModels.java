@@ -78,6 +78,11 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
             public BakedModel resolve(ModelBakery bakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
                 return modelBakery.getBakedTopLevelModels().get(identifier);
             }
+
+            @Override
+            public boolean canResolve() {
+                return modelBakery.getBakedTopLevelModels().containsKey(identifier);
+            }
         };
         additionalModels.add(identifier);
         return deferredModel;

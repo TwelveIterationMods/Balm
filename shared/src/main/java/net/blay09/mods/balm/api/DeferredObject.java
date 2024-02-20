@@ -28,6 +28,10 @@ public class DeferredObject<T> {
         this.object = object;
     }
 
+    public boolean canResolve() {
+        return canResolveFunc.get();
+    }
+
     public T resolve() {
         if (object == null) {
             object = supplier.get();
@@ -37,7 +41,7 @@ public class DeferredObject<T> {
 
     public T get() {
         if (object == null) {
-            if (canResolveFunc.get()) {
+            if (canResolve()) {
                 return resolve();
             }
 
