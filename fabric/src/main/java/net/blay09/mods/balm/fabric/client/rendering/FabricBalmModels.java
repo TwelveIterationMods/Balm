@@ -75,7 +75,12 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
     public DeferredObject<BakedModel> loadModel(final ResourceLocation identifier) {
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
-            public BakedModel resolve(ModelBakery bakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
+            public BakedModel resolve(ModelBakery modelBakery, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
+                return resolve();
+            }
+
+            @Override
+            public BakedModel resolve() {
                 return modelBakery.getBakedTopLevelModels().get(identifier);
             }
 
