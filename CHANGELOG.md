@@ -1,1 +1,2 @@
-- Updated to new Networking API on NeoForge
+- Fixed some models on Fabric not being loaded correctly
+- Fixed BalmData being persisted even if it's empty
