@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -314,6 +315,26 @@ public class ForgeBalmCommonEvents {
         {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.CommandEvent orig) -> {
                 final CommandEvent event = new CommandEvent(orig.getParseResults());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(LivingDeathEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingDeathEvent orig) -> {
+                final LivingDeathEvent event = new LivingDeathEvent(orig.getEntity(), orig.getSource());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(EntityAddedEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (EntityJoinLevelEvent orig) -> {
+                final EntityAddedEvent event = new EntityAddedEvent(orig.getEntity(), orig.getLevel());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);

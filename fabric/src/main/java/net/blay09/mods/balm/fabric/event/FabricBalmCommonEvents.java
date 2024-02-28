@@ -4,7 +4,9 @@ package net.blay09.mods.balm.fabric.event;
 import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -158,6 +160,18 @@ public class FabricBalmCommonEvents {
         events.registerEvent(PlayerRespawnEvent.class, () -> ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             final PlayerRespawnEvent event = new PlayerRespawnEvent(oldPlayer, newPlayer);
             events.fireEventHandlers(event);
+        }));
+
+        events.registerEvent(EntityAddedEvent.class, () -> ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
+            final var event = new LivingDeathEvent(entity, damageSource);
+            events.fireEventHandlers(event);
+            return !event.isCanceled();
+        }));
+
+        events.registerEvent(EntityAddedEvent.class, () -> ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+            final EntityAddedEvent event = new EntityAddedEvent(entity, level);
+            events.fireEventHandlers(event);
+            // TODO cannot cancel on fabric
         }));
     }
 }

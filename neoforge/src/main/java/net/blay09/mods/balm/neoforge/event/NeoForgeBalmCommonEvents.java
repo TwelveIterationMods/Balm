@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -270,6 +271,26 @@ public class NeoForgeBalmCommonEvents {
         events.registerEvent(CommandEvent.class, priority -> {
             NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.CommandEvent orig) -> {
                 final CommandEvent event = new CommandEvent(orig.getParseResults());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(LivingDeathEvent.class, priority -> {
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.entity.living.LivingDeathEvent orig) -> {
+                final LivingDeathEvent event = new LivingDeathEvent(orig.getEntity(), orig.getSource());
+                events.fireEventHandlers(priority, event);
+                if (event.isCanceled()) {
+                    orig.setCanceled(true);
+                }
+            });
+        });
+
+        events.registerEvent(EntityAddedEvent.class, priority -> {
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (EntityJoinLevelEvent orig) -> {
+                final EntityAddedEvent event = new EntityAddedEvent(orig.getEntity(), orig.getLevel());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
                     orig.setCanceled(true);
