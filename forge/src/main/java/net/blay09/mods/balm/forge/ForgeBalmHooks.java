@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.FakePlayer;
@@ -117,8 +116,8 @@ public class ForgeBalmHooks implements BalmHooks {
     }
 
     @Override
-    public void setBurnTime(ItemStack itemStack, int burnTime) {
-        burnTimes.put(itemStack.getItem(), burnTime);
+    public void setBurnTime(Item item, int burnTime) {
+        burnTimes.put(item, burnTime);
     }
 
     @Override
