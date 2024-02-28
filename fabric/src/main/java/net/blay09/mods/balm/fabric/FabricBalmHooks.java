@@ -105,6 +105,11 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
+    public void setBurnTime(ItemStack itemStack, int burnTime) {
+        FuelRegistry.INSTANCE.add(itemStack.getItem(), burnTime);
+    }
+
+    @Override
     public void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix) {
     }
 

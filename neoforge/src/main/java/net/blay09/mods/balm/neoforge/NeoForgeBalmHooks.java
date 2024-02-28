@@ -13,10 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BoneMealItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,13 +21,32 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class NeoForgeBalmHooks implements BalmHooks {
+
+    public final Map<Item, Integer> burnTimes = new HashMap<>();
+
+    public NeoForgeBalmHooks() {
+        NeoForge.EVENT_BUS.addListener(this::furnaceFuelBurnTime);
+    }
+
+    private void furnaceFuelBurnTime(FurnaceFuelBurnTimeEvent event) {
+        final var found = burnTimes.get(event.getItemStack().getItem());
+        if (found != null) {
+            event.setBurnTime(found);
+        }
+    }
+
     @Override
     public boolean blockGrowFeature(Level level, RandomSource random, BlockPos pos, @Nullable Holder<ConfiguredFeature<?, ?>> holder) {
         return !EventHooks.fireBlockGrowFeature(level, random, pos, holder).isCanceled();
@@ -98,6 +114,11 @@ public class NeoForgeBalmHooks implements BalmHooks {
     @Override
     public int getBurnTime(ItemStack itemStack) {
         return itemStack.getBurnTime(RecipeType.SMELTING);
+    }
+
+    @Override
+    public void setBurnTime(ItemStack itemStack, int burnTime) {
+        burnTimes.put(itemStack.getItem(), burnTime);
     }
 
     @Override

@@ -56,6 +56,8 @@ public interface BalmHooks {
 
     int getBurnTime(ItemStack itemStack);
 
+    void setBurnTime(ItemStack itemStack, int burnTime);
+
     void firePlayerCraftingEvent(Player player, ItemStack crafted, Container craftMatrix);
 
     boolean useFluidTank(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult);
