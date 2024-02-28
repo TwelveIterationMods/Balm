@@ -76,6 +76,10 @@ public class FluidTank {
         return amount;
     }
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public int getCapacity() {
         return capacity;
     }
@@ -86,6 +90,10 @@ public class FluidTank {
 
     public boolean canFill(Fluid fluid) {
         return (this.fluid.isSame(fluid) || this.fluid.isSame(Fluids.EMPTY)) && maxFill > 0;
+    }
+
+    public boolean isEmpty() {
+        return amount <= 0 || fluid.isSame(Fluids.EMPTY);
     }
 
     public CompoundTag serialize() {
