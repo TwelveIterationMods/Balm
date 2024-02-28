@@ -105,8 +105,8 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
-    public void setBurnTime(ItemStack itemStack, int burnTime) {
-        FuelRegistry.INSTANCE.add(itemStack.getItem(), burnTime);
+    public void setBurnTime(Item item, int burnTime) {
+        FuelRegistry.INSTANCE.add(item, burnTime);
     }
 
     @Override

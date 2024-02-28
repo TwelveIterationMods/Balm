@@ -117,8 +117,8 @@ public class NeoForgeBalmHooks implements BalmHooks {
     }
 
     @Override
-    public void setBurnTime(ItemStack itemStack, int burnTime) {
-        burnTimes.put(itemStack.getItem(), burnTime);
+    public void setBurnTime(Item item, int burnTime) {
+        burnTimes.put(item, burnTime);
     }
 
     @Override
