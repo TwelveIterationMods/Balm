@@ -114,6 +114,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                         field.set(instance, doubleValue.floatValue());
                     } else if (value instanceof Float floatValue) {
                         field.set(instance, floatValue);
+                    } else if (value instanceof Integer integerValue) {
+                        field.set(instance, integerValue.floatValue());
                     } else {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
@@ -123,6 +125,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                         field.set(instance, doubleValue);
                     } else if (value instanceof Float floatValue) {
                         field.set(instance, floatValue.doubleValue());
+                    } else if (value instanceof Integer integerValue) {
+                        field.set(instance, integerValue.doubleValue());
                     } else {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
