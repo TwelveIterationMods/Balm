@@ -10,17 +10,21 @@ import net.minecraft.world.phys.HitResult;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
     @Shadow
     public HitResult hitResult;
+
+    @Unique
+    private static final ThreadLocal<UseItemInputEvent> balmCurrentUseEvent = new ThreadLocal<>();
 
     @ModifyVariable(method = "setScreen(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", opcode = Opcodes.GETFIELD, shift = At.Shift.AFTER), argsOnly = true)
     public Screen modifyScreen(Screen screen) {
@@ -29,15 +33,24 @@ public class MinecraftMixin {
         return event.getNewScreen() != null ? event.getNewScreen() : screen;
     }
 
-    @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void startUseItem(CallbackInfo callbackInfo, InteractionHand[] hands, int var2, int var3, InteractionHand hand) {
+    @Inject(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
+    public void startUseItem(CallbackInfo callbackInfo) {
+        final var event = balmCurrentUseEvent.get();
+        if (event != null && event.isCanceled()) {
+            callbackInfo.cancel();
+        }
+    }
+
+    @ModifyArg(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), index = 0)
+    public InteractionHand modifyHand(InteractionHand hand) {
         if (this.hitResult != null && this.hitResult.getType() != HitResult.Type.MISS) {
             UseItemInputEvent event = new UseItemInputEvent(hand);
             Balm.getEvents().fireEvent(event);
-            if (event.isCanceled()) {
-                callbackInfo.cancel();
-            }
+            balmCurrentUseEvent.set(event);
+        } else {
+            balmCurrentUseEvent.remove();
         }
+        return hand;
     }
 
 }
