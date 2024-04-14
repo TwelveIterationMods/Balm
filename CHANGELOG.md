@@ -1,2 +1,3 @@
-- Fixed some models on Fabric not being loaded correctly
-- Fixed BalmData being persisted even if it's empty
+- Fixed potential compatibility crash with certain other mods installed
+- Fixed syncing of certain config options not working correctly
+- Fixed float config options not accepting integer values correctly
