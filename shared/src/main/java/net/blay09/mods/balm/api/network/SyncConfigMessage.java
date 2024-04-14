@@ -2,14 +2,13 @@ package net.blay09.mods.balm.api.network;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.BalmConfigData;
+import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.config.Synced;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -49,29 +48,51 @@ public class SyncConfigMessage<TData> {
             Class<?> type = field.getType();
             Object value;
             try {
-                if (String.class.isAssignableFrom(type)) {
-                    value = buf.readUtf();
-                } else if (Enum.class.isAssignableFrom(type)) {
-                    value = type.getEnumConstants()[buf.readByte()];
-                } else if (int.class.isAssignableFrom(type)) {
-                    value = buf.readInt();
-                } else if (float.class.isAssignableFrom(type)) {
-                    value = buf.readFloat();
-                } else if (double.class.isAssignableFrom(type)) {
-                    value = buf.readDouble();
-                } else if (boolean.class.isAssignableFrom(type)) {
-                    value = buf.readBoolean();
-                } else if (long.class.isAssignableFrom(type)) {
-                    value = buf.readLong();
-                } else {
-                    value = field.get(data);
-                    readSyncedFields(buf, value, field.getAnnotation(Synced.class) != null);
-                }
+                value = readValue(buf, data, field, type);
                 field.set(data, value);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(e);
             }
         }
+    }
+
+    private static <TData> Object readValue(FriendlyByteBuf buf, TData data, Field field, Class<?> type) throws IllegalAccessException {
+        Object value;
+        if (String.class.isAssignableFrom(type)) {
+            value = buf.readUtf();
+        } else if (ResourceLocation.class.isAssignableFrom(type)) {
+            value = buf.readResourceLocation();
+        } else if (Enum.class.isAssignableFrom(type)) {
+            value = type.getEnumConstants()[buf.readByte()];
+        } else if (int.class.isAssignableFrom(type)) {
+            value = buf.readInt();
+        } else if (float.class.isAssignableFrom(type)) {
+            value = buf.readFloat();
+        } else if (double.class.isAssignableFrom(type)) {
+            value = buf.readDouble();
+        } else if (boolean.class.isAssignableFrom(type)) {
+            value = buf.readBoolean();
+        } else if (long.class.isAssignableFrom(type)) {
+            value = buf.readLong();
+        } else if (List.class.isAssignableFrom(type)) {
+            final var count = buf.readVarInt();
+            final var list = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                list.add(readValue(buf, data, field, field.getAnnotation(ExpectedType.class).value()));
+            }
+            value = list;
+        } else if (Set.class.isAssignableFrom(type)) {
+            final var count = buf.readVarInt();
+            final var set = new HashSet<>();
+            for (int i = 0; i < count; i++) {
+                set.add(readValue(buf, data, field, field.getAnnotation(ExpectedType.class).value()));
+            }
+            value = set;
+        } else {
+            value = field.get(data);
+            readSyncedFields(buf, value, field.getAnnotation(Synced.class) != null);
+        }
+        return value;
     }
 
     public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<TMessage, FriendlyByteBuf> createEncoder(Class<TData> clazz) {
@@ -89,26 +110,44 @@ public class SyncConfigMessage<TData> {
             final Object value;
             try {
                 value = field.get(data);
-                if (String.class.isAssignableFrom(type)) {
-                    buf.writeUtf((String) value);
-                } else if (Enum.class.isAssignableFrom(type)) {
-                    buf.writeByte(((Enum<?>) value).ordinal());
-                } else if (int.class.isAssignableFrom(type)) {
-                    buf.writeInt((int) value);
-                } else if (float.class.isAssignableFrom(type)) {
-                    buf.writeFloat((float) value);
-                } else if (double.class.isAssignableFrom(type)) {
-                    buf.writeDouble((double) value);
-                } else if (boolean.class.isAssignableFrom(type)) {
-                    buf.writeBoolean((boolean) value);
-                } else if (long.class.isAssignableFrom(type)) {
-                    buf.writeLong((long) value);
-                } else {
-                    writeSyncedFields(buf, field.get(data), field.getAnnotation(Synced.class) != null);
-                }
+                writeValue(buf, data, field, type, value);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(e);
             }
+        }
+    }
+
+    private static <TData> void writeValue(FriendlyByteBuf buf, TData data, Field field, Class<?> type, Object value) throws IllegalAccessException {
+        if (String.class.isAssignableFrom(type)) {
+            buf.writeUtf((String) value);
+        } else if (ResourceLocation.class.isAssignableFrom(type)) {
+            buf.writeResourceLocation((ResourceLocation) value);
+        } else if (Enum.class.isAssignableFrom(type)) {
+            buf.writeByte(((Enum<?>) value).ordinal());
+        } else if (int.class.isAssignableFrom(type)) {
+            buf.writeInt((int) value);
+        } else if (float.class.isAssignableFrom(type)) {
+            buf.writeFloat((float) value);
+        } else if (double.class.isAssignableFrom(type)) {
+            buf.writeDouble((double) value);
+        } else if (boolean.class.isAssignableFrom(type)) {
+            buf.writeBoolean((boolean) value);
+        } else if (long.class.isAssignableFrom(type)) {
+            buf.writeLong((long) value);
+        } else if (List.class.isAssignableFrom(type)) {
+            final var list = (List<?>) value;
+            buf.writeVarInt(list.size());
+            for (Object element : list) {
+                writeValue(buf, data, field, field.getAnnotation(ExpectedType.class).value(), element);
+            }
+        } else if (Set.class.isAssignableFrom(type)) {
+            final var set = (Set<?>) value;
+            buf.writeVarInt(set.size());
+            for (Object element : set) {
+                writeValue(buf, data, field, field.getAnnotation(ExpectedType.class).value(), element);
+            }
+        } else {
+            writeSyncedFields(buf, field.get(data), field.getAnnotation(Synced.class) != null);
         }
     }
 

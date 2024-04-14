@@ -1,9 +1,6 @@
 package net.blay09.mods.balm.config;
 
-import net.blay09.mods.balm.api.config.BalmConfigData;
-import net.blay09.mods.balm.api.config.Comment;
-import net.blay09.mods.balm.api.config.Config;
-import net.blay09.mods.balm.api.config.ExpectedType;
+import net.blay09.mods.balm.api.config.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
@@ -24,8 +21,10 @@ public class ExampleConfigData implements BalmConfigData {
     public String exampleString = "Hello World";
     public String exampleMultilineString = "Hello World";
     public ExampleEnum exampleEnum = ExampleEnum.Hello;
+    @Synced
     @ExpectedType(String.class)
     public List<String> exampleStringList = Arrays.asList("Hello", "World");
+    @Synced
     @ExpectedType(ResourceLocation.class)
     public Set<ResourceLocation> exampleResourceLocationSet = Set.of(new ResourceLocation("dirt"), new ResourceLocation("diamond"));
     @ExpectedType(Integer.class)
