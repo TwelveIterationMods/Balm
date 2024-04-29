@@ -145,6 +145,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                         Function<Object, Object> mapper = (it) -> it;
                         if (expectedType != null && ResourceLocation.class.isAssignableFrom(expectedType.value())) {
                             mapper = (it) -> new ResourceLocation((String) it);
+                        } else if (expectedType != null && Enum.class.isAssignableFrom(expectedType.value())) {
+                            mapper = (it) -> parseEnumValue(expectedType.value(), (String) it);
                         }
                         try {
                             if (List.class.isAssignableFrom(type)) {
@@ -179,6 +181,16 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                 logger.error("Unexpected error loading config value for " + path + ", falling back to default", e);
             }
         }
+    }
+
+    private static Object parseEnumValue(Class<?> type, String value) {
+        for (Object enumConstant : type.getEnumConstants()) {
+            if (enumConstant.toString().equalsIgnoreCase(value)) {
+                return enumConstant;
+            }
+        }
+
+        return null;
     }
 
     private <T extends BalmConfigData> void writeConfigValues(ModConfig config, T configData) {
