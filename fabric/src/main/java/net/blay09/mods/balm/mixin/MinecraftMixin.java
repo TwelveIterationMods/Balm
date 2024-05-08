@@ -39,6 +39,7 @@ public class MinecraftMixin {
         if (event != null && event.isCanceled()) {
             callbackInfo.cancel();
         }
+        balmCurrentUseEvent.remove();
     }
 
     @ModifyArg(method = "startUseItem()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), index = 0)
