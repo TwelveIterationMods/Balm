@@ -8,6 +8,7 @@ import net.blay09.mods.balm.api.network.MessageRegistration;
 import net.blay09.mods.balm.api.network.ServerboundMessageRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -31,8 +32,8 @@ public class ForgeBalmNetworking implements BalmNetworking {
 
     private static final Logger logger = LoggerFactory.getLogger(ForgeBalmNetworking.class);
 
-    private static final Map<Class<?>, MessageRegistration<?>> messagesByClass = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, MessageRegistration<RegistryFriendlyByteBuf, ?>> messagesByClass = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, MessageRegistration<RegistryFriendlyByteBuf, ?>> messagesByIdentifier = new ConcurrentHashMap<>();
     private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
     private static CustomPayloadEvent.Context replyContext;
@@ -51,7 +52,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer serverPlayer) {
             if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
-                serverPlayer.openMenu(menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
+                // TODO serverPlayer.openMenu(menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
             } else {
                 serverPlayer.openMenu(menuProvider);
             }
@@ -59,76 +60,65 @@ public class ForgeBalmNetworking implements BalmNetworking {
     }
 
     @Override
-    public <T> void reply(T message) {
+    public <T extends CustomPacketPayload> void reply(T message) {
         if (replyContext == null) {
             throw new IllegalStateException("No context to reply to");
         }
 
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.reply(message, replyContext);
     }
 
     @Override
-    public <T> void sendTo(Player player, T message) {
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+    public <T extends CustomPacketPayload> void sendTo(Player player, T message) {
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.send(message, PacketDistributor.PLAYER.with((ServerPlayer) player));
     }
 
     @Override
-    public <T> void sendToTracking(ServerLevel world, BlockPos pos, T message) {
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+    public <T extends CustomPacketPayload> void sendToTracking(ServerLevel world, BlockPos pos, T message) {
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.send(message, PacketDistributor.TRACKING_CHUNK.with(world.getChunkAt(pos)));
     }
 
     @Override
-    public <T> void sendToTracking(Entity entity, T message) {
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+    public <T extends CustomPacketPayload> void sendToTracking(Entity entity, T message) {
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.send(message, PacketDistributor.TRACKING_ENTITY.with(entity));
     }
 
     @Override
-    public <T> void sendToAll(MinecraftServer server, T message) {
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+    public <T extends CustomPacketPayload> void sendToAll(MinecraftServer server, T message) {
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.send(message, PacketDistributor.ALL.noArg());
     }
 
     @Override
-    public <T> void sendToServer(T message) {
+    public <T extends CustomPacketPayload> void sendToServer(T message) {
         if (!Balm.getProxy().isConnectedToServer()) {
             logger.debug("Skipping message {} because we're not connected to a server", message);
             return;
         }
 
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        final var messageRegistration = getMessageRegistrationOrThrow(message);
+        final var type = messageRegistration.getType();
+        final var channel = NetworkChannels.get(type.id().getNamespace());
         channel.send(message, PacketDistributor.SERVER.noArg());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> MessageRegistration<T> getMessageRegistrationOrThrow(T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
+    private <T extends CustomPacketPayload> MessageRegistration<RegistryFriendlyByteBuf, T> getMessageRegistrationOrThrow(T message) {
+        final var messageRegistration = (MessageRegistration<RegistryFriendlyByteBuf, T>) messagesByClass.get(message.getClass());
         if (messageRegistration == null) {
             throw new IllegalArgumentException("Cannot send message " + message.getClass() + " as it is not registered");
         }
@@ -136,8 +126,9 @@ public class ForgeBalmNetworking implements BalmNetworking {
     }
 
     @Override
-    public <T> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, RegistryFriendlyByteBuf> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
-        ClientboundMessageRegistration<T> messageRegistration = new ClientboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
+    public <T extends CustomPacketPayload> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
+        final var type = new CustomPacketPayload.Type<T>(identifier);
+        final var messageRegistration = new ClientboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
         messagesByIdentifier.put(identifier, messageRegistration);
@@ -145,22 +136,23 @@ public class ForgeBalmNetworking implements BalmNetworking {
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(decodeFunc)
-                .encoder(encodeFunc)
+                .encoder((payload, buffer) -> encodeFunc.accept(buffer, payload))
                 .consumerMainThread((packet, context) -> handler.accept(Balm.getProxy().getClientPlayer(), packet))
                 .add();
     }
 
     @Override
-    public <T> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, RegistryFriendlyByteBuf> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
-        MessageRegistration<T> messageRegistration = new ServerboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
+    public <T extends CustomPacketPayload> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
+        final var type = new CustomPacketPayload.Type<T>(identifier);
+        final var messageRegistration = new ServerboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
         messagesByIdentifier.put(identifier, messageRegistration);
 
-        SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
+        final var channel = NetworkChannels.get(identifier.getNamespace());
         channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(decodeFunc)
-                .encoder(encodeFunc)
+                .encoder((payload, buffer) -> encodeFunc.accept(buffer, payload))
                 .consumerMainThread((packet, context) -> {
                     replyContext = context;
                     handler.accept(context.getSender(), packet);
