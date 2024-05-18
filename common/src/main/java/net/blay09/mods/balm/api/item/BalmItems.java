@@ -21,10 +21,5 @@ public interface BalmItems {
 
     DeferredObject<CreativeModeTab> registerCreativeModeTab(Supplier<ItemStack> iconSupplier, ResourceLocation identifier);
 
-    @Deprecated
-    default DeferredObject<CreativeModeTab> registerCreativeModeTab(ResourceLocation identifier, Supplier<ItemStack> iconSupplier) {
-        return registerCreativeModeTab(iconSupplier, identifier);
-    }
-
     void addToCreativeModeTab(ResourceLocation tabIdentifier, Supplier<ItemLike[]> itemsSupplier);
 }

@@ -5,7 +5,7 @@ import net.blay09.mods.balm.api.client.BalmClientRuntimeFactory;
 
 public class NeoForgeBalmClientRuntimeFactory implements BalmClientRuntimeFactory {
     @Override
-    public BalmClientRuntime create() {
+    public BalmClientRuntime<?> create() {
         return new NeoForgeBalmClientRuntime();
     }
 }

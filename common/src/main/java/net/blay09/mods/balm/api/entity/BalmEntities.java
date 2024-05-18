@@ -13,9 +13,4 @@ public interface BalmEntities {
     <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder);
 
     <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder);
-
-    @Deprecated
-    default <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, AttributeSupplier.Builder attributeBuilder) {
-        return registerEntity(identifier, typeBuilder, () -> attributeBuilder);
-    }
 }

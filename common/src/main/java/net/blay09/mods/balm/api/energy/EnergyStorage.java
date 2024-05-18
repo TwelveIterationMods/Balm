@@ -80,11 +80,6 @@ public class EnergyStorage {
         return IntTag.valueOf(energy);
     }
 
-    @Deprecated
-    public void deserialize(IntTag tag) {
-        energy = tag.getAsInt();
-    }
-
     public void deserialize(Tag tag) {
         energy = ((IntTag) tag).getAsInt();
     }

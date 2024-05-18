@@ -83,11 +83,7 @@ public class SubContainer implements Container, ExtractionAwareContainer {
         container.setChanged();
     }
 
-    /**
-     * Will be made private. Use containsOuterSlot with an absolute slot number instead because this method probably never did what you thought it did.
-     */
-    @Deprecated(since = "1.20")
-    public boolean containsSlot(int slot) {
+    private boolean containsSlot(int slot) {
         return slot + minSlot < maxSlot;
     }
 

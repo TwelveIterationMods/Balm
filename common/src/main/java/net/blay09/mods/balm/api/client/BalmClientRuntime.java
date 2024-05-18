@@ -7,7 +7,7 @@ import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
 
-public interface BalmClientRuntime<T extends BalmRuntimeLoadContext> {
+public interface BalmClientRuntime<TLoadContext extends BalmRuntimeLoadContext> {
     BalmRenderers getRenderers();
 
     BalmTextures getTextures();
@@ -18,8 +18,5 @@ public interface BalmClientRuntime<T extends BalmRuntimeLoadContext> {
 
     BalmKeyMappings getKeyMappings();
 
-    @Deprecated
-    void initialize(String modId, Runnable initializer);
-
-    void initialize(String modId, T context, Runnable initializer);
+    void initialize(String modId, TLoadContext context, Runnable initializer);
 }

@@ -42,7 +42,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -170,12 +169,6 @@ public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     @Override
     public String getModName(String modId) {
         return ModList.get().getModContainerById(modId).map(it -> it.getModInfo().getDisplayName()).orElse(modId);
-    }
-
-    @Override
-    @Deprecated
-    public void initialize(String modId, Runnable initializer) {
-        initialize(modId, new NeoForgeLoadContext(FMLJavaModLoadingContext.get().getModEventBus()), initializer);
     }
 
     @Override

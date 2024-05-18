@@ -22,7 +22,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.function.Consumer;
 
-public interface BalmRuntime<T extends BalmRuntimeLoadContext> {
+public interface BalmRuntime<TLoadContext extends BalmRuntimeLoadContext> {
     BalmConfig getConfig();
 
     BalmEvents getEvents();
@@ -59,12 +59,9 @@ public interface BalmRuntime<T extends BalmRuntimeLoadContext> {
 
     boolean isModLoaded(String modId);
     String getModName(String modId);
-    <T> SidedProxy<T> sidedProxy(String commonName, String clientName);
+    <TProxy> SidedProxy<TProxy> sidedProxy(String commonName, String clientName);
 
-    @Deprecated
-    void initialize(String modId, Runnable initializer);
-
-    void initialize(String modId, T context, Runnable initializer);
+    void initialize(String modId, TLoadContext context, Runnable initializer);
 
     void initializeIfLoaded(String modId, String className);
 

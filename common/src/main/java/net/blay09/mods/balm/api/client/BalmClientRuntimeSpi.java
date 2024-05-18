@@ -1,11 +1,14 @@
 package net.blay09.mods.balm.api.client;
 
+import net.blay09.mods.balm.api.BalmRuntimeLoadContext;
+
 import java.util.ServiceLoader;
 
 public class BalmClientRuntimeSpi {
-    public static BalmClientRuntime create() {
+    @SuppressWarnings("unchecked")
+    public static BalmClientRuntime<BalmRuntimeLoadContext> create() {
         var loader = ServiceLoader.load(BalmClientRuntimeFactory.class);
         var factory = loader.findFirst().orElseThrow();
-        return factory.create();
+        return (BalmClientRuntime<BalmRuntimeLoadContext>) factory.create();
     }
 }

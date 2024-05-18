@@ -188,11 +188,6 @@ public class FabricBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     }
 
     @Override
-    public void initialize(String modId, Runnable initializer) {
-        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
-    }
-
-    @Override
     public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
         initializer.run();
     }

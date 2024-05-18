@@ -1,7 +1,6 @@
 package net.blay09.mods.balm.forge.client;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.BalmRuntimeLoadContext;
 import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClientRuntime;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
@@ -52,11 +51,6 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime<EmptyLoadContex
     @Override
     public BalmKeyMappings getKeyMappings() {
         return keyMappings;
-    }
-
-    @Override
-    public void initialize(String modId, Runnable initializer) {
-        initialize(modId, EmptyLoadContext.INSTANCE, initializer);
     }
 
     @Override
