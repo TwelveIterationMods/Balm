@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -93,12 +95,12 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public boolean canItemsStack(ItemStack first, ItemStack second) {
-        return ItemHandlerHelper.canItemStacksStack(first, second);
+        return ItemStack.isSameItemSameComponents(first, second);
     }
 
     @Override
     public int getBurnTime(ItemStack itemStack) {
-        return CommonHooks.getBurnTime(itemStack, RecipeType.SMELTING);
+        return itemStack.getBurnTime(RecipeType.SMELTING);
     }
 
     @Override
@@ -133,6 +135,6 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public double getBlockReachDistance(Player player) {
-        return player.getBlockReach();
+        return 4.5 + (player.isCreative() ? 0.5 : 0);
     }
 }

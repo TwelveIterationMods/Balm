@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
@@ -51,7 +52,7 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         }
     }
 
-    public static final Codec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = Codec.unit(BalmBiomeModifier.INSTANCE);
+    public static final MapCodec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = MapCodec.unit(BalmBiomeModifier.INSTANCE);
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {

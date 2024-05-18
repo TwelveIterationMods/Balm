@@ -8,6 +8,7 @@ import net.blay09.mods.balm.api.network.MessageRegistration;
 import net.blay09.mods.balm.api.network.ServerboundMessageRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -16,13 +17,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.IReplyHandler;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.handling.MainThreadPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,27 +39,9 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
 
     private static final Logger logger = LoggerFactory.getLogger(NeoForgeBalmNetworking.class);
 
-    /**
-     * TODO remove in 1.20.5 and make all packets implement CustomPacketPayload
-     *
-     * @deprecated workaround to account for this mid-version breaking change without having to update 152518 mods
-     */
-    @Deprecated
-    private record WrappedPacket(ResourceLocation id, Object message, BiConsumer<Object, FriendlyByteBuf> encoder) implements CustomPacketPayload {
-        @Override
-        public void write(FriendlyByteBuf buf) {
-            encoder.accept(message, buf);
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return id;
-        }
-    }
-
     private static class Registrations {
         private final String modId;
-        private final Map<ResourceLocation, MessageRegistration<?>> messagesByIdentifier = new ConcurrentHashMap<>();
+        private final Map<CustomPacketPayload.Type<? extends CustomPacketPayload>, MessageRegistration<RegistryFriendlyByteBuf, ? extends CustomPacketPayload>> playMessagesByType = new ConcurrentHashMap<>();
         private boolean optional;
 
         private Registrations(String modId) {
@@ -63,33 +49,18 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
         }
 
         @SubscribeEvent
-        @SuppressWarnings("unchecked")
-        public void registerPayloadHandlers(final RegisterPayloadHandlerEvent event) {
+        public void registerPayloadHandlers(final RegisterPayloadHandlersEvent event) {
             var registrar = event.registrar(modId);
             if (optional) {
                 registrar = registrar.optional();
             }
-            for (final var entry : messagesByIdentifier.entrySet()) {
-                final var messageId = entry.getKey();
+            for (final var entry : playMessagesByType.entrySet()) {
                 final var messageRegistration = entry.getValue();
-                registrar = registrar.play(messageId, (FriendlyByteBuf.Reader<CustomPacketPayload>) buf -> {
-                    final var message = messageRegistration.getDecodeFunc().apply(buf);
-                    return new WrappedPacket(messageId, message, (BiConsumer<Object, FriendlyByteBuf>) messageRegistration.getEncodeFunc());
-                }, it -> {
-                    if (messageRegistration instanceof ServerboundMessageRegistration<?> serverboundMessageRegistration) {
-                        it.server((payload, context) -> context.workHandler().execute(() -> {
-                            replyHandler = context.replyHandler();
-                            handleServerboundPacket(serverboundMessageRegistration, payload, context);
-                            replyHandler = null;
-                        }));
-                    } else if (messageRegistration instanceof ClientboundMessageRegistration<?> clientboundMessageRegistration) {
-                        it.client(((payload, context) -> context.workHandler().execute(() -> {
-                            replyHandler = context.replyHandler();
-                            handleClientboundPacket(clientboundMessageRegistration, payload, context);
-                            replyHandler = null;
-                        })));
-                    }
-                });
+                if (messageRegistration instanceof ServerboundMessageRegistration<RegistryFriendlyByteBuf, ? extends CustomPacketPayload> serverboundMessageRegistration) {
+                    registrar = playToServer(registrar, serverboundMessageRegistration);
+                } else if (messageRegistration instanceof ClientboundMessageRegistration<RegistryFriendlyByteBuf, ? extends CustomPacketPayload> clientboundMessageRegistration) {
+                    registrar = playToClient(registrar, clientboundMessageRegistration);
+                }
             }
         }
 
@@ -100,27 +71,35 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
         public void allowServerOnly() {
             optional = true;
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    private static <T> void handleServerboundPacket(ServerboundMessageRegistration<T> registration, CustomPacketPayload payload, PlayPayloadContext context) {
-        final var player = context.player().orElse(null);
-        if (payload instanceof WrappedPacket wrappedPacket && player instanceof ServerPlayer serverPlayer) {
-            registration.getHandler().accept(serverPlayer, (T) wrappedPacket.message());
+        private <TPayload extends CustomPacketPayload> PayloadRegistrar playToServer(PayloadRegistrar registrar, ServerboundMessageRegistration<RegistryFriendlyByteBuf, TPayload> registration) {
+            return registrar.playToServer(registration.getType(), registration.getCodec(), createPayloadHandler(registration));
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    private static <T> void handleClientboundPacket(ClientboundMessageRegistration<T> registration, CustomPacketPayload payload, PlayPayloadContext context) {
-        if (payload instanceof WrappedPacket wrappedPacket) {
-            registration.getHandler().accept(Balm.getProxy().getClientPlayer(), (T) wrappedPacket.message());
+        private <TPayload extends CustomPacketPayload> PayloadRegistrar playToClient(PayloadRegistrar registrar, ClientboundMessageRegistration<RegistryFriendlyByteBuf, TPayload> registration) {
+            return registrar.playToClient(registration.getType(), registration.getCodec(), createPayloadHandler(registration));
+        }
+
+        private <TBuffer extends FriendlyByteBuf, TPayload extends CustomPacketPayload> IPayloadHandler<TPayload> createPayloadHandler(ServerboundMessageRegistration<TBuffer, TPayload> serverboundMessageRegistration) {
+            return new MainThreadPayloadHandler<>((payload, context) -> {
+                replyContext = context;
+                serverboundMessageRegistration.getHandler().accept((ServerPlayer) context.player(), payload);
+                replyContext = null;
+            });
+        }
+
+        private <TBuffer extends FriendlyByteBuf, TPayload extends CustomPacketPayload> IPayloadHandler<TPayload> createPayloadHandler(ClientboundMessageRegistration<TBuffer, TPayload> clientboundMessageRegistration) {
+            return new MainThreadPayloadHandler<>((payload, context) -> {
+                replyContext = context;
+                clientboundMessageRegistration.getHandler().accept(context.player(), payload);
+                replyContext = null;
+            });
         }
     }
 
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
-    private final Map<Class<?>, MessageRegistration<?>> messagesByClass = new ConcurrentHashMap<>();
 
-    private static IReplyHandler replyHandler;
+    private static IPayloadContext replyContext;
 
     @Override
     public void allowClientOnly(String modId) {
@@ -144,78 +123,60 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
     }
 
     @Override
-    public <T> void reply(T message) {
-        if (replyHandler == null) {
+    public <T extends CustomPacketPayload> void reply(T message) {
+        if (replyContext == null) {
             throw new IllegalStateException("No context to reply to");
         }
 
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-        ResourceLocation identifier = messageRegistration.getIdentifier();
-
-        replyHandler.send(new WrappedPacket(identifier, message, (BiConsumer<Object, FriendlyByteBuf>) messageRegistration.getEncodeFunc()));
+        replyContext.reply(message);
     }
 
     @Override
-    public <T> void sendTo(Player player, T message) {
+    public <T extends CustomPacketPayload> void sendTo(Player player, T message) {
         if (player instanceof ServerPlayer serverPlayer) {
-            sendPacket(PacketDistributor.PLAYER.with(serverPlayer), message);
+            PacketDistributor.sendToPlayer(serverPlayer, message);
         }
     }
 
     @Override
-    public <T> void sendToTracking(ServerLevel level, BlockPos pos, T message) {
-        sendPacket(PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(pos)), message);
+    public <T extends CustomPacketPayload> void sendToTracking(ServerLevel level, BlockPos pos, T message) {
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), message);
     }
 
     @Override
-    public <T> void sendToTracking(Entity entity, T message) {
-        sendPacket(PacketDistributor.TRACKING_ENTITY.with(entity), message);
+    public <T extends CustomPacketPayload> void sendToTracking(Entity entity, T message) {
+        PacketDistributor.sendToPlayersTrackingEntity(entity, message);
     }
 
     @Override
-    public <T> void sendToAll(MinecraftServer server, T message) {
-        sendPacket(PacketDistributor.ALL.noArg(), message);
+    public <T extends CustomPacketPayload> void sendToAll(MinecraftServer server, T message) {
+        PacketDistributor.sendToAllPlayers(message);
     }
 
     @Override
-    public <T> void sendToServer(T message) {
+    public <T extends CustomPacketPayload> void sendToServer(T message) {
         if (!Balm.getProxy().isConnectedToServer()) {
             logger.debug("Skipping message {} because we're not connected to a server", message);
             return;
         }
 
-        sendPacket(PacketDistributor.SERVER.noArg(), message);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> MessageRegistration<T> getMessageRegistrationOrThrow(T message) {
-        MessageRegistration<T> messageRegistration = (MessageRegistration<T>) messagesByClass.get(message.getClass());
-        if (messageRegistration == null) {
-            throw new IllegalArgumentException("Cannot send message " + message.getClass() + " as it is not registered");
-        }
-        return messageRegistration;
+        PacketDistributor.sendToServer(message);
     }
 
     @Override
-    public <T> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
-        ClientboundMessageRegistration<T> messageRegistration = new ClientboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
+    public <T extends CustomPacketPayload> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
+        final var type = new CustomPacketPayload.Type<T>(identifier);
+        final var messageRegistration = new ClientboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
         final var registrations = getActiveRegistrations();
-        messagesByClass.put(clazz, messageRegistration);
-        registrations.messagesByIdentifier.put(identifier, messageRegistration);
+        registrations.playMessagesByType.put(type, messageRegistration);
     }
 
     @Override
-    public <T> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
-        MessageRegistration<T> messageRegistration = new ServerboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
+    public <T extends CustomPacketPayload> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
+        final var type = new CustomPacketPayload.Type<T>(identifier);
+        final var messageRegistration = new ServerboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
         final var registrations = getActiveRegistrations();
-        messagesByClass.put(clazz, messageRegistration);
-        registrations.messagesByIdentifier.put(identifier, messageRegistration);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> void sendPacket(PacketDistributor.PacketTarget target, T message) {
-        MessageRegistration<T> messageRegistration = getMessageRegistrationOrThrow(message);
-        target.send(new WrappedPacket(messageRegistration.getIdentifier(), message, (BiConsumer<Object, FriendlyByteBuf>) messageRegistration.getEncodeFunc()));
+        registrations.playMessagesByType.put(type, messageRegistration);
     }
 
     public void register(String modId, IEventBus eventBus) {

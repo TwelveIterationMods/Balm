@@ -112,7 +112,7 @@ public class ContainerUtils {
                 continue;
             }
 
-            if (slotStack.isStackable() && ItemStack.isSameItemSameTags(slotStack, itemStack)) {
+            if (slotStack.isStackable() && ItemStack.isSameItemSameComponents(slotStack, itemStack)) {
                 itemStack = insertItem(container, i, itemStack, simulate);
             }
 

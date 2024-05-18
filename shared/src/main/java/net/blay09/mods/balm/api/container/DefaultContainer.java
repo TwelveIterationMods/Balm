@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.api.container;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -24,11 +25,11 @@ public class DefaultContainer implements ImplementedContainer {
         return items;
     }
 
-    public void deserialize(CompoundTag tag) {
-        items = ImplementedContainer.deserializeInventory(tag, items.size());
+    public void deserialize(HolderLookup.Provider provider, CompoundTag tag) {
+        items = ImplementedContainer.deserializeInventory(provider, tag, items.size());
     }
 
-    public CompoundTag serialize() {
-        return serializeInventory();
+    public CompoundTag serialize(HolderLookup.Provider provider) {
+        return serializeInventory(provider);
     }
 }

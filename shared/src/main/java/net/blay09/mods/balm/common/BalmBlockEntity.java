@@ -12,6 +12,7 @@ import net.blay09.mods.balm.api.provider.BalmProvider;
 import net.blay09.mods.balm.api.provider.BalmProviderHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -36,8 +37,8 @@ public class BalmBlockEntity extends BalmBlockEntityBase implements BalmProvider
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return createUpdateTag();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return createUpdateTag(this);
     }
 
     @Override
@@ -161,15 +162,11 @@ public class BalmBlockEntity extends BalmBlockEntityBase implements BalmProvider
     }
 
     public Packet<ClientGamePacketListener> createUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, this::createUpdateTag);
+        return ClientboundBlockEntityDataPacket.create(this, (blockEntity, registryAccess) -> createUpdateTag(blockEntity));
     }
 
-    public CompoundTag createUpdateTag() {
-        return createUpdateTag(this);
-    }
-
-    private CompoundTag createUpdateTag(BlockEntity blockEntity) {
-        var tag = new CompoundTag();
+    public CompoundTag createUpdateTag(BlockEntity blockEntity) {
+        final var tag = new CompoundTag();
         if (blockEntity instanceof BalmBlockEntity balmBlockEntity) {
             balmBlockEntity.writeUpdateTag(tag);
         }

@@ -4,65 +4,63 @@ package net.blay09.mods.balm.neoforge.event;
 import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.Event;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public class NeoForgeBalmCommonEvents {
 
     public static void registerEvents(NeoForgeBalmEvents events) {
         events.registerTickEvent(TickType.Server, TickPhase.Start, (ServerTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ServerTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.START) {
-                    handler.handle(ServerLifecycleHooks.getCurrentServer());
-                }
+            NeoForge.EVENT_BUS.addListener((ServerTickEvent.Pre orig) -> {
+                handler.handle(ServerLifecycleHooks.getCurrentServer());
             });
         });
         events.registerTickEvent(TickType.Server, TickPhase.End, (ServerTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ServerTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.END) {
-                    handler.handle(ServerLifecycleHooks.getCurrentServer());
-                }
+            NeoForge.EVENT_BUS.addListener((ServerTickEvent orig) -> {
+                handler.handle(ServerLifecycleHooks.getCurrentServer());
             });
         });
         events.registerTickEvent(TickType.ServerLevel, TickPhase.Start, (ServerLevelTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.LevelTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.START && orig.side == LogicalSide.SERVER) {
-                    handler.handle(orig.level);
+            NeoForge.EVENT_BUS.addListener((LevelTickEvent.Pre orig) -> {
+                if (orig.getLevel() instanceof ServerLevel serverLevel) {
+                    handler.handle(serverLevel);
                 }
             });
         });
         events.registerTickEvent(TickType.ServerLevel, TickPhase.End, (ServerLevelTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.LevelTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.END && orig.side == LogicalSide.SERVER) {
-                    handler.handle(orig.level);
+            NeoForge.EVENT_BUS.addListener((LevelTickEvent.Post orig) -> {
+                if (orig.getLevel() instanceof ServerLevel serverLevel) {
+                    handler.handle(serverLevel);
                 }
             });
         });
 
         events.registerTickEvent(TickType.ServerPlayer, TickPhase.Start, (ServerPlayerTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.PlayerTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.START && orig.side == LogicalSide.SERVER) {
-                    handler.handle(((ServerPlayer) orig.player));
+            NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Pre orig) -> {
+                if (orig.getEntity() instanceof ServerPlayer serverPlayer) {
+                    handler.handle(serverPlayer);
                 }
             });
         });
 
         events.registerTickEvent(TickType.ServerPlayer, TickPhase.End, (ServerPlayerTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.PlayerTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.END && orig.side == LogicalSide.SERVER) {
-                    handler.handle(((ServerPlayer) orig.player));
+            NeoForge.EVENT_BUS.addListener((PlayerTickEvent.Post orig) -> {
+                if (orig.getEntity() instanceof ServerPlayer serverPlayer) {
+                    handler.handle(serverPlayer);
                 }
             });
         });

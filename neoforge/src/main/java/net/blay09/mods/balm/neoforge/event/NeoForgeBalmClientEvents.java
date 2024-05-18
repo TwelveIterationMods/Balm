@@ -7,45 +7,39 @@ import net.blay09.mods.balm.api.event.client.*;
 import net.blay09.mods.balm.api.event.client.RenderHandEvent;
 import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.RegistryAccess;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.gui.overlay.NamedGuiOverlay;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 public class NeoForgeBalmClientEvents {
 
     public static void registerEvents(NeoForgeBalmEvents events) {
         events.registerTickEvent(TickType.Client, TickPhase.Start, (ClientTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.START) {
-                    handler.handle(Minecraft.getInstance());
-                }
+            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Pre orig) -> {
+                handler.handle(Minecraft.getInstance());
             });
         });
         events.registerTickEvent(TickType.Client, TickPhase.End, (ClientTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.END) {
-                    handler.handle(Minecraft.getInstance());
-                }
+            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post orig) -> {
+                handler.handle(Minecraft.getInstance());
             });
         });
         events.registerTickEvent(TickType.ClientLevel, TickPhase.Start, (ClientLevelTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.START) {
-                    handler.handle(Minecraft.getInstance().level);
+            NeoForge.EVENT_BUS.addListener((LevelTickEvent.Pre orig) -> {
+                if (orig.getLevel() instanceof ClientLevel clientLevel) {
+                    handler.handle(clientLevel);
                 }
             });
         });
         events.registerTickEvent(TickType.ClientLevel, TickPhase.End, (ClientLevelTickHandler handler) -> {
-            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent orig) -> {
-                if (orig.phase == TickEvent.Phase.END) {
-                    handler.handle(Minecraft.getInstance().level);
+            NeoForge.EVENT_BUS.addListener((LevelTickEvent.Post orig) -> {
+                if (orig.getLevel() instanceof ClientLevel clientLevel) {
+                    handler.handle(clientLevel);
                 }
             });
         });
@@ -344,7 +338,7 @@ public class NeoForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(GuiDrawEvent.Pre.class, priority -> {
+        /* TODO events.registerEvent(GuiDrawEvent.Pre.class, priority -> {
             NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (RenderGuiEvent.Pre orig) -> {
                 final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getGuiGraphics(), GuiDrawEvent.Element.ALL);
                 events.fireEventHandlers(priority, event);
@@ -378,10 +372,10 @@ public class NeoForgeBalmClientEvents {
                     events.fireEventHandlers(priority, event);
                 }
             });
-        });
+        }); */
     }
 
-    @Nullable
+    /*@Nullable TODO ugh
     private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGuiOverlayEvent orig) {
         GuiDrawEvent.Element type = null;
         NamedGuiOverlay overlay = orig.getOverlay();
@@ -397,5 +391,5 @@ public class NeoForgeBalmClientEvents {
             type = GuiDrawEvent.Element.PLAYER_LIST;
         }
         return type;
-    }
+    }*/
 }

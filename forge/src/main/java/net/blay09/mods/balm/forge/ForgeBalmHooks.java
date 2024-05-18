@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -48,12 +49,6 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public CompoundTag getPersistentData(Entity entity) {
         CompoundTag persistentData = entity.getPersistentData();
-        if (entity instanceof Player) {
-            CompoundTag persistedTag = persistentData.getCompound(Player.PERSISTED_NBT_TAG);
-            persistentData.put(Player.PERSISTED_NBT_TAG, persistedTag);
-            persistentData = persistedTag;
-        }
-
         CompoundTag balmData = persistentData.getCompound("BalmData");
         if (balmData.isEmpty()) {
             // If we have no data, try to import from Fabric in case the world was migrated
@@ -68,7 +63,7 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public void curePotionEffects(LivingEntity entity, ItemStack curativeItem) {
-        entity.curePotionEffects(curativeItem);
+        entity.removeAllEffects();
     }
 
     @Override
@@ -113,7 +108,8 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public boolean isRepairable(ItemStack itemStack) {
-        return itemStack.isRepairable();
+        final var repairCost = itemStack.getItem().components().get(DataComponents.REPAIR_COST);
+        return repairCost != null && repairCost > 0;
     }
 
     @Override
@@ -128,6 +124,6 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public double getBlockReachDistance(Player player) {
-        return player.getBlockReach();
+        return 4.5 + (player.isCreative() ? 0.5 : 0);
     }
 }

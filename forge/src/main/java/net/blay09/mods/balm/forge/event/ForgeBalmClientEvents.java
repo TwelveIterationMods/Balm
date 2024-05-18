@@ -9,8 +9,6 @@ import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -346,7 +344,7 @@ public class ForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(GuiDrawEvent.Pre.class, priority -> {
+        /*events.registerEvent(GuiDrawEvent.Pre.class, priority -> { TODO
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiEvent.Pre orig) -> {
                 final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getGuiGraphics(), GuiDrawEvent.Element.ALL);
                 events.fireEventHandlers(priority, event);
@@ -380,10 +378,10 @@ public class ForgeBalmClientEvents {
                     events.fireEventHandlers(priority, event);
                 }
             });
-        });
+        });*/
     }
 
-    @Nullable
+    /*@Nullable
     private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGuiOverlayEvent orig) {
         GuiDrawEvent.Element type = null;
         NamedGuiOverlay overlay = orig.getOverlay();
@@ -399,5 +397,5 @@ public class ForgeBalmClientEvents {
             type = GuiDrawEvent.Element.PLAYER_LIST;
         }
         return type;
-    }
+    }*/
 }

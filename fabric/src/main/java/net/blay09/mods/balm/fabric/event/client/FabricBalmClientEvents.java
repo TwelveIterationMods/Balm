@@ -189,8 +189,8 @@ public class FabricBalmClientEvents {
             }));
         });
 
-        events.registerEvent(ItemTooltipEvent.class, () -> ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-            final ItemTooltipEvent event = new ItemTooltipEvent(stack, Minecraft.getInstance().player, lines, context);
+        events.registerEvent(ItemTooltipEvent.class, () -> ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
+            final ItemTooltipEvent event = new ItemTooltipEvent(stack, Minecraft.getInstance().player, lines, flag);
             events.fireEventHandlers(event);
         }));
 

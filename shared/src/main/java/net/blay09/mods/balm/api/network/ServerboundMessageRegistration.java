@@ -1,22 +1,22 @@
 package net.blay09.mods.balm.api.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class ServerboundMessageRegistration<T> extends MessageRegistration<T> {
+public class ServerboundMessageRegistration<TBuffer extends FriendlyByteBuf, TPayload extends CustomPacketPayload> extends MessageRegistration<TBuffer, TPayload> {
 
-    private final BiConsumer<ServerPlayer, T> handler;
+    private final BiConsumer<ServerPlayer, TPayload> handler;
 
-    public ServerboundMessageRegistration(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
-        super(identifier, clazz, encodeFunc, decodeFunc);
+    public ServerboundMessageRegistration(CustomPacketPayload.Type<TPayload> type, Class<TPayload> clazz, BiConsumer<TBuffer, TPayload> encodeFunc, Function<TBuffer, TPayload> decodeFunc, BiConsumer<ServerPlayer, TPayload> handler) {
+        super(type, clazz, encodeFunc, decodeFunc);
         this.handler = handler;
     }
 
-    public BiConsumer<ServerPlayer, T> getHandler() {
+    public BiConsumer<ServerPlayer, TPayload> getHandler() {
         return handler;
     }
 }

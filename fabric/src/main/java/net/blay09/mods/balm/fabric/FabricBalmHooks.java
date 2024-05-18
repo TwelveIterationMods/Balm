@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemStack;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -94,7 +95,7 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public boolean canItemsStack(ItemStack first, ItemStack second) {
-        return !first.isEmpty() && ItemStack.isSameItemSameTags(first, second);
+        return !first.isEmpty() && ItemStack.isSameItemSameComponents(first, second);
     }
 
     @Override
@@ -168,7 +169,8 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public boolean isRepairable(ItemStack itemStack) {
-        return itemStack.getItem().canBeDepleted();
+        final var repairCost = itemStack.getItem().components().get(DataComponents.REPAIR_COST);
+        return repairCost != null && repairCost > 0;
     }
 
     @Override

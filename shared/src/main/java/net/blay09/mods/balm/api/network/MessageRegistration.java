@@ -1,39 +1,44 @@
 package net.blay09.mods.balm.api.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class MessageRegistration<T> {
+public class MessageRegistration<TBuffer extends FriendlyByteBuf, TPayload extends CustomPacketPayload> {
 
-    private final ResourceLocation identifier;
-    private final Class<T> clazz;
-    private final BiConsumer<T, FriendlyByteBuf> encodeFunc;
-    private final Function<FriendlyByteBuf, T> decodeFunc;
+    private final CustomPacketPayload.Type<TPayload> type;
+    private final Class<TPayload> clazz;
+    private final BiConsumer<TBuffer, TPayload> encodeFunc;
+    private final Function<TBuffer, TPayload> decodeFunc;
 
-    public MessageRegistration(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc) {
+    public MessageRegistration(CustomPacketPayload.Type<TPayload> type, Class<TPayload> clazz, BiConsumer<TBuffer, TPayload> encodeFunc, Function<TBuffer, TPayload> decodeFunc) {
 
-        this.identifier = identifier;
+        this.type = type;
         this.clazz = clazz;
         this.encodeFunc = encodeFunc;
         this.decodeFunc = decodeFunc;
     }
 
-    public ResourceLocation getIdentifier() {
-        return identifier;
+    public CustomPacketPayload.Type<TPayload> getType() {
+        return type;
     }
 
-    public Class<T> getClazz() {
+    public Class<TPayload> getClazz() {
         return clazz;
     }
 
-    public BiConsumer<T, FriendlyByteBuf> getEncodeFunc() {
+    public BiConsumer<TBuffer, TPayload> getEncodeFunc() {
         return encodeFunc;
     }
 
-    public Function<FriendlyByteBuf, T> getDecodeFunc() {
+    public Function<TBuffer, TPayload> getDecodeFunc() {
         return decodeFunc;
+    }
+
+    public StreamCodec<TBuffer, TPayload> getCodec() {
+        return StreamCodec.of((buffer, payload) -> getEncodeFunc().accept(buffer, payload), (buffer) -> getDecodeFunc().apply(buffer));
     }
 }

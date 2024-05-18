@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.api.container;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -142,7 +143,7 @@ public interface ImplementedContainer extends Container {
         return true;
     }
 
-    static NonNullList<ItemStack> deserializeInventory(CompoundTag tag, int minimumSize) {
+    static NonNullList<ItemStack> deserializeInventory(HolderLookup.Provider provider, CompoundTag tag, int minimumSize) {
         int size = Math.max(minimumSize, tag.contains("Size", Tag.TAG_INT) ? tag.getInt("Size") : minimumSize);
         NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
         ListTag itemTags = tag.getList("Items", Tag.TAG_COMPOUND);
@@ -150,20 +151,20 @@ public interface ImplementedContainer extends Container {
             CompoundTag itemTag = itemTags.getCompound(i);
             int slot = itemTag.getInt("Slot");
             if (slot >= 0 && slot < items.size()) {
-                items.set(slot, ItemStack.of(itemTag));
+                items.set(slot, ItemStack.parse(provider, itemTag).orElse(ItemStack.EMPTY));
             }
         }
         return items;
     }
 
-    default CompoundTag serializeInventory() {
+    default CompoundTag serializeInventory(HolderLookup.Provider provider) {
         NonNullList<ItemStack> items = getItems();
         ListTag itemTags = new ListTag();
         for (int i = 0; i < items.size(); i++) {
             if (!items.get(i).isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                items.get(i).save(itemTag);
+                items.get(i).save(provider, itemTag);
                 itemTags.add(itemTag);
             }
         }

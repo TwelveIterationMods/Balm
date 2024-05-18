@@ -1,6 +1,7 @@
 package net.blay09.mods.balm.forge.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.Balm;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
@@ -18,7 +19,7 @@ public class BalmBiomeModifier implements BiomeModifier {
     }
 
     @Override
-    public Codec<? extends BiomeModifier> codec() {
+    public MapCodec<? extends BiomeModifier> codec() {
         return ForgeBalmWorldGen.BALM_BIOME_MODIFIER_CODEC;
     }
 

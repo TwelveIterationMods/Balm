@@ -5,6 +5,8 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.config.Synced;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Field;
@@ -13,11 +15,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SyncConfigMessage<TData> {
+public class SyncConfigMessage<TData> implements CustomPacketPayload {
 
+    private final Type<? extends CustomPacketPayload> type;
     private final TData data;
 
-    public SyncConfigMessage(TData data) {
+    public SyncConfigMessage(Type<? extends CustomPacketPayload> type, TData data) {
+        this.type = type;
         this.data = data;
     }
 
@@ -95,8 +99,8 @@ public class SyncConfigMessage<TData> {
         return value;
     }
 
-    public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<TMessage, FriendlyByteBuf> createEncoder(Class<TData> clazz) {
-        return (message, buf) -> {
+    public static <TData, TMessage extends SyncConfigMessage<TData>> BiConsumer<FriendlyByteBuf, TMessage> createEncoder(Class<TData> clazz) {
+        return (buf, message) -> {
             TData data = message.getData();
             writeSyncedFields(buf, data, false);
         };
@@ -157,7 +161,7 @@ public class SyncConfigMessage<TData> {
                                                                                                           Class<TData> dataClass,
                                                                                                           Supplier<TData> dataFactory) {
         Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getBackingConfig(dataClass), dataFactory);
-        Balm.getNetworking().registerClientboundPacket(resourceLocation, messageClass, (TMessage message, FriendlyByteBuf buf) -> {
+        Balm.getNetworking().registerClientboundPacket(resourceLocation, messageClass, (RegistryFriendlyByteBuf buf, TMessage message) -> {
             TData data = message.getData();
             writeSyncedFields(buf, data, false);
         }, buf -> {
@@ -167,4 +171,8 @@ public class SyncConfigMessage<TData> {
         }, Balm.getConfig()::handleSync);
     }
 
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return type;
+    }
 }

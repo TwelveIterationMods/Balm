@@ -1,1 +1,1 @@
-- Fixed item use events staying cancelled after one was cancelled
+- Updated to Minecraft 1.20.6
