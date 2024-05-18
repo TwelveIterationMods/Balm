@@ -1,7 +1,5 @@
 plugins {
-    id 'idea'
-    id 'java'
-    id 'maven-publish'
+    id 'multiloader-common'
     id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
@@ -11,24 +9,36 @@ base {
 
 minecraft {
     version(minecraft_version)
-    if(file("src/main/resources/${mod_id}.accesswidener").exists()){
-        accessWideners(file("src/main/resources/${mod_id}.accesswidener"))
+    def aw = file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWideners(aw)
     }
 }
 
 dependencies {
     compileOnly "org.spongepowered:mixin:$mixin_version"
-
-    compileOnly project(":shared-bridge")
 }
 
+apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
-tasks.withType(JavaCompile).configureEach {
-    source(project(":shared-bridge").sourceSets.main.allSource)
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
 }
 
-publishing {
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
+
+/*publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = mod_id + "-common"
@@ -53,6 +63,14 @@ publishing {
             url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
             name = "twelveIterationsNexus"
             credentials(PasswordCredentials)
+        }
+    }
+}*/
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/shell/java'
         }
     }
 }

@@ -1,33 +1,24 @@
 plugins {
+    id 'multiloader-loader'
     id 'fabric-loom'
-    id 'maven-publish'
-    id 'idea'
     id 'net.darkhax.curseforgegradle'
     id "com.modrinth.minotaur"
-}
-
-base {
-    archivesName = "${mod_id}-fabric-${minecraft_version}"
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings loom.officialMojangMappings()
-
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-    implementation project(":shared")
-    implementation project(":shared-bridge")
-
-    compileOnly "org.jetbrains:annotations:22.0.0"
 }
 
+apply from: rootProject.file('repositories.gradle')
 apply from: 'dependencies.gradle'
 
 loom {
-    if (project(":shared").file("src/main/resources/${mod_id}.accesswidener").exists()) {
-        accessWidenerPath.set(project(":shared").file("src/main/resources/${mod_id}.accesswidener"))
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
     }
 
     mixin {
@@ -39,13 +30,13 @@ loom {
             client()
             setConfigName("fabric Client")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("runs/client")
         }
         server {
             server()
             setConfigName("fabric Server")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("runs/server")
         }
         data {
             inherit client
@@ -54,7 +45,7 @@ loom {
             runDir("build/datagen")
 
             vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${project(":shared").file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.output-dir=${project(":common").file("src/main/generated")}"
             vmArg "-Dfabric-api.datagen.modid=${mod_id}"
         }
     }
@@ -62,7 +53,7 @@ loom {
 
 sourceSets.main.resources.srcDir('src/generated/resources')
 
-tasks.withType(JavaCompile).configureEach {
+/*tasks.withType(JavaCompile).configureEach {
     source(project(":shared").sourceSets.main.allSource)
     source(project(":shared-bridge").sourceSets.main.allSource)
 }
@@ -73,32 +64,7 @@ tasks.withType(Javadoc).configureEach {
 tasks.named("sourcesJar", Jar) {
     from(project(":shared").sourceSets.main.allSource)
     from(project(":shared-bridge").sourceSets.main.allSource)
-}
-
-processResources {
-    from project(":shared").sourceSets.main.resources
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = mod_id + "-fabric"
-            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
-
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
-            var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
-            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
-            name = "twelveIterationsNexus"
-            credentials(PasswordCredentials)
-        }
-    }
-}
+}*/
 
 task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     dependsOn('build')

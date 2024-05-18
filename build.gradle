@@ -7,7 +7,7 @@ plugins {
     id "com.modrinth.minotaur" version "2.+" apply(false)
 }
 
-subprojects {
+/*subprojects {
     apply plugin: 'java'
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(java_version)
@@ -86,4 +86,4 @@ subprojects {
     tasks.withType(GenerateModuleMetadata).configureEach {
         enabled = false
     }
-}
+}*/
