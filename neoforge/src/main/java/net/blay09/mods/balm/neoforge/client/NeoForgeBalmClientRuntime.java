@@ -15,7 +15,6 @@ import net.blay09.mods.balm.neoforge.client.rendering.NeoForgeBalmRenderers;
 import net.blay09.mods.balm.neoforge.client.rendering.NeoForgeBalmTextures;
 import net.blay09.mods.balm.neoforge.client.screen.NeoForgeBalmScreens;
 import net.blay09.mods.balm.neoforge.event.NeoForgeBalmClientEvents;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class NeoForgeBalmClientRuntime implements BalmClientRuntime<NeoForgeLoadContext> {
 
@@ -52,11 +51,6 @@ public class NeoForgeBalmClientRuntime implements BalmClientRuntime<NeoForgeLoad
     @Override
     public BalmKeyMappings getKeyMappings() {
         return keyMappings;
-    }
-
-    @Override
-    public void initialize(String modId, Runnable initializer) {
-        initialize(modId, new NeoForgeLoadContext(FMLJavaModLoadingContext.get().getModEventBus()), initializer);
     }
 
     @Override
