@@ -102,7 +102,7 @@ processResources {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
+            version = project.version
             artifactId base.archivesName.get()
             from components.java
         }
