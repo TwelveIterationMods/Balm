@@ -164,8 +164,7 @@ public interface ImplementedContainer extends Container {
             if (!items.get(i).isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                items.get(i).save(provider, itemTag);
-                itemTags.add(itemTag);
+                itemTags.add(items.get(i).save(provider, itemTag));
             }
         }
         CompoundTag nbt = new CompoundTag();
