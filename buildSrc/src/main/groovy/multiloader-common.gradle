@@ -5,7 +5,7 @@ plugins {
 
 base {
     archivesName = "${mod_id}-${project.name}"
-    version = "${version}+${minecraft_version}"
+    version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 }
 
 java {
