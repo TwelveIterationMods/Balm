@@ -6,3 +6,12 @@ plugins {
     id 'net.darkhax.curseforgegradle' version '1.1.18' apply(false)
     id "com.modrinth.minotaur" version "2.+" apply(false)
 }
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            cacheChangingModulesFor 60, 'seconds'
+            cacheDynamicVersionsFor 60, 'seconds'
+        }
+    }
+}
