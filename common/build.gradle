@@ -15,8 +15,6 @@ minecraft {
     }
 }
 
-sourceSets.main.resources.srcDir('src/generated/resources')
-
 dependencies {
     compileOnly "org.spongepowered:mixin:$mixin_version"
 }
