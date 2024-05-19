@@ -52,9 +52,9 @@ jobs:
         loader: [ common, fabric, forge, neoforge ]
         site: [ curseforge, modrinth, publish ]
         exclude:
-          - loader: shared
+          - loader: common
             site: curseforge
-          - loader: shared
+          - loader: common
             site: modrinth
     steps:
       - name: Checkout repository
