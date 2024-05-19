@@ -51,8 +51,6 @@ loom {
     }
 }
 
-sourceSets.main.resources.srcDir('src/generated/resources')
-
 /*tasks.withType(JavaCompile).configureEach {
     source(project(":shared").sourceSets.main.allSource)
     source(project(":shared-bridge").sourceSets.main.allSource)
