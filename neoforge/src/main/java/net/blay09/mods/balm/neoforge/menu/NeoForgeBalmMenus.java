@@ -15,10 +15,11 @@ import net.neoforged.neoforge.network.IContainerFactory;
 public class NeoForgeBalmMenus implements BalmMenus {
 
     @Override
-    public <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, BalmMenuFactory<T> factory) {
+    public <TMenu extends AbstractContainerMenu, TPayload> DeferredObject<MenuType<TMenu>> registerMenu(ResourceLocation identifier, BalmMenuFactory<TMenu, TPayload> factory) {
         final var register = DeferredRegisters.get(Registries.MENU, identifier.getNamespace());
         final var registryObject = register.register(identifier.getPath(),
-                () -> new MenuType<>((IContainerFactory<T>) factory::create, FeatureFlagSet.of(FeatureFlags.VANILLA)));
+                () -> new MenuType<>((IContainerFactory<TMenu>) (syncId, inventory, buf) -> factory.create(syncId, inventory, factory.getCodec().decode(buf)),
+                        FeatureFlagSet.of(FeatureFlags.VANILLA)));
         return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 

@@ -1,26 +1,18 @@
 package net.blay09.mods.balm.neoforge.client.screen;
 
 import com.mojang.datafixers.util.Pair;
-import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.screen.BalmScreenFactory;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
 import net.blay09.mods.balm.mixin.ScreenAccessor;
-import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +26,12 @@ public class NeoForgeBalmScreens implements BalmScreens {
         public final List<Pair<Supplier<MenuType<?>>, BalmScreenFactory<?, ?>>> menuTypes = new ArrayList<>();
 
         @SubscribeEvent
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        public void setupClient(FMLClientSetupEvent event) {
-            for (Pair<Supplier<MenuType<?>>, BalmScreenFactory<?, ?>> entry : menuTypes) {
-                registerScreenImmediate(entry.getFirst()::get, (BalmScreenFactory) entry.getSecond()); // I hate Java generics.
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public void registerMenuScreens(RegisterMenuScreensEvent event) {
+            for (Pair<Supplier<MenuType<? extends AbstractContainerMenu>>, BalmScreenFactory<?, ?>> entry : menuTypes) {
+                final var menuType = entry.getFirst().get();
+                final var screenFactory = entry.getSecond();
+                registerScreenImmediate(event, (MenuType) menuType, (BalmScreenFactory) screenFactory);
             }
         }
     }
@@ -49,8 +43,8 @@ public class NeoForgeBalmScreens implements BalmScreens {
         getActiveRegistrations().menuTypes.add(Pair.of(type::get, screenFactory));
     }
 
-    private static <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> void registerScreenImmediate(Supplier<MenuType<? extends T>> type, BalmScreenFactory<T, S> screenFactory) {
-        // TODO MenuScreens.register(type.get(), screenFactory::create);
+    private static <TMenu extends AbstractContainerMenu, TScreen extends Screen & MenuAccess<TMenu>> void registerScreenImmediate(RegisterMenuScreensEvent event, MenuType<TMenu> type, BalmScreenFactory<TMenu, TScreen> screenFactory) {
+        event.register(type, screenFactory::create);
     }
 
     @Override

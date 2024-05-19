@@ -114,12 +114,16 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer serverPlayer) {
-            if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
-                // TODO serverPlayer.openMenu(menuProvider, buf -> balmMenuProvider.writeScreenOpeningData(serverPlayer, buf));
+            if (menuProvider instanceof BalmMenuProvider<?> balmMenuProvider) {
+                openGui(serverPlayer, balmMenuProvider);
             } else {
                 serverPlayer.openMenu(menuProvider);
             }
         }
+    }
+
+    private <T> void openGui(ServerPlayer player, BalmMenuProvider<T> menuProvider) {
+        player.openMenu(menuProvider, buf -> menuProvider.getCodec().encode(buf, menuProvider.getScreenOpeningData(player)));
     }
 
     @Override

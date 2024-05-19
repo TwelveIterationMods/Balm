@@ -3,6 +3,9 @@ package net.blay09.mods.balm.fabric.menu;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.api.menu.BalmMenuFactory;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -10,11 +13,11 @@ import net.minecraft.world.inventory.MenuType;
 public class FabricBalmMenus implements BalmMenus {
 
     @Override
-    public <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, BalmMenuFactory<T> factory) {
-        return new DeferredObject<>(identifier, () -> {
-            // return TODO Registry.register(Registries.MENU, identifier, MenuType.ANVIL);
-            return (MenuType<T>) MenuType.ANVIL;
-        }).resolveImmediately();
+    public <TMenu extends AbstractContainerMenu, TPayload> DeferredObject<MenuType<TMenu>> registerMenu(ResourceLocation identifier, BalmMenuFactory<TMenu, TPayload> factory) {
+        return new DeferredObject<>(identifier,
+                () -> Registry.register(BuiltInRegistries.MENU,
+                        identifier,
+                        (MenuType<TMenu>) new ExtendedScreenHandlerType<>(factory::create, factory.getCodec()))).resolveImmediately();
     }
 
 }

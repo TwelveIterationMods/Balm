@@ -17,10 +17,11 @@ import net.minecraftforge.registries.RegistryObject;
 public class ForgeBalmMenus implements BalmMenus {
 
     @Override
-    public <T extends AbstractContainerMenu> DeferredObject<MenuType<T>> registerMenu(ResourceLocation identifier, BalmMenuFactory<T> factory) {
+    public <TMenu extends AbstractContainerMenu, TPayload> DeferredObject<MenuType<TMenu>> registerMenu(ResourceLocation identifier, BalmMenuFactory<TMenu, TPayload> factory) {
         DeferredRegister<MenuType<?>> register = DeferredRegisters.get(ForgeRegistries.MENU_TYPES, identifier.getNamespace());
-        RegistryObject<MenuType<T>> registryObject = register.register(identifier.getPath(),
-                () -> new MenuType<>((IContainerFactory<T>) factory::create, FeatureFlagSet.of(FeatureFlags.VANILLA)));
+        RegistryObject<MenuType<TMenu>> registryObject = register.register(identifier.getPath(),
+                () -> new MenuType<>((IContainerFactory<TMenu>) (syncId, inventory, buf) -> factory.create(syncId, inventory, factory.getCodec().decode(buf)),
+                        FeatureFlagSet.of(FeatureFlags.VANILLA)));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 

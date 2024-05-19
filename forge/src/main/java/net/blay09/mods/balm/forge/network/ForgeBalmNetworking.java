@@ -33,7 +33,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
     private static final Logger logger = LoggerFactory.getLogger(ForgeBalmNetworking.class);
 
     private static final Map<Class<?>, MessageRegistration<RegistryFriendlyByteBuf, ?>> messagesByClass = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, MessageRegistration<RegistryFriendlyByteBuf, ?>> messagesByIdentifier = new ConcurrentHashMap<>();
+    private static final Map<CustomPacketPayload.Type<?>, MessageRegistration<RegistryFriendlyByteBuf, ?>> messagesByType = new ConcurrentHashMap<>();
     private static final Map<String, Integer> discriminatorCounter = new ConcurrentHashMap<>();
 
     private static CustomPayloadEvent.Context replyContext;
@@ -51,12 +51,16 @@ public class ForgeBalmNetworking implements BalmNetworking {
     @Override
     public void openGui(Player player, MenuProvider menuProvider) {
         if (player instanceof ServerPlayer serverPlayer) {
-            if (menuProvider instanceof BalmMenuProvider balmMenuProvider) {
-                // TODO serverPlayer.openMenu(menuProvider, buf -> balmMenuProvider.writeScreenOpeningData((ServerPlayer) player, buf));
+            if (menuProvider instanceof BalmMenuProvider<?> balmMenuProvider) {
+                openGui(serverPlayer, balmMenuProvider);
             } else {
                 serverPlayer.openMenu(menuProvider);
             }
         }
+    }
+
+    private <T> void openGui(ServerPlayer player, BalmMenuProvider<T> menuProvider) {
+        player.openMenu(menuProvider, buf -> menuProvider.getCodec().encode(buf, menuProvider.getScreenOpeningData(player)));
     }
 
     @Override
@@ -131,7 +135,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         final var messageRegistration = new ClientboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
-        messagesByIdentifier.put(identifier, messageRegistration);
+        messagesByType.put(type, messageRegistration);
 
         SimpleChannel channel = NetworkChannels.get(identifier.getNamespace());
         channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_CLIENT)
@@ -147,7 +151,7 @@ public class ForgeBalmNetworking implements BalmNetworking {
         final var messageRegistration = new ServerboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
-        messagesByIdentifier.put(identifier, messageRegistration);
+        messagesByType.put(type, messageRegistration);
 
         final var channel = NetworkChannels.get(identifier.getNamespace());
         channel.messageBuilder(clazz, nextDiscriminator(identifier.getNamespace()), NetworkDirection.PLAY_TO_SERVER)

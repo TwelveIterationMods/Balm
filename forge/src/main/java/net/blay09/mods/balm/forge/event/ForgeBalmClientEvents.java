@@ -343,59 +343,5 @@ public class ForgeBalmClientEvents {
                 }
             });
         });
-
-        /*events.registerEvent(GuiDrawEvent.Pre.class, priority -> { TODO
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiEvent.Pre orig) -> {
-                final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getGuiGraphics(), GuiDrawEvent.Element.ALL);
-                events.fireEventHandlers(priority, event);
-                if (event.isCanceled()) {
-                    orig.setCanceled(true);
-                }
-            });
-
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiOverlayEvent.Pre orig) -> {
-                GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
-                if (type != null) {
-                    final GuiDrawEvent.Pre event = new GuiDrawEvent.Pre(orig.getWindow(), orig.getGuiGraphics(), type);
-                    events.fireEventHandlers(priority, event);
-                    if (event.isCanceled()) {
-                        orig.setCanceled(true);
-                    }
-                }
-            });
-        });
-
-        events.registerEvent(GuiDrawEvent.Post.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiEvent.Post orig) -> {
-                final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getGuiGraphics(), GuiDrawEvent.Element.ALL);
-                events.fireEventHandlers(priority, event);
-            });
-
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (RenderGuiOverlayEvent.Post orig) -> {
-                GuiDrawEvent.Element type = getGuiDrawEventElement(orig);
-                if (type != null) {
-                    final GuiDrawEvent.Post event = new GuiDrawEvent.Post(orig.getWindow(), orig.getGuiGraphics(), type);
-                    events.fireEventHandlers(priority, event);
-                }
-            });
-        });*/
     }
-
-    /*@Nullable
-    private static GuiDrawEvent.Element getGuiDrawEventElement(RenderGuiOverlayEvent orig) {
-        GuiDrawEvent.Element type = null;
-        NamedGuiOverlay overlay = orig.getOverlay();
-        if (overlay.id().equals(VanillaGuiOverlay.PLAYER_HEALTH.id())) {
-            type = GuiDrawEvent.Element.HEALTH;
-        } else if (overlay.id().equals(VanillaGuiOverlay.CHAT_PANEL.id())) {
-            type = GuiDrawEvent.Element.CHAT;
-        } else if (overlay.id().equals(VanillaGuiOverlay.DEBUG_TEXT.id())) {
-            type = GuiDrawEvent.Element.DEBUG;
-        } else if (overlay.id().equals(VanillaGuiOverlay.BOSS_EVENT_PROGRESS.id())) {
-            type = GuiDrawEvent.Element.BOSS_INFO;
-        } else if (overlay.id().equals(VanillaGuiOverlay.PLAYER_LIST.id())) {
-            type = GuiDrawEvent.Element.PLAYER_LIST;
-        }
-        return type;
-    }*/
 }
