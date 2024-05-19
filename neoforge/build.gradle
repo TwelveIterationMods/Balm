@@ -87,6 +87,6 @@ modrinth {
     uploadFile = jar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("modrinth.md").text
+    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['neoforge']
 }

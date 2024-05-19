@@ -88,7 +88,7 @@ modrinth {
     uploadFile = remapJar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
-    syncBodyFrom = rootProject.file("modrinth.md").text
+    syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['fabric']
     dependencies {
         required.project "fabric-api"
