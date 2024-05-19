@@ -155,13 +155,13 @@ public class SyncConfigMessage<TData> implements CustomPacketPayload {
         }
     }
 
-    public static <TMessage extends SyncConfigMessage<TData>, TData extends BalmConfigData> void register(ResourceLocation resourceLocation,
+    public static <TMessage extends SyncConfigMessage<TData>, TData extends BalmConfigData> void register(CustomPacketPayload.Type<TMessage> type,
                                                                                                           Class<TMessage> messageClass,
                                                                                                           Function<TData, TMessage> messageFactory,
                                                                                                           Class<TData> dataClass,
                                                                                                           Supplier<TData> dataFactory) {
         Supplier<TData> copyFactory = SyncConfigMessage.createDeepCopyFactory(() -> Balm.getConfig().getBackingConfig(dataClass), dataFactory);
-        Balm.getNetworking().registerClientboundPacket(resourceLocation, messageClass, (RegistryFriendlyByteBuf buf, TMessage message) -> {
+        Balm.getNetworking().registerClientboundPacket(type, messageClass, (RegistryFriendlyByteBuf buf, TMessage message) -> {
             TData data = message.getData();
             writeSyncedFields(buf, data, false);
         }, buf -> {
