@@ -11,6 +11,7 @@ repositories {
         content {
             includeGroup "me.shedaniel"
             includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
         }
     }
 
