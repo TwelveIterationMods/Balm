@@ -7,6 +7,7 @@ import net.blay09.mods.balm.api.network.MessageRegistration;
 import net.blay09.mods.balm.api.network.ServerboundMessageRegistration;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -111,6 +112,7 @@ public class FabricBalmNetworking implements BalmNetworking {
     @Override
     public <T extends CustomPacketPayload> void registerClientboundPacket(CustomPacketPayload.Type<T> type, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
         final var messageRegistration = new ClientboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
+        PayloadTypeRegistry.playS2C().register(type, messageRegistration.getCodec());
         messagesByType.put(type, messageRegistration);
     }
 
@@ -119,6 +121,7 @@ public class FabricBalmNetworking implements BalmNetworking {
         final var messageRegistration = new ServerboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
         messagesByType.put(type, messageRegistration);
 
+        PayloadTypeRegistry.playC2S().register(type, messageRegistration.getCodec());
         ServerPlayNetworking.registerGlobalReceiver(type, ((payload, context) -> context.player().getServer().execute(() -> {
             replyPacketSender = context.responseSender();
             handler.accept(context.player(), payload);
