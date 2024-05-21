@@ -143,7 +143,7 @@ public interface ImplementedContainer extends Container {
         return true;
     }
 
-    static NonNullList<ItemStack> deserializeInventory(HolderLookup.Provider provider, CompoundTag tag, int minimumSize) {
+    static NonNullList<ItemStack> deserializeInventory(CompoundTag tag, int minimumSize, HolderLookup.Provider provider) {
         int size = Math.max(minimumSize, tag.contains("Size", Tag.TAG_INT) ? tag.getInt("Size") : minimumSize);
         NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
         ListTag itemTags = tag.getList("Items", Tag.TAG_COMPOUND);

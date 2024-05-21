@@ -122,7 +122,7 @@ public class NeoForgeBalmNetworking implements BalmNetworking {
     }
 
     private <T> void openGui(ServerPlayer player, BalmMenuProvider<T> menuProvider) {
-        player.openMenu(menuProvider, buf -> menuProvider.getCodec().encode(buf, menuProvider.getScreenOpeningData(player)));
+        player.openMenu(menuProvider, buf -> menuProvider.getScreenStreamCodec().encode(buf, menuProvider.getScreenOpeningData(player)));
     }
 
     @Override

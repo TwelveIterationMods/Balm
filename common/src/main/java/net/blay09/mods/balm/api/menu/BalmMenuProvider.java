@@ -7,5 +7,5 @@ import net.minecraft.world.MenuProvider;
 
 public interface BalmMenuProvider<TPayload> extends MenuProvider {
     TPayload getScreenOpeningData(ServerPlayer player);
-    StreamCodec<FriendlyByteBuf, TPayload> getCodec();
+    StreamCodec<FriendlyByteBuf, TPayload> getScreenStreamCodec();
 }

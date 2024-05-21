@@ -25,8 +25,8 @@ public class DefaultContainer implements ImplementedContainer {
         return items;
     }
 
-    public void deserialize(HolderLookup.Provider provider, CompoundTag tag) {
-        items = ImplementedContainer.deserializeInventory(provider, tag, items.size());
+    public void deserialize(CompoundTag tag, HolderLookup.Provider provider) {
+        items = ImplementedContainer.deserializeInventory(tag, items.size(), provider);
     }
 
     public CompoundTag serialize(HolderLookup.Provider provider) {
