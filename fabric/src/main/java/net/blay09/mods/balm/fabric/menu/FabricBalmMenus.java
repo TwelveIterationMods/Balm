@@ -17,7 +17,7 @@ public class FabricBalmMenus implements BalmMenus {
         return new DeferredObject<>(identifier,
                 () -> Registry.register(BuiltInRegistries.MENU,
                         identifier,
-                        (MenuType<TMenu>) new ExtendedScreenHandlerType<>(factory::create, factory.getCodec()))).resolveImmediately();
+                        (MenuType<TMenu>) new ExtendedScreenHandlerType<>(factory::create, factory.getStreamCodec()))).resolveImmediately();
     }
 
 }

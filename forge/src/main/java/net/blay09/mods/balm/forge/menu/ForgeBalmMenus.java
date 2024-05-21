@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.menu.BalmMenuFactory;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.balm.forge.DeferredRegisters;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
@@ -20,7 +21,7 @@ public class ForgeBalmMenus implements BalmMenus {
     public <TMenu extends AbstractContainerMenu, TPayload> DeferredObject<MenuType<TMenu>> registerMenu(ResourceLocation identifier, BalmMenuFactory<TMenu, TPayload> factory) {
         DeferredRegister<MenuType<?>> register = DeferredRegisters.get(ForgeRegistries.MENU_TYPES, identifier.getNamespace());
         RegistryObject<MenuType<TMenu>> registryObject = register.register(identifier.getPath(),
-                () -> new MenuType<>((IContainerFactory<TMenu>) (syncId, inventory, buf) -> factory.create(syncId, inventory, factory.getCodec().decode(buf)),
+                () -> new MenuType<>((IContainerFactory<TMenu>) (syncId, inventory, buf) -> factory.create(syncId, inventory, factory.getStreamCodec().decode((RegistryFriendlyByteBuf) buf)),
                         FeatureFlagSet.of(FeatureFlags.VANILLA)));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
