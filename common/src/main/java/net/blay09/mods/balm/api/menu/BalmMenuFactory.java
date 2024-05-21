@@ -8,5 +8,5 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 public interface BalmMenuFactory<T extends AbstractContainerMenu, TPayload> {
     T create(int syncId, Inventory inventory, TPayload payload);
 
-    StreamCodec<FriendlyByteBuf, TPayload> getCodec();
+    StreamCodec<FriendlyByteBuf, TPayload> getStreamCodec();
 }
