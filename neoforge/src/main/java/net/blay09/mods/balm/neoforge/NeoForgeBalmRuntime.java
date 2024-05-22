@@ -6,6 +6,7 @@ import net.blay09.mods.balm.api.BalmRuntime;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
+import net.blay09.mods.balm.api.component.BalmComponents;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
@@ -24,6 +25,7 @@ import net.blay09.mods.balm.common.CommonBalmLootTables;
 import net.blay09.mods.balm.neoforge.block.NeoForgeBalmBlocks;
 import net.blay09.mods.balm.neoforge.block.entity.NeoForgeBalmBlockEntities;
 import net.blay09.mods.balm.neoforge.command.NeoForgeBalmCommands;
+import net.blay09.mods.balm.neoforge.component.NeoForgeBalmComponents;
 import net.blay09.mods.balm.neoforge.config.NeoForgeBalmConfig;
 import net.blay09.mods.balm.neoforge.entity.NeoForgeBalmEntities;
 import net.blay09.mods.balm.neoforge.event.NeoForgeBalmCommonEvents;
@@ -69,6 +71,7 @@ public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     private final BalmLootTables lootTables = new CommonBalmLootTables();
     private final BalmStats stats = new NeoForgeBalmStats();
     private final BalmRecipes recipes = new NeoForgeBalmRecipes();
+    private final BalmComponents components = new NeoForgeBalmComponents();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -228,4 +231,8 @@ public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
         NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener((ResourceManagerReloadListener) reloadListener::accept));
     }
 
+    @Override
+    public BalmComponents getComponents() {
+        return components;
+    }
 }

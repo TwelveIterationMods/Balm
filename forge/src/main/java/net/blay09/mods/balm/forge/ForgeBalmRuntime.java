@@ -7,12 +7,14 @@ import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
+import net.blay09.mods.balm.api.component.BalmComponents;
 import net.blay09.mods.balm.api.config.BalmConfig;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.api.event.BalmEvents;
 import net.blay09.mods.balm.api.recipe.BalmRecipes;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.common.CommonBalmLootTables;
+import net.blay09.mods.balm.forge.component.ForgeBalmComponents;
 import net.blay09.mods.balm.forge.event.ForgeBalmEvents;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.balm.api.loot.BalmLootTables;
@@ -70,6 +72,7 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     private final BalmLootTables lootTables = new CommonBalmLootTables();
     private final BalmStats stats = new ForgeBalmStats();
     private final BalmRecipes recipes = new ForgeBalmRecipes();
+    private final BalmComponents components = new ForgeBalmComponents();
 
     private final List<String> addonClasses = new ArrayList<>();
 
@@ -177,6 +180,7 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
         ((ForgeBalmItems) items).register();
         ((ForgeBalmEntities) entities).register();
         ((ForgeBalmWorldGen) worldGen).register();
+        ((ForgeBalmComponents) components).register();
         ((ForgeBalmStats) stats).register();
 
         initializer.run();
@@ -230,4 +234,8 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
         MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener((ResourceManagerReloadListener) reloadListener::accept));
     }
 
+    @Override
+    public BalmComponents getComponents() {
+        return components;
+    }
 }

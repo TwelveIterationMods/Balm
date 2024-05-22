@@ -1,6 +1,5 @@
 package net.blay09.mods.balm.forge.stats;
 
-import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
