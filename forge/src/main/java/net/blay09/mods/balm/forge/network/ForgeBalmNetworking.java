@@ -59,7 +59,8 @@ public class ForgeBalmNetworking implements BalmNetworking {
     }
 
     private <T> void openGui(ServerPlayer player, BalmMenuProvider<T> menuProvider) {
-        player.openMenu(menuProvider, buf -> menuProvider.getScreenStreamCodec().encode((RegistryFriendlyByteBuf) buf, menuProvider.getScreenOpeningData(player)));
+        // TODO we have to create a RegistryFriendlyByteBuf ourselves because Forge is out of date
+        player.openMenu(menuProvider, buf -> menuProvider.getScreenStreamCodec().encode(new RegistryFriendlyByteBuf(buf, player.registryAccess()), menuProvider.getScreenOpeningData(player)));
     }
 
     @Override
