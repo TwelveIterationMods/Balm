@@ -1,6 +1,9 @@
 dependencies {
-    compileOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
+    compileOnly("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
     if (jei_minecraft_version == minecraft_version) {
-        runtimeOnly fg.deobf("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
+        runtimeOnly("mezz.jei:jei-$jei_minecraft_version-forge:$jei_version")
     }
+
+    // temporary hacky fix as suggested by Forge
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
