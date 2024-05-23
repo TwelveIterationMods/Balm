@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#c:ingots/iron",
     {
       "id": "#forge:ingots",
       "required": false

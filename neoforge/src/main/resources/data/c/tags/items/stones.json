@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    {"id":"#forge:stone", "required": false},
     "minecraft:andesite",
     "minecraft:diorite",
     "minecraft:granite",
