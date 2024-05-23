@@ -3,11 +3,13 @@ package net.blay09.mods.balm.fabric;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import net.blay09.mods.balm.api.energy.BalmEnergyStorageProvider;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.config.ExampleConfigData;
+import net.blay09.mods.balm.fabric.energy.FabricBalmEnergyStorage;
 import net.blay09.mods.balm.fabric.fluid.BalmFluidStorage;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.fabricmc.api.ModInitializer;
@@ -18,6 +20,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import team.reborn.energy.api.EnergyStorage;
 
 public class FabricBalm implements ModInitializer {
 
@@ -49,6 +52,17 @@ public class FabricBalm implements ModInitializer {
                 final var fluidTank = fluidTankProvider.getFluidTank(direction);
                 if (fluidTank != null) {
                     return new BalmFluidStorage(fluidTank);
+                }
+            }
+
+            return null;
+        });
+
+        EnergyStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+            if (blockEntity instanceof BalmEnergyStorageProvider energyStorageProvider) {
+                final var energyStorage = energyStorageProvider.getEnergyStorage(direction);
+                if (energyStorage != null) {
+                    return new FabricBalmEnergyStorage(energyStorage);
                 }
             }
 

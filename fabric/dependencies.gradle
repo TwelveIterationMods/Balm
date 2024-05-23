@@ -17,4 +17,6 @@ dependencies {
 
     modCompileOnly "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
     modCompileOnly("de.siphalor:amecsapi-1.20:1.5.2+mc1.20-pre1")
+
+    include modApi('teamreborn:energy:4.0.1')
 }

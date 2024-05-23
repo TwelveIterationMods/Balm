@@ -22,12 +22,14 @@ public class BalmFluidStorage extends SnapshotParticipant<ResourceAmount<FluidVa
         StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
         if (getAmount() == 0) {
+            updateSnapshots(transaction);
             return fluidTank.fill(fluidVariant.getFluid(), Ints.saturatedCast(maxAmount), false);
         }
 
         if (fluidVariant.isOf(getResource().getFluid())) {
             // Otherwise we can only accept the same fluid as the current one.
             long amountInserted = Math.min(maxAmount, getCapacity() - getAmount());
+            updateSnapshots(transaction);
             return fluidTank.fill(fluidVariant.getFluid(), Ints.saturatedCast(amountInserted), false);
         } else {
             return 0;
