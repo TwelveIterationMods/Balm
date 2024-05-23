@@ -10,9 +10,9 @@ public class BalmItemTags {
     public static final TagKey<Item> BLACK_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dyes/black"));
     public static final TagKey<Item> BLUE_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dyes/blue"));
     public static final TagKey<Item> BROWN_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dyes/brown"));
+    public static final TagKey<Item> DIAMONDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gems/diamonds"));
     public static final TagKey<Item> COOKING_OIL = TagKey.create(Registries.ITEM, new ResourceLocation("c", "cooking_oil"));
     public static final TagKey<Item> CYAN_DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dyes/cyan"));
-    public static final TagKey<Item> DIAMONDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gems/diamonds"));
     public static final TagKey<Item> DYES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dyes"));
     public static final TagKey<Item> EGGS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "eggs"));
     public static final TagKey<Item> EMERALDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gems/emerald"));
