@@ -4,14 +4,17 @@ package net.blay09.mods.balm.forge.event;
 import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -69,6 +72,18 @@ public class ForgeBalmCommonEvents {
             });
         });
 
+        events.registerTickEvent(TickType.Entity, TickPhase.Start, (EntityTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((LivingEvent.LivingTickEvent orig) -> { // TODO unlike Fabric and NeoForge, only ticks for living entities
+                handler.handle(orig.getEntity());
+            });
+        });
+
+        events.registerTickEvent(TickType.Entity, TickPhase.End, (EntityTickHandler handler) -> {
+            MinecraftForge.EVENT_BUS.addListener((LivingEvent.LivingTickEvent orig) -> { // TODO ticks at same time as START on Forge
+                handler.handle(orig.getEntity());
+            });
+        });
+
         events.registerEvent(ServerStartedEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerStartedEvent orig) -> {
                 final ServerStartedEvent event = new ServerStartedEvent(orig.getServer());
@@ -76,14 +91,18 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(ServerStoppedEvent.class, priority -> {
+        events.registerEvent(ServerStoppedEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerStoppedEvent orig) -> {
                 final ServerStoppedEvent event = new ServerStoppedEvent(orig.getServer());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(UseBlockEvent.class, priority -> {
+        events.registerEvent(UseBlockEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerInteractEvent.RightClickBlock orig) -> {
                 final UseBlockEvent event = new UseBlockEvent(orig.getEntity(), orig.getLevel(), orig.getHand(), orig.getHitVec());
                 events.fireEventHandlers(priority, event);
@@ -94,7 +113,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(UseItemEvent.class, priority -> {
+        events.registerEvent(UseItemEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerInteractEvent.RightClickItem orig) -> {
                 final UseItemEvent event = new UseItemEvent(orig.getEntity(), orig.getLevel(), orig.getHand());
                 events.fireEventHandlers(priority, event);
@@ -105,21 +126,27 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerLoginEvent.class, priority -> {
+        events.registerEvent(PlayerLoginEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerLoggedInEvent orig) -> {
                 final PlayerLoginEvent event = new PlayerLoginEvent((ServerPlayer) orig.getEntity());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(PlayerLogoutEvent.class, priority -> {
+        events.registerEvent(PlayerLogoutEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerLoggedOutEvent orig) -> {
                 final PlayerLogoutEvent event = new PlayerLogoutEvent((ServerPlayer) orig.getEntity());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(BreakBlockEvent.class, priority -> {
+        events.registerEvent(BreakBlockEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.BreakEvent orig) -> {
                 BlockEntity blockEntity = orig.getLevel().getBlockEntity(orig.getPos());
                 final BreakBlockEvent event = new BreakBlockEvent((Level) orig.getLevel(), orig.getPlayer(), orig.getPos(), orig.getState(), blockEntity);
@@ -130,14 +157,18 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerRespawnEvent.class, priority -> {
+        events.registerEvent(PlayerRespawnEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerRespawnEvent orig) -> {
                 final PlayerRespawnEvent event = new PlayerRespawnEvent(((ServerPlayer) orig.getEntity()), (ServerPlayer) orig.getEntity());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(LivingFallEvent.class, priority -> {
+        events.registerEvent(LivingFallEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingFallEvent orig) -> {
                 final LivingFallEvent event = new LivingFallEvent(orig.getEntity());
                 events.fireEventHandlers(priority, event);
@@ -153,7 +184,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(LivingDamageEvent.class, priority -> {
+        events.registerEvent(LivingDamageEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingDamageEvent orig) -> {
                 final LivingDamageEvent event = new LivingDamageEvent(orig.getEntity(), orig.getSource(), orig.getAmount());
                 events.fireEventHandlers(priority, event);
@@ -164,7 +197,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(CropGrowEvent.Pre.class, priority -> {
+        events.registerEvent(CropGrowEvent.Pre.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Pre orig) -> {
                 if (orig.getLevel() instanceof Level level) {
                     final CropGrowEvent.Pre event = new CropGrowEvent.Pre(level, orig.getPos(), orig.getState());
@@ -176,7 +211,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(CropGrowEvent.Post.class, priority -> {
+        events.registerEvent(CropGrowEvent.Post.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Post orig) -> {
                 if (orig.getLevel() instanceof Level level) {
                     final CropGrowEvent.Post event = new CropGrowEvent.Post(level, orig.getPos(), orig.getState());
@@ -185,21 +222,27 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(ChunkTrackingEvent.Start.class, priority -> {
+        events.registerEvent(ChunkTrackingEvent.Start.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ChunkWatchEvent.Watch orig) -> {
                 final ChunkTrackingEvent.Start event = new ChunkTrackingEvent.Start(orig.getLevel(), orig.getPlayer(), orig.getPos());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(ChunkTrackingEvent.Stop.class, priority -> {
+        events.registerEvent(ChunkTrackingEvent.Stop.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ChunkWatchEvent.UnWatch orig) -> {
                 final ChunkTrackingEvent.Stop event = new ChunkTrackingEvent.Stop(orig.getLevel(), orig.getPlayer(), orig.getPos());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(TossItemEvent.class, priority -> {
+        events.registerEvent(TossItemEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (ItemTossEvent orig) -> {
                 final TossItemEvent event = new TossItemEvent(orig.getPlayer(), orig.getEntity().getItem());
                 events.fireEventHandlers(priority, event);
@@ -209,7 +252,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerAttackEvent.class, priority -> {
+        events.registerEvent(PlayerAttackEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (AttackEntityEvent orig) -> {
                 final PlayerAttackEvent event = new PlayerAttackEvent(orig.getEntity(), orig.getTarget());
                 events.fireEventHandlers(priority, event);
@@ -219,7 +264,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(LivingHealEvent.class, priority -> {
+        events.registerEvent(LivingHealEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.living.LivingHealEvent orig) -> {
                 final LivingHealEvent event = new LivingHealEvent(orig.getEntity(), orig.getAmount());
                 events.fireEventHandlers(priority, event);
@@ -229,7 +276,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(DigSpeedEvent.class, priority -> {
+        events.registerEvent(DigSpeedEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.BreakSpeed orig) -> {
                 final DigSpeedEvent event = new DigSpeedEvent(orig.getEntity(), orig.getState(), orig.getOriginalSpeed());
                 events.fireEventHandlers(priority, event);
@@ -242,21 +291,27 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(PlayerChangedDimensionEvent.class, priority -> {
+        events.registerEvent(PlayerChangedDimensionEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.PlayerChangedDimensionEvent orig) -> {
                 final PlayerChangedDimensionEvent event = new PlayerChangedDimensionEvent((ServerPlayer) orig.getEntity(), orig.getFrom(), orig.getTo());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(ItemCraftedEvent.class, priority -> {
+        events.registerEvent(ItemCraftedEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (PlayerEvent.ItemCraftedEvent orig) -> {
                 final ItemCraftedEvent event = new ItemCraftedEvent(orig.getEntity(), orig.getCrafting(), orig.getInventory());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(CommandEvent.class, priority -> {
+        events.registerEvent(CommandEvent.class, priority ->
+
+        {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.CommandEvent orig) -> {
                 final CommandEvent event = new CommandEvent(orig.getParseResults());
                 events.fireEventHandlers(priority, event);

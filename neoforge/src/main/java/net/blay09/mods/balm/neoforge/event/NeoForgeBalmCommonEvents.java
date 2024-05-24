@@ -16,6 +16,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkWatchEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -62,6 +63,18 @@ public class NeoForgeBalmCommonEvents {
                 if (orig.getEntity() instanceof ServerPlayer serverPlayer) {
                     handler.handle(serverPlayer);
                 }
+            });
+        });
+
+        events.registerTickEvent(TickType.Entity, TickPhase.Start, (EntityTickHandler handler) -> {
+            NeoForge.EVENT_BUS.addListener((EntityTickEvent.Pre orig) -> {
+                handler.handle(orig.getEntity());
+            });
+        });
+
+        events.registerTickEvent(TickType.Entity, TickPhase.End, (EntityTickHandler handler) -> {
+            NeoForge.EVENT_BUS.addListener((EntityTickEvent.Post orig) -> {
+                handler.handle(orig.getEntity());
             });
         });
 

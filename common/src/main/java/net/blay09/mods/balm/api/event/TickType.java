@@ -9,4 +9,5 @@ public class TickType<T> {
     public static final TickType<ServerTickHandler> Server = new TickType<>();
     public static final TickType<ServerLevelTickHandler> ServerLevel = new TickType<>();
     public static final TickType<ServerPlayerTickHandler> ServerPlayer = new TickType<>();
+    public static final TickType<EntityTickHandler> Entity = new TickType<>();
 }

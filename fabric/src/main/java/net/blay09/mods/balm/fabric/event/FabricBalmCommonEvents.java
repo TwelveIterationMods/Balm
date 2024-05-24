@@ -22,8 +22,12 @@ public class FabricBalmCommonEvents {
 
     private static final List<ServerPlayerTickHandler> playerTickStartHandlers = new ArrayList<>();
     private static final List<ServerPlayerTickHandler> playerTickEndHandlers = new ArrayList<>();
-    private static ServerTickEvents.StartTick serverTickStartListener = null;
-    private static ServerTickEvents.EndTick serverTickEndListener = null;
+    private static final List<EntityTickHandler> entityTickStartHandlers = new ArrayList<>();
+    private static final List<EntityTickHandler> entityTickEndHandlers = new ArrayList<>();
+    private static ServerTickEvents.StartTick serverTickPlayersStartListener = null;
+    private static ServerTickEvents.EndTick serverTickPlayersEndListener = null;
+    private static ServerTickEvents.StartTick serverTickEntitiesStartListener = null;
+    private static ServerTickEvents.EndTick serverTickEntitiesEndListener = null;
 
     public static void registerEvents(FabricBalmEvents events) {
         events.registerTickEvent(TickType.Server, TickPhase.Start, (ServerTickHandler handler) -> ServerTickEvents.START_SERVER_TICK.register(handler::handle));
@@ -36,8 +40,8 @@ public class FabricBalmCommonEvents {
                 (ServerLevelTickHandler handler) -> ServerTickEvents.END_WORLD_TICK.register(handler::handle));
 
         events.registerTickEvent(TickType.ServerPlayer, TickPhase.Start, (ServerPlayerTickHandler handler) -> {
-            if (serverTickStartListener == null) {
-                serverTickStartListener = server -> {
+            if (serverTickPlayersStartListener == null) {
+                serverTickPlayersStartListener = server -> {
                     for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                         for (ServerPlayerTickHandler playerTickHandler : playerTickStartHandlers) {
                             playerTickHandler.handle(player);
@@ -45,15 +49,15 @@ public class FabricBalmCommonEvents {
                     }
                 };
 
-                ServerTickEvents.START_SERVER_TICK.register(serverTickStartListener);
+                ServerTickEvents.START_SERVER_TICK.register(serverTickPlayersStartListener);
             }
 
             playerTickStartHandlers.add(handler);
         });
 
         events.registerTickEvent(TickType.ServerPlayer, TickPhase.End, (ServerPlayerTickHandler handler) -> {
-            if (serverTickEndListener == null) {
-                serverTickEndListener = server -> {
+            if (serverTickPlayersEndListener == null) {
+                serverTickPlayersEndListener = server -> {
                     for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                         for (ServerPlayerTickHandler playerTickHandler : playerTickEndHandlers) {
                             playerTickHandler.handle(player);
@@ -61,10 +65,46 @@ public class FabricBalmCommonEvents {
                     }
                 };
 
-                ServerTickEvents.END_SERVER_TICK.register(serverTickEndListener);
+                ServerTickEvents.END_SERVER_TICK.register(serverTickPlayersEndListener);
             }
 
             playerTickEndHandlers.add(handler);
+        });
+
+        events.registerTickEvent(TickType.Entity, TickPhase.Start, (EntityTickHandler handler) -> {
+            if (serverTickEntitiesStartListener == null) {
+                serverTickEntitiesStartListener = server -> {
+                    for (final var level : server.getAllLevels()) {
+                        for (final var entity : level.getAllEntities()) {
+                            for (final var entityTickHandler : entityTickStartHandlers) {
+                                entityTickHandler.handle(entity);
+                            }
+                        }
+                    }
+                };
+
+                ServerTickEvents.START_SERVER_TICK.register(serverTickEntitiesStartListener);
+            }
+
+            entityTickStartHandlers.add(handler);
+        });
+
+        events.registerTickEvent(TickType.Entity, TickPhase.End, (EntityTickHandler handler) -> {
+            if (serverTickEntitiesEndListener == null) {
+                serverTickEntitiesEndListener = server -> {
+                    for (final var level : server.getAllLevels()) {
+                        for (final var entity : level.getAllEntities()) {
+                            for (final var entityTickHandler : entityTickEndHandlers) {
+                                entityTickHandler.handle(entity);
+                            }
+                        }
+                    }
+                };
+
+                ServerTickEvents.END_SERVER_TICK.register(serverTickEntitiesEndListener);
+            }
+
+            entityTickEndHandlers.add(handler);
         });
 
         events.registerEvent(ServerStartedEvent.class, () -> ServerLifecycleEvents.SERVER_STARTED.register(server -> {
