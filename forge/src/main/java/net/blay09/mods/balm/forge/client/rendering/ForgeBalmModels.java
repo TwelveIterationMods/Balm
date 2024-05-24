@@ -144,13 +144,17 @@ public class ForgeBalmModels implements BalmModels {
     }
 
     @Override
-    public DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes) {
+    public DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, Set<ResourceLocation> models, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes) {
         Function<BlockState, ResourceLocation> effectiveModelFunction = modelFunction != null ? modelFunction : (it -> identifier);
 
         DeferredModel deferredModel = new DeferredModel(identifier) {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ResourceLocation, BakedModel> modelRegistry, BiFunction<ResourceLocation, Material, TextureAtlasSprite> spriteBiFunction) {
-                return new ForgeCachedDynamicModel(bakery, effectiveModelFunction, null, textureMapFunction, transformFunction, renderTypes, identifier);
+                final var unbakedModels = new HashMap<ResourceLocation, UnbakedModel>();
+                for (final var modelId : models) {
+                    unbakedModels.put(modelId, bakery.getModel(modelId));
+                }
+                return new ForgeCachedDynamicModel(bakery, unbakedModels, effectiveModelFunction, null, textureMapFunction, transformFunction, renderTypes, identifier);
             }
         };
         modelsToBake.add(deferredModel);

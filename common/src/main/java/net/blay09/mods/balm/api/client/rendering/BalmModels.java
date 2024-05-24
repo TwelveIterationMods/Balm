@@ -15,8 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -28,11 +26,11 @@ public interface BalmModels {
 
     DeferredObject<BakedModel> bakeModel(ResourceLocation identifier, UnbakedModel model);
 
-    default DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction) {
-        return loadDynamicModel(identifier, modelFunction, textureMapFunction, transformFunction, Collections.emptyList());
+    default DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, Set<ResourceLocation> models, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction) {
+        return loadDynamicModel(identifier, models, modelFunction, textureMapFunction, transformFunction, Collections.emptyList());
     }
 
-    DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes);
+    DeferredObject<BakedModel> loadDynamicModel(ResourceLocation identifier, Set<ResourceLocation> models, @Nullable Function<BlockState, ResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes);
 
     DeferredObject<BakedModel> retexture(ResourceLocation identifier, Map<String, String> textureMap);
 

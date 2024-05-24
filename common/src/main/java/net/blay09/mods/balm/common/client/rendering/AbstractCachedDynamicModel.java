@@ -31,6 +31,7 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
 
     private final Map<String, BakedModel> cache = new HashMap<>();
     private final Map<ResourceLocation, BakedModel> baseModelCache = new HashMap<>();
+    private final Map<ResourceLocation, UnbakedModel> unbakedModels = new HashMap<>();
 
     private final ModelBakery modelBakery;
     private final Function<ResourceLocation, UnbakedModel> modelResolver;
@@ -42,9 +43,10 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
 
     private TextureAtlasSprite particleTexture;
 
-    public AbstractCachedDynamicModel(ModelBakery modelBakery, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ResourceLocation location) {
+    public AbstractCachedDynamicModel(ModelBakery modelBakery, Map<ResourceLocation, UnbakedModel> models, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ResourceLocation location) {
         this.modelBakery = modelBakery;
-        this.modelResolver = BalmClient.getModels()::getUnbakedModelOrMissing;
+        unbakedModels.putAll(models);
+        this.modelResolver = unbakedModels::get;
         this.baseModelFunction = baseModelFunction;
         this.parts = parts;
         this.textureMapFunction = textureMapFunction;
