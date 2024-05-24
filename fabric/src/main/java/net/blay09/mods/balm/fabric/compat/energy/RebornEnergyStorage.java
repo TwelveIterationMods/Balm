@@ -1,15 +1,15 @@
-package net.blay09.mods.balm.fabric.energy;
+package net.blay09.mods.balm.fabric.compat.energy;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import team.reborn.energy.api.EnergyStorage;
 
-public class FabricBalmEnergyStorage extends SnapshotParticipant<Long> implements EnergyStorage {
+public class RebornEnergyStorage extends SnapshotParticipant<Long> implements EnergyStorage {
 
     private final net.blay09.mods.balm.api.energy.EnergyStorage energyStorage;
 
-    public FabricBalmEnergyStorage(net.blay09.mods.balm.api.energy.EnergyStorage energyStorage) {
+    public RebornEnergyStorage(net.blay09.mods.balm.api.energy.EnergyStorage energyStorage) {
         this.energyStorage = energyStorage;
     }
 
