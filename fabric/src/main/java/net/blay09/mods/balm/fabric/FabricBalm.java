@@ -55,5 +55,7 @@ public class FabricBalm implements ModInitializer {
 
             return null;
         });
+
+        Balm.initializeIfLoaded("team_reborn_energy", "net.blay09.mods.balm.fabric.compat.energy.RebornEnergy");
     }
 }
