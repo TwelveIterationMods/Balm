@@ -13,7 +13,6 @@
     "sources": "https://github.com/TwelveIterationMods/Balm",
     "issues": "https://github.com/TwelveIterationMods/Balm/issues"
   },
-
   "license": "${license}",
   "icon": "${mod_id}.png",
 
@@ -37,6 +36,7 @@
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
+    "team_reborn_energy": "*",
     "minecraft": "${minecraft_version}",
     "java": ">=${java_version}"
   },
