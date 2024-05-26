@@ -147,7 +147,7 @@ public class NeoForgeBalmClientEvents {
                         orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.ALLOW);
+                    orig.setResult(ScreenEvent.MouseButtonPressed.Post.Result.FORCE_HANDLED);
                 }
             });
         });
@@ -200,7 +200,7 @@ public class NeoForgeBalmClientEvents {
                         orig.getButton());
                 events.fireEventHandlers(priority, event);
                 if (event.isCanceled()) {
-                    orig.setResult(Event.Result.ALLOW);
+                    orig.setResult(ScreenEvent.MouseButtonReleased.Post.Result.FORCE_HANDLED);
                 }
             });
         });

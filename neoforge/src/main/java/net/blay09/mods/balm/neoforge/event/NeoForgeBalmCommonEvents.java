@@ -174,19 +174,19 @@ public class NeoForgeBalmCommonEvents {
         });
 
         events.registerEvent(CropGrowEvent.Pre.class, priority -> {
-            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Pre orig) -> {
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.level.block.CropGrowEvent.Pre orig) -> {
                 if (orig.getLevel() instanceof Level level) {
                     final CropGrowEvent.Pre event = new CropGrowEvent.Pre(level, orig.getPos(), orig.getState());
                     events.fireEventHandlers(priority, event);
                     if (event.isCanceled()) {
-                        orig.setResult(Event.Result.DENY);
+                        orig.setResult(net.neoforged.neoforge.event.level.block.CropGrowEvent.Pre.Result.DO_NOT_GROW);
                     }
                 }
             });
         });
 
         events.registerEvent(CropGrowEvent.Post.class, priority -> {
-            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (BlockEvent.CropGrowEvent.Post orig) -> {
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.level.block.CropGrowEvent.Post orig) -> {
                 if (orig.getLevel() instanceof Level level) {
                     final CropGrowEvent.Post event = new CropGrowEvent.Post(level, orig.getPos(), orig.getState());
                     events.fireEventHandlers(priority, event);
