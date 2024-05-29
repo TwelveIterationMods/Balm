@@ -8,6 +8,8 @@ repositories {
 }
 
 dependencies {
+    include modApi("net.blay09.mods:kuma-api-fabric:20.6.1-SNAPSHOT")
+
     modCompileOnly "mezz.jei:jei-$jei_minecraft_version-fabric-api:$jei_version"
     if (jei_minecraft_version == minecraft_version) {
         modRuntimeOnly "mezz.jei:jei-$jei_minecraft_version-fabric:$jei_version"

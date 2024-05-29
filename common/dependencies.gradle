@@ -1,3 +1,4 @@
 dependencies {
+    compileOnly "net.blay09.mods:kuma-api-common:20.6.1-SNAPSHOT"
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
 }

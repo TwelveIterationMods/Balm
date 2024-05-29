@@ -51,19 +51,6 @@ loom {
     }
 }
 
-/*tasks.withType(JavaCompile).configureEach {
-    source(project(":shared").sourceSets.main.allSource)
-    source(project(":shared-bridge").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).configureEach {
-    source(project(":shared").sourceSets.main.allJava)
-    source(project(":shared-bridge").sourceSets.main.allJava)
-}
-tasks.named("sourcesJar", Jar) {
-    from(project(":shared").sourceSets.main.allSource)
-    from(project(":shared-bridge").sourceSets.main.allSource)
-}*/
-
 task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
     dependsOn('build')
     description = 'Publishes the Fabric build to CurseForge.'
