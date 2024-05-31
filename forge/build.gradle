@@ -14,7 +14,7 @@ mixin {
 }
 
 jarJar.enable()
-build.finalizedBy tasks.jarJar
+build.dependsOn tasks.jarJar
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
@@ -117,3 +117,4 @@ modrinth {
     syncBodyFrom = rootProject.file("modpage.md").text
     loaders = ['forge']
 }
+tasks.modrinth.dependsOn(build)
