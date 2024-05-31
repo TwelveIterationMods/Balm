@@ -111,7 +111,7 @@ modrinth {
     projectId = project.modrinth_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+forge-" + project.minecraft_version
-    uploadFile = jarJar
+    uploadFile = jar.outputs.getFiles().asPath.replace(".jar", "-all.jar")
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("modpage.md").text
