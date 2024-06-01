@@ -1,7 +1,7 @@
 jarJar.enable()
 
 dependencies {
-    jarJar(group: "net.blay09.mods", name: "kuma-api-neoforge", version: "[20.6.0,20.7.0)")
+    jarJar(group: "net.blay09.mods", name: "kuma-api-neoforge", version: "[20.6.1,20.7.0)")
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     if (jei_minecraft_version == minecraft_version) {
         runtimeOnly "mezz.jei:jei-$jei_minecraft_version-forge:$jei_version"
