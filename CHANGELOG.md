@@ -1,3 +1,5 @@
+- Fixed incorrect diamond tag causing some recipes to not work
+
 - Updated Kuma API to fix another issue in Inventory Essentials
 
 - Added embedded Kuma API, which will be responsible for advanced key mappings in Inventory Essentials and Crafting Tweaks
