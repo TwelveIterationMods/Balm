@@ -1,3 +1,5 @@
+- Updated Kuma API to fix another issue in Inventory Essentials
+
 - Added embedded Kuma API, which will be responsible for advanced key mappings in Inventory Essentials and Crafting Tweaks
 
 - Updated to NeoForge 20.6.78-beta changes
