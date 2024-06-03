@@ -119,7 +119,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 
     apiToken = project.findProperty("curseforge.api_key") ?: System.getenv("CURSEFORGE_TOKEN") ?: "none"
 
-    def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}-all.jar"))
+    def mainFile = upload(curseforge_fabric_project_id, file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"))
     mainFile.changelog = rootProject.file('CHANGELOG.md').text
     mainFile.addRequirement("fabric-api")
     project.minecraft_versions.split(',').toList().each { mainFile.addGameVersion(it) }
@@ -131,7 +131,7 @@ modrinth {
     projectId = project.modrinth_fabric_project_id
     versionType = project.modrinth_release_type
     versionNumber = project.version + "+fabric-" + project.minecraft_version
-    uploadFile = jar.outputs.getFiles().asPath.replace(".jar", "-all.jar")
+    uploadFile = remapJar
     changelog = rootProject.file("CHANGELOG.md").text
     gameVersions = project.minecraft_versions.split(',').toList()
     syncBodyFrom = rootProject.file("modrinth.md").text
