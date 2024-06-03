@@ -22,6 +22,9 @@ group = mod_group
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 version = mod_version
 
+jarJar.enable()
+build.dependsOn tasks.jarJar
+
 minecraft {
     mappings channel: 'official', version: minecraft_version
 

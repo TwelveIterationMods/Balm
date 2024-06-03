@@ -38,26 +38,69 @@ subprojects {
         mavenCentral()
 
         maven {
-            url "https://www.cursemaven.com"
-
+            url = "https://www.cursemaven.com"
             content {
                 includeGroup 'curse.maven'
             }
         }
 
-        maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
+        maven {
+            url = "https://maven.twelveiterations.com/repository/maven-public/"
+            content {
+                includeGroup "net.blay09.mods"
+            }
+        }
 
-        // For Cloth Config and REI
-        maven { url "https://maven.shedaniel.me/" }
+        maven {
+            url = "https://maven.shedaniel.me/"
+            content {
+                includeGroup "me.shedaniel"
+                includeGroup "me.shedaniel.cloth"
+                includeGroup "dev.architectury"
+            }
+        }
 
-        // For JEI
-        maven { url "https://dvs1.progwml6.com/files/maven/" }
+        maven {
+            url = "https://maven.blamejared.com"
+            content {
+                includeGroup "mezz.jei"
+            }
+        }
 
-        // For WTHIT
-        maven { url "https://maven.bai.lol" }
+        maven {
+            url = "https://maven.bai.lol"
+            content {
+                includeGroup "mcp.mobius.waila"
+            }
+        }
 
-        // For ModMenu
-        maven { url "https://maven.terraformersmc.com/releases/" }
+        maven {
+            url = "https://maven.terraformersmc.com/releases"
+            content {
+                includeGroup "com.terraformersmc"
+            }
+        }
+
+        maven {
+            url = "https://jm.gserv.me/repository/maven-public/"
+            content {
+                includeGroup "info.journeymap"
+            }
+        }
+
+        maven {
+            url = 'https://jitpack.io'
+            content {
+                includeGroup "com.github.BlueMap-Minecraft"
+            }
+        }
+
+        maven {
+            url = "https://repo.mikeprimm.com/"
+            content {
+                includeGroup "us.dynmap"
+            }
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -68,6 +111,13 @@ subprojects {
     tasks.withType(Javadoc).tap {
         configureEach {
             failOnError false
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            cacheChangingModulesFor 60, 'seconds'
+            cacheDynamicVersionsFor 60, 'seconds'
         }
     }
 }

@@ -1,2 +1,5 @@
 dependencies {
+    jarJar(group: "net.blay09.mods", name: "kuma-api-forge", version: "[20.1.0,20.2.0)") {
+        transitive = false
+    }
 }
