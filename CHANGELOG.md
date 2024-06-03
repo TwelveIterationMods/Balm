@@ -1,1 +1,1 @@
-- Fixed some models on Fabric not being loaded correctly
+- Added embedded Kuma API, which will be responsible for advanced key mappings in Inventory Essentials and Crafting Tweaks
