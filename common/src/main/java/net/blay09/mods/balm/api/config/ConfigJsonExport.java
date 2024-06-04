@@ -28,7 +28,12 @@ public class ConfigJsonExport {
             if (isProperty(field)) {
                 final var name = field.getName();
                 final var type = field.getType().getSimpleName();
-                final var description = field.getAnnotation(Comment.class).value();
+                final var commentAnnotation = field.getAnnotation(Comment.class);
+                if (commentAnnotation == null) {
+                    throw new IllegalArgumentException("Missing @Comment annotation on field: " + field);
+                }
+
+                final var description = commentAnnotation.value();
                 final var defaultValue = field.get(defaults);
                 final var validValues = getValidValues(field);
                 properties.add(new ConfigProperty(name, type, description, defaultValue, validValues));
@@ -40,6 +45,10 @@ public class ConfigJsonExport {
     }
 
     public static void exportToFile(Class<?> configDataClass, File file) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException {
+        final var parentFile = file.getParentFile();
+        if (!parentFile.exists() && !parentFile.mkdirs()) {
+            throw new IOException("Failed to create parent directories for file: " + file);
+        }
         Files.writeString(file.toPath(), new Gson().toJson(export(configDataClass)));
     }
 

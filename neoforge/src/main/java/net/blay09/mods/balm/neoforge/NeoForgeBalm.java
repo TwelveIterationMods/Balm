@@ -2,6 +2,7 @@ package net.blay09.mods.balm.neoforge;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
+import net.blay09.mods.balm.common.command.BalmCommand;
 import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.neoforge.client.NeoForgeBalmClient;
 import net.blay09.mods.balm.neoforge.provider.NeoForgeBalmProviders;
@@ -20,6 +21,7 @@ public class NeoForgeBalm {
     public NeoForgeBalm(IEventBus modBus) {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
         ExampleConfig.initialize();
+        Balm.getCommands().register(BalmCommand::register);
 
         NeoForgeBalmWorldGen.initializeBalmBiomeModifiers(modBus);
         modBus.addListener(NeoForgeBalmClient::onInitializeClient);
