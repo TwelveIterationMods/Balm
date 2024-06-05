@@ -7,7 +7,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -21,7 +20,7 @@ public class IconExport {
         minecraft.execute(() -> {
             RenderTarget renderTarget = null;
             try {
-                renderTarget = new TextureTarget(64, 64, false, Minecraft.ON_OSX);
+                renderTarget = new TextureTarget(64, 64, true, Minecraft.ON_OSX);
 
                 renderTarget.setClearColor(0f, 0f, 0f, 0f);
                 CreativeModeTabs.tryRebuildTabContents(minecraft.player.connection.enabledFeatures(),
@@ -45,6 +44,7 @@ public class IconExport {
                         }
 
                         renderTarget.clear(false);
+                        RenderSystem.enableDepthTest();
                         renderTarget.bindWrite(false);
 
                         final var matrix = new Matrix4f().setOrtho(0f, 16, 16, 0f, 1000f, 21000f);
@@ -53,15 +53,15 @@ public class IconExport {
                         modelViewStack.pushMatrix();
                         modelViewStack.translation(0f, 0f, -11000f);
                         RenderSystem.applyModelViewMatrix();
-                        Lighting.setupFor3DItems();
+                        Lighting.setupForFlatItems();
 
                         guiGraphics.renderItem(itemStack, 0, 0);
-
                         guiGraphics.flush();
+
                         modelViewStack.popMatrix();
                         RenderSystem.applyModelViewMatrix();
                         renderTarget.unbindWrite();
-
+                        RenderSystem.disableDepthTest();
 
                         try(final var nativeImage = new NativeImage(renderTarget.width, renderTarget.height, false)) {
                             RenderSystem.bindTexture(renderTarget.getColorTextureId());
