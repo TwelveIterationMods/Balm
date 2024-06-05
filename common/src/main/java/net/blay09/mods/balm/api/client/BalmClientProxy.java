@@ -20,4 +20,9 @@ public class BalmClientProxy extends BalmProxy {
     public boolean isIngame() {
         return Minecraft.getInstance().gameMode != null;
     }
+
+    @Override
+    public boolean isClient() {
+        return true;
+    }
 }

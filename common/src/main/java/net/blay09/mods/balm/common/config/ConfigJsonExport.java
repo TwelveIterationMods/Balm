@@ -1,6 +1,7 @@
-package net.blay09.mods.balm.api.config;
+package net.blay09.mods.balm.common.config;
 
 import com.google.gson.Gson;
+import net.blay09.mods.balm.api.config.Comment;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 

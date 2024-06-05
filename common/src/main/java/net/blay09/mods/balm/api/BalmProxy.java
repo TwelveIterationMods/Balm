@@ -16,4 +16,8 @@ public class BalmProxy {
     public boolean isIngame() {
         return false;
     }
+
+    public boolean isClient() {
+        return false;
+    }
 }
