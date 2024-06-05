@@ -2,6 +2,7 @@ package net.blay09.mods.balm.common.config;
 
 import com.google.gson.Gson;
 import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.config.ExpectedType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +64,19 @@ public class ConfigJsonExport {
                 validValues[i] = enumConstants[i].toString();
             }
             return validValues;
+        } else if (Collection.class.isAssignableFrom(field.getType())) {
+            final var expectedType = field.getAnnotation(ExpectedType.class);
+            if (expectedType != null) {
+                final var type = expectedType.value();
+                if (type.isEnum()) {
+                    final var enumConstants = type.getEnumConstants();
+                    final var validValues = new String[enumConstants.length];
+                    for (int i = 0; i < enumConstants.length; i++) {
+                        validValues[i] = enumConstants[i].toString();
+                    }
+                    return validValues;
+                }
+            }
         }
         return null;
     }
