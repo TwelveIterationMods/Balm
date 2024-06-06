@@ -51,35 +51,6 @@ artifacts {
     commonGeneratedResources sourceSets.generated.resources.sourceDirectories.singleFile
 }
 
-/*publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = mod_id + "-common"
-            version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
-
-            artifact jar
-
-            artifact sourcesJar {
-                archiveClassifier = 'sources'
-            }
-
-            artifact project.javadocJar {
-                archiveClassifier = 'javadoc'
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            var releasesRepoUrl = "https://maven.twelveiterations.com/repository/maven-releases/"
-            var snapshotsRepoUrl = "https://maven.twelveiterations.com/repository/maven-snapshots/"
-            url = uri(version.toString().endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl)
-            name = "twelveIterationsNexus"
-            credentials(PasswordCredentials)
-        }
-    }
-}*/
-
 sourceSets {
     main {
         java {

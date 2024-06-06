@@ -72,7 +72,7 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public void enableMilkFluid() {
-        milkFluid = Registry.register(BuiltInRegistries.FLUID, new ResourceLocation("balm-fabric", "milk"), new SimpleMilkFluid());
+        milkFluid = Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath("balm-fabric", "milk"), new SimpleMilkFluid());
     }
 
     @Override

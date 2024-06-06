@@ -51,6 +51,13 @@ sourcesJar {
     }
 }
 
+tasks.withType(Javadoc).tap {
+    configureEach {
+        failOnError false
+        options.addStringOption('Xdoclint:-missing', '-quiet')
+    }
+}
+
 jar {
     from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_name}" }

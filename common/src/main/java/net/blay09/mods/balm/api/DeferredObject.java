@@ -5,21 +5,21 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Supplier;
 
 public class DeferredObject<T> {
-    private final ResourceLocation identifier;
+    private final ResourceLocation id;
     private final Supplier<T> supplier;
     private final Supplier<Boolean> canResolveFunc;
     protected T object;
 
-    protected DeferredObject(ResourceLocation identifier) {
-        this(identifier, () -> null, () -> false);
+    protected DeferredObject(ResourceLocation id) {
+        this(id, () -> null, () -> false);
     }
 
-    public DeferredObject(ResourceLocation identifier, Supplier<T> supplier) {
-        this(identifier, supplier, () -> false);
+    public DeferredObject(ResourceLocation id, Supplier<T> supplier) {
+        this(id, supplier, () -> false);
     }
 
-    public DeferredObject(ResourceLocation identifier, Supplier<T> supplier, Supplier<Boolean> canResolveFunc) {
-        this.identifier = identifier;
+    public DeferredObject(ResourceLocation id, Supplier<T> supplier, Supplier<Boolean> canResolveFunc) {
+        this.id = id;
         this.supplier = supplier;
         this.canResolveFunc = canResolveFunc;
     }
@@ -57,7 +57,7 @@ public class DeferredObject<T> {
     }
 
     public ResourceLocation getIdentifier() {
-        return identifier;
+        return id;
     }
 
     public static <T> DeferredObject<T> of(ResourceLocation identifier, T instance) {

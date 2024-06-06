@@ -30,20 +30,21 @@ import java.util.function.Predicate;
 public abstract class AbstractCachedDynamicModel implements BakedModel {
 
     private final Map<String, BakedModel> cache = new HashMap<>();
-    private final Map<ResourceLocation, BakedModel> baseModelCache = new HashMap<>();
-    private final Map<ResourceLocation, UnbakedModel> unbakedModels = new HashMap<>();
+    private final Map<ModelResourceLocation, BakedModel> baseModelCache = new HashMap<>();
+    private final Map<ModelResourceLocation, UnbakedModel> unbakedModels = new HashMap<>();
 
     private final ModelBakery modelBakery;
-    private final Function<ResourceLocation, UnbakedModel> modelResolver;
-    private final Function<BlockState, ResourceLocation> baseModelFunction;
+    private final Function<ModelResourceLocation, UnbakedModel> modelResolver;
+    private final Function<BlockState, ModelResourceLocation> baseModelFunction;
     private final List<Pair<Predicate<BlockState>, BakedModel>> parts;
     private final Function<BlockState, Map<String, String>> textureMapFunction;
     private final BiConsumer<BlockState, Matrix4f> transformFunction;
-    private final ResourceLocation location;
+    private final ModelResourceLocation location;
+    private final ModelBakery.TextureGetter textureGetter;
 
     private TextureAtlasSprite particleTexture;
 
-    public AbstractCachedDynamicModel(ModelBakery modelBakery, Map<ResourceLocation, UnbakedModel> models, Function<BlockState, ResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ResourceLocation location) {
+    public AbstractCachedDynamicModel(ModelBakery modelBakery, Map<ModelResourceLocation, UnbakedModel> models, Function<BlockState, ModelResourceLocation> baseModelFunction, @Nullable List<Pair<Predicate<BlockState>, BakedModel>> parts, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes, ModelResourceLocation location, ModelBakery.TextureGetter textureGetter) {
         this.modelBakery = modelBakery;
         unbakedModels.putAll(models);
         this.modelResolver = unbakedModels::get;
@@ -52,6 +53,7 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
         this.textureMapFunction = textureMapFunction;
         this.transformFunction = transformFunction;
         this.location = location;
+        this.textureGetter = textureGetter;
     }
 
     @Override
@@ -70,22 +72,21 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
                     BalmModels models = BalmClient.getModels();
                     ModelState modelTransform = models.getModelState(new Transformation(transform));
 
-                    ResourceLocation baseModelLocation = baseModelFunction.apply(state);
+                    ModelResourceLocation baseModelLocation = baseModelFunction.apply(state);
 
                     // If we're going to retexture, we need to ensure the base model has already been baked to prevent circular parent references in the retextured model
                     if (textureMapFunction != null && !baseModelCache.containsKey(baseModelLocation)) {
                         final UnbakedModel baseModel = modelResolver.apply(baseModelLocation);
-                        final BakedModel bakedBaseModel = baseModel.bake(models.createBaker(baseModelLocation, this::getSprite),
+                        final BakedModel bakedBaseModel = baseModel.bake(models.createBaker(baseModelLocation, textureGetter),
                                 Material::sprite,
-                                modelTransform,
-                                baseModelLocation);
+                                modelTransform);
                         baseModelCache.put(baseModelLocation, bakedBaseModel);
                     }
 
                     UnbakedModel retexturedBaseModel = textureMapFunction != null ? models.retexture(modelBakery,
                             baseModelLocation,
                             textureMapFunction.apply(state)) : modelResolver.apply(baseModelLocation);
-                    bakedModel = retexturedBaseModel.bake(models.createBaker(location, this::getSprite), Material::sprite, modelTransform, location);
+                    bakedModel = retexturedBaseModel.bake(models.createBaker(location, textureGetter), Material::sprite, modelTransform);
                     cache.put(stateString, bakedModel);
 
                     if (particleTexture == null && bakedModel != null) {
@@ -138,7 +139,4 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
     public abstract List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand);
     public abstract List<RenderType> getItemRenderTypes(ItemStack itemStack, boolean fabulous);
 
-    private TextureAtlasSprite getSprite(ResourceLocation modelLocation, Material material) {
-        return material.sprite();
-    }
 }

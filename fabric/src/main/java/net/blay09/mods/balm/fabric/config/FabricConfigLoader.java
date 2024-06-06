@@ -181,9 +181,9 @@ public class FabricConfigLoader {
             }
         } else if (type == ResourceLocation.class) {
             if (value instanceof String stringValue) {
-                return new ResourceLocation(stringValue);
+                return ResourceLocation.parse(stringValue);
             } else {
-                return new ResourceLocation(value.toString());
+                return ResourceLocation.parse(value.toString());
             }
         } else if (type == Boolean.class || type == Boolean.TYPE) {
             if (value instanceof Number) {

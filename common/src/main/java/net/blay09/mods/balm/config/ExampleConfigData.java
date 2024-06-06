@@ -32,7 +32,7 @@ public class ExampleConfigData implements BalmConfigData {
     @Synced
     @ExpectedType(ResourceLocation.class)
     @Comment("This is an example resource location set property")
-    public Set<ResourceLocation> exampleResourceLocationSet = Set.of(new ResourceLocation("dirt"), new ResourceLocation("diamond"));
+    public Set<ResourceLocation> exampleResourceLocationSet = Set.of(ResourceLocation.withDefaultNamespace("dirt"), ResourceLocation.withDefaultNamespace("diamond"));
     @ExpectedType(Integer.class)
     @Comment("This is an example int list property")
     public List<Integer> exampleIntList = Arrays.asList(12, 24);

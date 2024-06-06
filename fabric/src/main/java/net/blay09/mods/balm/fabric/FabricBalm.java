@@ -34,8 +34,8 @@ public class FabricBalm implements ModInitializer {
         });
 
         var providers = ((FabricBalmProviders) Balm.getProviders());
-        providers.registerProvider(new ResourceLocation("balm", "container"), Container.class);
-        providers.registerProvider(new ResourceLocation("balm", "fluid_tank"), FluidTank.class);
+        providers.registerProvider(ResourceLocation.fromNamespaceAndPath("balm", "container"), Container.class);
+        providers.registerProvider(ResourceLocation.fromNamespaceAndPath("balm", "fluid_tank"), FluidTank.class);
 
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof BalmContainerProvider containerProvider) {
