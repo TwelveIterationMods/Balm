@@ -33,7 +33,7 @@ jobs:
         uses: TwelveIterationMods/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
-          bump: minor
+          bump: patch
         id: bump-version
       - name: Publish
         run: ./gradlew :${{ matrix.loader }}:publish '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
