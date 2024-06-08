@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface BalmModels {
-    DeferredObject<BakedModel> loadModel(ModelResourceLocation identifier);
+    DeferredObject<BakedModel> loadModel(ResourceLocation identifier);
 
     DeferredObject<BakedModel> bakeModel(ModelResourceLocation identifier, UnbakedModel model);
 

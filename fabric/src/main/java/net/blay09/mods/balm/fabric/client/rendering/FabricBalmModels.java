@@ -40,14 +40,14 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
         }
     }
 
-    private final List<ModelResourceLocation> additionalModels = Collections.synchronizedList(new ArrayList<>());
+    private final List<ResourceLocation> additionalModels = Collections.synchronizedList(new ArrayList<>());
     private final List<DeferredModel> modelsToBake = Collections.synchronizedList(new ArrayList<>());
     public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = Collections.synchronizedList(new ArrayList<>());
     private ModelBakery modelBakery;
 
     @Override
     public void onInitializeModelLoader(Context context) {
-        context.addModels(additionalModels.stream().map(ModelResourceLocation::id).toList());
+        context.addModels(additionalModels);
     }
 
     public void onBakeModels(ModelBakery modelBakery, ModelBakery.TextureGetter textureGetter) {
@@ -72,8 +72,10 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
     }
 
     @Override
-    public DeferredObject<BakedModel> loadModel(final ModelResourceLocation identifier) {
-        DeferredModel deferredModel = new DeferredModel(identifier) {
+    public DeferredObject<BakedModel> loadModel(final ResourceLocation identifier) {
+        // fabric_resource is what Fabric uses as variant for additional models
+        final var modelResourceLocation = new ModelResourceLocation(identifier, "fabric_resource");
+        DeferredModel deferredModel = new DeferredModel(modelResourceLocation) {
             @Override
             public BakedModel resolve(ModelBakery modelBakery, ModelBakery.TextureGetter textureGetter) {
                 return resolve();
@@ -81,12 +83,12 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
 
             @Override
             public BakedModel resolve() {
-                return modelBakery.getBakedTopLevelModels().get(identifier);
+                return modelBakery.getBakedTopLevelModels().get(modelResourceLocation);
             }
 
             @Override
             public boolean canResolve() {
-                return modelBakery.getBakedTopLevelModels().containsKey(identifier);
+                return modelBakery.getBakedTopLevelModels().containsKey(modelResourceLocation);
             }
         };
         additionalModels.add(identifier);
