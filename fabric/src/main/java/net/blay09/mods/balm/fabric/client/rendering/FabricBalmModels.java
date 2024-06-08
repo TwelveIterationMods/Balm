@@ -4,8 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
-// TODO 1.21 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.blay09.mods.balm.mixin.ModelBakeryAccessor;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.client.renderer.RenderType;
@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FabricBalmModels implements BalmModels { // TODO 1.21 , ModelLoadingPlugin {
+public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
 
     private static abstract class DeferredModel extends DeferredObject<BakedModel> {
         public DeferredModel(ModelResourceLocation identifier) {
@@ -45,10 +45,10 @@ public class FabricBalmModels implements BalmModels { // TODO 1.21 , ModelLoadin
     public final List<Pair<Supplier<Block>, Supplier<BakedModel>>> overrides = Collections.synchronizedList(new ArrayList<>());
     private ModelBakery modelBakery;
 
-    // TODO 1.21 @Override
-    // TODO 1.21 public void onInitializeModelLoader(Context context) {
-    // TODO 1.21     context.addModels(additionalModels);
-    // TODO 1.21 }
+    @Override
+    public void onInitializeModelLoader(Context context) {
+        context.addModels(additionalModels.stream().map(ModelResourceLocation::id).toList());
+    }
 
     public void onBakeModels(ModelBakery modelBakery, ModelBakery.TextureGetter textureGetter) {
         this.modelBakery = modelBakery;

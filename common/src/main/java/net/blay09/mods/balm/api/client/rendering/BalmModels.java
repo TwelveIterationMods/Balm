@@ -3,6 +3,7 @@ package net.blay09.mods.balm.api.client.rendering;
 import com.mojang.datafixers.util.Either;
 import com.mojang.math.Transformation;
 import net.blay09.mods.balm.api.DeferredObject;
+import net.blay09.mods.balm.mixin.ModelBakeryAccessor;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -55,7 +56,7 @@ public interface BalmModels {
                 Collections.emptyList());
 
         // We have to resolve parents as that is usually done during stitching, which we're already past
-        // TODO 1.21 blockModel.resolveParents(bakery::getModel);
+        blockModel.resolveParents(it -> ((ModelBakeryAccessor) bakery).callGetModel(it));
 
         return blockModel;
     }
