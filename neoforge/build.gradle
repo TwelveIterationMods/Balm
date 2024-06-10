@@ -59,6 +59,18 @@ runs {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    if (neoforge_snapshot_url) {
+        maven {
+            url = neoforge_snapshot_url
+            content {
+                includeModule('net.neoforged', 'testframework')
+                includeModule('net.neoforged', 'neoforge')
+            }
+        }
+    }
+}
+
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 }
