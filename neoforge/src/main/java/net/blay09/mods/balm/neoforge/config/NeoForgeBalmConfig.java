@@ -12,7 +12,6 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -135,14 +134,14 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
                 } else if (hasValue && ResourceLocation.class.isAssignableFrom(type)) {
-                    field.set(instance, new ResourceLocation(config.getConfigData().get(path)));
+                    field.set(instance, ResourceLocation.parse(config.getConfigData().get(path)));
                 } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
                     Object raw = config.getConfigData().getRaw(path);
                     if (raw instanceof List<?> list) {
                         ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                         Function<Object, Object> mapper = (it) -> it;
                         if (expectedType != null && ResourceLocation.class.isAssignableFrom(expectedType.value())) {
-                            mapper = (it) -> new ResourceLocation((String) it);
+                            mapper = (it) -> ResourceLocation.parse((String) it);
                         } else if (expectedType != null && Enum.class.isAssignableFrom(expectedType.value())) {
                             mapper = (it) -> parseEnumValue(expectedType.value(), (String) it);
                         }
@@ -220,9 +219,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
         IConfigSpec<?> configSpec = createConfigSpec(clazz);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, configSpec);
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, configSpec);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Loading event) -> {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
@@ -230,7 +229,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             setActiveConfig(clazz, newConfigData);
         });
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Reloading event) -> {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((ModConfigEvent.Reloading event) -> {
             configs.put(clazz, event.getConfig());
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);

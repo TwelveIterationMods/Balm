@@ -9,9 +9,8 @@ import net.blay09.mods.balm.api.event.client.screen.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.RegistryAccess;
-import net.neoforged.bus.api.Event;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -45,7 +44,7 @@ public class NeoForgeBalmClientEvents {
         });
 
         events.registerEvent(ClientStartedEvent.class, priority -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(NeoForgeBalmEvents.toForge(priority), (FMLLoadCompleteEvent orig) -> {
+            ModLoadingContext.get().getActiveContainer().getEventBus().addListener(NeoForgeBalmEvents.toForge(priority), (FMLLoadCompleteEvent orig) -> {
                 orig.enqueueWork(() -> {
                     final ClientStartedEvent event = new ClientStartedEvent(Minecraft.getInstance());
                     events.fireEventHandlers(priority, event);
