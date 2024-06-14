@@ -64,13 +64,11 @@ public class NeoForgeBalmItems implements BalmItems {
         final var registryObject = register.register(identifier.getPath(), () -> {
             Component displayName = Component.translatable("itemGroup." + identifier.toString().replace(':', '.'));
             final var registrations = getActiveRegistrations();
-            CreativeModeTab creativeModeTab = CreativeModeTab.builder()
+            return CreativeModeTab.builder()
                     .title(displayName)
                     .icon(iconSupplier)
                     .displayItems((enabledFeatures, entries) -> registrations.buildCreativeTabContents(identifier, entries))
                     .build();
-            creativeModeTab = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, identifier, creativeModeTab);
-            return creativeModeTab;
         });
         return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
