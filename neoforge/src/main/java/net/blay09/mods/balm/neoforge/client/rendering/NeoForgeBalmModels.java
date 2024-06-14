@@ -111,7 +111,7 @@ public class NeoForgeBalmModels implements BalmModels {
 
     @Override
     public DeferredObject<BakedModel> loadModel(ResourceLocation identifier) {
-        DeferredModel deferredModel = new DeferredModel(new ModelResourceLocation(identifier, "balm_resource")) {
+        DeferredModel deferredModel = new DeferredModel(new ModelResourceLocation(identifier, "standalone")) {
             @Override
             public BakedModel resolve(ModelBakery bakery, Map<ModelResourceLocation, BakedModel> modelRegistry, ModelBakery.TextureGetter textureGetter) {
                 return modelRegistry.get(getModelResourceLocation());
