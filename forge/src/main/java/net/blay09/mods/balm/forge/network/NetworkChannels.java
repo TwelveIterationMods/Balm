@@ -16,7 +16,7 @@ public class NetworkChannels {
 
     public static SimpleChannel get(String modId) {
         return channels.computeIfAbsent(modId, key -> {
-            ResourceLocation channelName = new ResourceLocation(key, "network");
+            ResourceLocation channelName = ResourceLocation.fromNamespaceAndPath(key, "network");
             ChannelBuilder builder = ChannelBuilder.named(channelName);
             if (serverOnlyMods.contains(modId)) {
                 builder = builder.optionalClient();

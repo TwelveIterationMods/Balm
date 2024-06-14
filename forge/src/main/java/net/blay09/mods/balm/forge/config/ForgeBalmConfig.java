@@ -137,14 +137,14 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
                 } else if (hasValue && ResourceLocation.class.isAssignableFrom(type)) {
-                    field.set(instance, new ResourceLocation(config.getConfigData().get(path)));
+                    field.set(instance, ResourceLocation.parse(config.getConfigData().get(path)));
                 } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
                     Object raw = config.getConfigData().getRaw(path);
                     if (raw instanceof List<?> list) {
                         ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                         Function<Object, Object> mapper = (it) -> it;
                         if (expectedType != null && ResourceLocation.class.isAssignableFrom(expectedType.value())) {
-                            mapper = (it) -> new ResourceLocation((String) it);
+                            mapper = (it) -> ResourceLocation.parse((String) it);
                         } else if (expectedType != null && Enum.class.isAssignableFrom(expectedType.value())) {
                             mapper = (it) -> parseEnumValue(expectedType.value(), (String) it);
                         }
