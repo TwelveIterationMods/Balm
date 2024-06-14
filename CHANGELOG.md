@@ -1,1 +1,2 @@
+- Fixed startup crash on NeoForge with certain mods
 - Updated to Minecraft 1.21
