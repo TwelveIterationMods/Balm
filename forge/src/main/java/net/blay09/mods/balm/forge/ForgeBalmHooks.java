@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -49,6 +50,12 @@ public class ForgeBalmHooks implements BalmHooks {
     @Override
     public CompoundTag getPersistentData(Entity entity) {
         CompoundTag persistentData = entity.getPersistentData();
+        if (entity instanceof ServerPlayer) {
+            CompoundTag persistedTag = persistentData.getCompound(ServerPlayer.PERSISTED_NBT_TAG);
+            persistentData.put(ServerPlayer.PERSISTED_NBT_TAG, persistedTag);
+            persistentData = persistedTag;
+        }
+
         CompoundTag balmData = persistentData.getCompound("BalmData");
         if (balmData.isEmpty()) {
             // If we have no data, try to import from Fabric in case the world was migrated
