@@ -30,7 +30,7 @@ public enum NotomlParserState {
     Comment {
         @Override
         void next(NotomlStateMachine state, NotomlParseBuffer buffer, NotomlTokenConsumer consumer) {
-            String comment = buffer.readUntilConsume("\n", "\r\n").trim();
+            String comment = buffer.readUntilConsume("\n", "\r\n", "\r").trim();
             consumer.emitComment(comment);
             state.transition(None);
         }
@@ -40,7 +40,7 @@ public enum NotomlParserState {
 
         @Override
         void next(NotomlStateMachine state, NotomlParseBuffer buffer, NotomlTokenConsumer consumer) {
-            String property = buffer.readUntilConsume("=", "\n", "\r\n").trim();
+            String property = buffer.readUntilConsume("=", "\n", "\r\n", "\r").trim();
             if (!PROPERTY_KEY_PATTERN.matcher(property).matches()) {
                 throw new IllegalStateException("Invalid property key '" + property + "' (properties may only contain letters, numbers, dashes and underscores)");
             }
@@ -63,7 +63,7 @@ public enum NotomlParserState {
                 consumer.emitListStart();
                 state.transition(List);
             } else {
-                String value = buffer.readUntilConsume("\n", "\r\n");
+                String value = buffer.readUntilConsume("\n", "\r\n", "\r");
                 consumer.emitPropertyValue(value);
                 state.transition(None);
             }
