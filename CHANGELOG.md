@@ -1,1 +1,1 @@
-- Update Kuma API to fix log spam issues and Forge dedicated server crash
+- Fixed certain modded player data (like activated waystones) not pchersisting properly on Forge
