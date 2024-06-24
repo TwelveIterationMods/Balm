@@ -1,1 +1,1 @@
-- Update Kuma API to fix log spam issues and Forge dedicated server crash
+- Fixed config load issues with \r\n newlines
