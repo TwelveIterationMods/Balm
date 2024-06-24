@@ -1,1 +1,2 @@
+- Fixed config load issues with \r\n newlines
 - Fixed certain modded player data (like activated waystones) not pchersisting properly on Forge
