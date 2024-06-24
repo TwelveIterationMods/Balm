@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -163,12 +164,13 @@ public class NeoForgeBalmCommonEvents {
         });
 
         events.registerEvent(LivingDamageEvent.class, priority -> {
-            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.entity.living.LivingDamageEvent orig) -> {
-                final LivingDamageEvent event = new LivingDamageEvent(orig.getEntity(), orig.getSource(), orig.getAmount());
+            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Pre orig) -> {
+                final var damageContainer = orig.getContainer();
+                final LivingDamageEvent event = new LivingDamageEvent(orig.getEntity(), damageContainer.getSource(), damageContainer.getNewDamage());
                 events.fireEventHandlers(priority, event);
-                orig.setAmount(event.getDamageAmount());
+                damageContainer.setNewDamage(event.getDamageAmount());
                 if (event.isCanceled()) {
-                    orig.setCanceled(true);
+                    orig.getContainer().setNewDamage(0);
                 }
             });
         });
