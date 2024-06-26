@@ -57,7 +57,7 @@ public class SimpleMilkFluid extends Fluid {
 
     @Override
     public boolean isSource(FluidState fluidState) {
-        return false;
+        return true;
     }
 
     @Override
