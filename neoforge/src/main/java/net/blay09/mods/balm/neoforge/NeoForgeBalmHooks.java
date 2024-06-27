@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.EffectCures;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -112,7 +112,7 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public boolean isShield(ItemStack itemStack) {
-        return itemStack.getItem().canPerformAction(itemStack, ToolActions.SHIELD_BLOCK);
+        return itemStack.getItem().canPerformAction(itemStack, ItemAbilities.SHIELD_BLOCK);
     }
 
     @Override
