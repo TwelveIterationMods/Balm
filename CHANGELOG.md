@@ -1,3 +1,5 @@
+- Fixed UseItemInputEvent not respecting cancellation correctly
+
 - Updated to Breaking Changes of NeoForge 21.0.40
   - USE BALM 21.0.9 FOR NEOFORGE VERSIONS BEFORE 21.0.40
   - USE BALM 21.0.7 FOR NEOFORGE VERSIONS BEFORE 21.0.31
