@@ -2,13 +2,18 @@ package net.blay09.mods.balm.neoforge;
 
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
+import net.blay09.mods.balm.api.energy.EnergyStorage;
+import net.blay09.mods.balm.api.fluid.FluidTank;
 import net.blay09.mods.balm.common.command.BalmCommand;
 import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.neoforge.client.NeoForgeBalmClient;
 import net.blay09.mods.balm.neoforge.provider.NeoForgeBalmProviders;
 import net.blay09.mods.balm.neoforge.world.NeoForgeBalmWorldGen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -31,6 +36,10 @@ public class NeoForgeBalm {
         providers.registerBlockProvider(IFluidHandler.class, Capabilities.FluidHandler.BLOCK);
         providers.registerItemProvider(IFluidHandlerItem.class, Capabilities.FluidHandler.ITEM);
         providers.registerBlockProvider(IEnergyStorage.class, Capabilities.EnergyStorage.BLOCK);
+
+        providers.registerBlockProvider(Container.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "container"), Container.class));
+        providers.registerBlockProvider(FluidTank.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "fluid_tank"), FluidTank.class));
+        providers.registerBlockProvider(EnergyStorage.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "energy_storage"), EnergyStorage.class));
     }
 
 }
