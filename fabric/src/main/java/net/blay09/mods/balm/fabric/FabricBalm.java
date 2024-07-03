@@ -3,6 +3,7 @@ package net.blay09.mods.balm.fabric;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.container.BalmContainerProvider;
+import net.blay09.mods.balm.api.energy.EnergyStorage;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.api.fluid.FluidTank;
@@ -36,6 +37,7 @@ public class FabricBalm implements ModInitializer {
         var providers = ((FabricBalmProviders) Balm.getProviders());
         providers.registerProvider(ResourceLocation.fromNamespaceAndPath("balm", "container"), Container.class);
         providers.registerProvider(ResourceLocation.fromNamespaceAndPath("balm", "fluid_tank"), FluidTank.class);
+        providers.registerProvider(ResourceLocation.fromNamespaceAndPath("balm", "energy_storage"), EnergyStorage.class);
 
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof BalmContainerProvider containerProvider) {
