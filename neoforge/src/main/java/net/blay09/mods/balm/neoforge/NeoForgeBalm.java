@@ -9,6 +9,7 @@ import net.blay09.mods.balm.config.ExampleConfig;
 import net.blay09.mods.balm.neoforge.client.NeoForgeBalmClient;
 import net.blay09.mods.balm.neoforge.provider.NeoForgeBalmProviders;
 import net.blay09.mods.balm.neoforge.world.NeoForgeBalmWorldGen;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.neoforged.bus.api.IEventBus;
@@ -22,6 +23,15 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 @Mod("balm")
 public class NeoForgeBalm {
+
+    public static final BlockCapability<Container, Direction> CONTAINER_CAPABILITY = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm",
+            "container"), Container.class);
+    public static final BlockCapability<FluidTank, Direction> FLUID_TANK_CAPABILITY = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(
+            "balm",
+            "fluid_tank"), FluidTank.class);
+    public static final BlockCapability<EnergyStorage, Direction> ENERGY_STORAGE_CAPABILITY = BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath(
+            "balm",
+            "energy_storage"), EnergyStorage.class);
 
     public NeoForgeBalm(IEventBus modBus) {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
@@ -37,9 +47,9 @@ public class NeoForgeBalm {
         providers.registerItemProvider(IFluidHandlerItem.class, Capabilities.FluidHandler.ITEM);
         providers.registerBlockProvider(IEnergyStorage.class, Capabilities.EnergyStorage.BLOCK);
 
-        providers.registerBlockProvider(Container.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "container"), Container.class));
-        providers.registerBlockProvider(FluidTank.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "fluid_tank"), FluidTank.class));
-        providers.registerBlockProvider(EnergyStorage.class, BlockCapability.createSided(ResourceLocation.fromNamespaceAndPath("balm", "energy_storage"), EnergyStorage.class));
+        providers.registerBlockProvider(Container.class, CONTAINER_CAPABILITY);
+        providers.registerBlockProvider(FluidTank.class, FLUID_TANK_CAPABILITY);
+        providers.registerBlockProvider(EnergyStorage.class, ENERGY_STORAGE_CAPABILITY);
     }
 
 }
