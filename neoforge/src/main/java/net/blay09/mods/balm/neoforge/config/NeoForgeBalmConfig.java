@@ -65,7 +65,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                     logger.warn("Config field without expected type, will not validate list content ({} in {})", field.getName(), clazz.getName());
                 }
 
-                Supplier<List<?>> defaultSupplier = () -> new ArrayList<>((Collection<?>) defaultValue);
+                Supplier<List<?>> defaultSupplier = () -> expectedType != null && expectedType.value()
+                        .isEnum() ? ((Collection<?>) defaultValue).stream().map(Object::toString).toList() : new ArrayList<>((Collection<?>) defaultValue);
                 Predicate<Object> validator = (Object it) -> expectedType == null || expectedType.value()
                         .isAssignableFrom(it.getClass()) || (expectedType.value()
                         .isEnum() && Arrays.stream(
@@ -208,7 +209,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                 config.getConfigData().set(path, value);
             } else if (ResourceLocation.class.isAssignableFrom(type)) {
                 config.getConfigData().set(path, ((ResourceLocation) value).toString());
-            } else if(Collection.class.isAssignableFrom(type)) {
+            } else if (Collection.class.isAssignableFrom(type)) {
                 config.getConfigData().set(path, new ArrayList<>((Collection<?>) value));
             } else {
                 writeConfigValues(path + ".", config, field.get(instance));
