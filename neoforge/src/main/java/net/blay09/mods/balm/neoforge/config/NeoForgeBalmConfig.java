@@ -1,5 +1,7 @@
 package net.blay09.mods.balm.neoforge.config;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
@@ -31,8 +33,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     private final Logger logger = LogManager.getLogger();
     private final Map<Class<?>, ModConfig> configs = new HashMap<>();
     private final Map<Class<?>, BalmConfigData> configData = new HashMap<>();
+    private final Table<Class<?>, String, ModConfigSpec.ConfigValue<?>> configProperties = HashBasedTable.create();
 
-    private <T extends BalmConfigData> IConfigSpec<?> createConfigSpec(Class<T> clazz) {
+    private <T extends BalmConfigData> IConfigSpec createConfigSpec(Class<T> clazz) {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         try {
             buildConfigSpec("", builder, clazz);
@@ -56,9 +59,11 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             }
 
             if (String.class.isAssignableFrom(type)) {
-                builder.define(path, (String) defaultValue);
+                final var property = builder.define(path, (String) defaultValue);
+                configProperties.put(clazz, path, property);
             } else if (ResourceLocation.class.isAssignableFrom(type)) {
-                builder.define(path, ((ResourceLocation) defaultValue).toString());
+                final var property = builder.define(path, ((ResourceLocation) defaultValue).toString());
+                configProperties.put(clazz, path, property);
             } else if (Collection.class.isAssignableFrom(type)) {
                 ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                 if (expectedType == null) {
@@ -76,19 +81,27 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                     validator = (Object it) -> it instanceof String stringValue && ResourceLocation.tryParse(stringValue) != null;
                 }
 
-                builder.defineListAllowEmpty(List.of(path.split("\\.")), defaultSupplier, validator);
+                final var property = builder.defineListAllowEmpty(List.of(path.split("\\.")), defaultSupplier, validator);
+                configProperties.put(clazz, path, property);
             } else if (Enum.class.isAssignableFrom(type)) {
-                builder.defineEnum(path, (Enum) defaultValue);
+                final var property = builder.defineEnum(path, (Enum) defaultValue);
+                configProperties.put(clazz, path, property);
             } else if (int.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (int) defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                final var property = builder.defineInRange(path, (int) defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                configProperties.put(clazz, path, property);
             } else if (float.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (float) defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE);
+                final var property = builder.defineInRange(path, (float) defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE);
+                configProperties.put(clazz, path, property);
             } else if (double.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (double) defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE);
+                final var property = builder.defineInRange(path, (double) defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE);
+                configProperties.put(clazz, path, property);
             } else if (boolean.class.isAssignableFrom(type)) {
-                builder.define(path, (boolean) defaultValue);
+                final var property = builder.define(path, (boolean) defaultValue);
+                configProperties.put(clazz, path, property);
             } else if (long.class.isAssignableFrom(type)) {
-                builder.defineInRange(path, (long) defaultValue, Long.MIN_VALUE, Long.MAX_VALUE);
+                final var property = builder.defineInRange(path, (long) defaultValue, Long.MIN_VALUE, Long.MAX_VALUE);
+                configProperties.put(clazz, path, property);
+
             } else {
                 buildConfigSpec(path + ".", builder, type);
             }
@@ -109,15 +122,16 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
         List<Field> fields = ConfigReflection.getAllFields(instance.getClass());
         for (Field field : fields) {
             String path = parentPath + field.getName();
-            boolean hasValue = config.getConfigData().contains(path);
+            final var spec = ((ModConfigSpec) config.getSpec()).getSpec();
+            boolean hasValue = spec.contains(path);
             Class<?> type = field.getType();
             try {
                 if (hasValue && Integer.TYPE.isAssignableFrom(type)) {
-                    field.set(instance, config.getConfigData().getInt(path));
+                    field.set(instance, spec.getInt(path));
                 } else if (hasValue && Long.TYPE.isAssignableFrom(type)) {
-                    field.set(instance, config.getConfigData().getLong(path));
+                    field.set(instance, spec.getLong(path));
                 } else if (hasValue && Float.TYPE.isAssignableFrom(type)) {
-                    Object value = config.getConfigData().get(path);
+                    Object value = spec.get(path);
                     if (value instanceof Double doubleValue) {
                         field.set(instance, doubleValue.floatValue());
                     } else if (value instanceof Float floatValue) {
@@ -126,7 +140,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
                 } else if (hasValue && Double.TYPE.isAssignableFrom(type)) {
-                    Object value = config.getConfigData().get(path);
+                    Object value = spec.get(path);
                     if (value instanceof Double doubleValue) {
                         field.set(instance, doubleValue);
                     } else if (value instanceof Float floatValue) {
@@ -135,9 +149,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                     }
                 } else if (hasValue && ResourceLocation.class.isAssignableFrom(type)) {
-                    field.set(instance, ResourceLocation.parse(config.getConfigData().get(path)));
+                    field.set(instance, ResourceLocation.parse(spec.get(path)));
                 } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
-                    Object raw = config.getConfigData().getRaw(path);
+                    Object raw = spec.getRaw(path);
                     if (raw instanceof List<?> list) {
                         ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                         Function<Object, Object> mapper = (it) -> it;
@@ -159,7 +173,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Null config value for " + path + ", falling back to default");
                     }
                 } else if (hasValue && (type.isPrimitive() || String.class.isAssignableFrom(type))) {
-                    Object raw = config.getConfigData().getRaw(path);
+                    Object raw = spec.getRaw(path);
                     if (raw != null) {
                         try {
                             field.set(instance, raw);
@@ -170,7 +184,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Null config value for " + path + ", falling back to default");
                     }
                 } else if (hasValue && type.isEnum()) {
-                    Enum<?> value = config.getConfigData().getEnum(path, (Class<Enum>) type);
+                    Enum<?> value = spec.getEnum(path, (Class<Enum>) type);
                     field.set(instance, value);
                 } else {
                     readConfigValues(path + ".", field.get(instance), config);
@@ -191,35 +205,44 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
         return null;
     }
 
-    private <T extends BalmConfigData> void writeConfigValues(ModConfig config, T configData) {
+    private <T extends BalmConfigData> void writeConfigValues(Class<?> clazz, T configData) {
         try {
-            writeConfigValues("", config, configData);
+            writeConfigValues("", clazz, configData);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    private <T> void writeConfigValues(String parentPath, ModConfig config, T instance) throws IllegalAccessException {
+    private <T> void writeConfigValues(String parentPath, Class<?> clazz, T instance) throws IllegalAccessException {
         List<Field> fields = ConfigReflection.getAllFields(instance.getClass());
         for (Field field : fields) {
             String path = parentPath + field.getName();
             Class<?> type = field.getType();
             Object value = field.get(instance);
             if (type.isPrimitive() || Enum.class.isAssignableFrom(type) || String.class.isAssignableFrom(type)) {
-                config.getConfigData().set(path, value);
+                final var property = (ModConfigSpec.ConfigValue<Object>) configProperties.get(clazz, path);
+                if (property != null) {
+                    property.set(value);
+                }
             } else if (ResourceLocation.class.isAssignableFrom(type)) {
-                config.getConfigData().set(path, ((ResourceLocation) value).toString());
+                final var property = (ModConfigSpec.ConfigValue<Object>) configProperties.get(clazz, path);
+                if (property != null) {
+                    property.set(((ResourceLocation) value).toString());
+                }
             } else if (Collection.class.isAssignableFrom(type)) {
-                config.getConfigData().set(path, new ArrayList<>((Collection<?>) value));
+                final var property = (ModConfigSpec.ConfigValue<Object>) configProperties.get(clazz, path);
+                if (property != null) {
+                    property.set(new ArrayList<>((Collection<?>) value));
+                }
             } else {
-                writeConfigValues(path + ".", config, field.get(instance));
+                writeConfigValues(path + ".", field.getType(), field.get(instance));
             }
         }
     }
 
     @Override
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
-        IConfigSpec<?> configSpec = createConfigSpec(clazz);
+        IConfigSpec configSpec = createConfigSpec(clazz);
         ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, configSpec);
 
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener((ModConfigEvent.Loading event) -> {
@@ -262,8 +285,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     public <T extends BalmConfigData> void saveBackingConfig(Class<T> clazz) {
         ModConfig modConfig = configs.get(clazz);
         if (modConfig != null) {
-            writeConfigValues(modConfig, configData.get(clazz));
-            modConfig.save();
+            writeConfigValues(clazz, configData.get(clazz));
+            ((ModConfigSpec) modConfig.getSpec()).save();
         }
     }
 
