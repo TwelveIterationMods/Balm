@@ -122,7 +122,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
         List<Field> fields = ConfigReflection.getAllFields(instance.getClass());
         for (Field field : fields) {
             String path = parentPath + field.getName();
-            final var spec = ((ModConfigSpec) config.getSpec()).getSpec();
+            final var spec = ((ModConfigSpec) config.getSpec()).getValues();
             boolean hasValue = spec.contains(path);
             Class<?> type = field.getType();
             try {
