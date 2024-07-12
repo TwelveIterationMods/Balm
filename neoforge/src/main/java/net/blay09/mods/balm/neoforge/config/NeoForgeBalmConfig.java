@@ -127,31 +127,31 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             Class<?> type = field.getType();
             try {
                 if (hasValue && Integer.TYPE.isAssignableFrom(type)) {
-                    field.set(instance, spec.getInt(path));
+                    final var value = (ModConfigSpec.IntValue) spec.get(path);
+                    field.set(instance, value.get());
                 } else if (hasValue && Long.TYPE.isAssignableFrom(type)) {
-                    field.set(instance, spec.getLong(path));
+                    final var value = (ModConfigSpec.LongValue) spec.get(path);
+                    field.set(instance, value.get());
                 } else if (hasValue && Float.TYPE.isAssignableFrom(type)) {
                     Object value = spec.get(path);
-                    if (value instanceof Double doubleValue) {
-                        field.set(instance, doubleValue.floatValue());
-                    } else if (value instanceof Float floatValue) {
-                        field.set(instance, floatValue);
+                    if (value instanceof ModConfigSpec.DoubleValue doubleValue) {
+                        field.set(instance, doubleValue.get().floatValue());
                     } else {
-                        logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
+                        logger.error("Invalid config value for {}, expected {} but got {}", path, type.getName(), value.getClass());
                     }
                 } else if (hasValue && Double.TYPE.isAssignableFrom(type)) {
                     Object value = spec.get(path);
-                    if (value instanceof Double doubleValue) {
-                        field.set(instance, doubleValue);
-                    } else if (value instanceof Float floatValue) {
-                        field.set(instance, floatValue.doubleValue());
+                    if (value instanceof ModConfigSpec.DoubleValue doubleValue) {
+                        field.set(instance, doubleValue.getAsDouble());
                     } else {
-                        logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
+                        logger.error("Invalid config value for {}, expected {} but got {}", path, type.getName(), value.getClass());
                     }
                 } else if (hasValue && ResourceLocation.class.isAssignableFrom(type)) {
-                    field.set(instance, ResourceLocation.parse(spec.get(path)));
+                    final var value = (ModConfigSpec.ConfigValue<String>) spec.get(path);
+                    field.set(instance, ResourceLocation.parse(value.get()));
                 } else if (hasValue && (Collection.class.isAssignableFrom(type))) {
-                    Object raw = spec.getRaw(path);
+                    final var value = (ModConfigSpec.ConfigValue<?>) spec.getRaw(path);
+                    final var raw = value.get();
                     if (raw instanceof List<?> list) {
                         ExpectedType expectedType = field.getAnnotation(ExpectedType.class);
                         Function<Object, Object> mapper = (it) -> it;
@@ -173,19 +173,19 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
                         logger.error("Null config value for " + path + ", falling back to default");
                     }
                 } else if (hasValue && (type.isPrimitive() || String.class.isAssignableFrom(type))) {
-                    Object raw = spec.getRaw(path);
-                    if (raw != null) {
+                    final var value = spec.get(path);
+                    if (value instanceof ModConfigSpec.ConfigValue<?> stringValue) {
                         try {
-                            field.set(instance, raw);
+                            field.set(instance, stringValue.get());
                         } catch (IllegalArgumentException e) {
-                            logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + raw.getClass());
+                            logger.error("Invalid config value for " + path + ", expected " + type.getName() + " but got " + value.getClass());
                         }
                     } else {
                         logger.error("Null config value for " + path + ", falling back to default");
                     }
                 } else if (hasValue && type.isEnum()) {
-                    Enum<?> value = spec.getEnum(path, (Class<Enum>) type);
-                    field.set(instance, value);
+                    final var value = (ModConfigSpec.EnumValue<?>) spec.get(path);
+                    field.set(instance, value.get());
                 } else {
                     readConfigValues(path + ".", field.get(instance), config);
                 }
