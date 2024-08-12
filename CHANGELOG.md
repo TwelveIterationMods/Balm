@@ -1,1 +1,2 @@
-- Fixed config load issues with \r\n newlines
+- Added support for Reborn Energy on Fabric
+- Fixed milk fluid causing errors with certain other mods
