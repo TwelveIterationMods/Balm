@@ -1,5 +1,3 @@
-jarJar.enable()
-
 dependencies {
     jarJar(group: "net.blay09.mods", name: "kuma-api-neoforge", version: "$kuma_version")
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
