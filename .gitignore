@@ -8,6 +8,8 @@ classes/
 # eclipse
 
 *.launch
+.eclipse
+.eclipse
 
 # idea
 
