@@ -2,6 +2,8 @@ package net.blay09.mods.balm.fabric;
 
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.fabric.fluid.SimpleMilkFluid;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -73,6 +75,7 @@ public class FabricBalmRegistries implements BalmRegistries {
     @Override
     public void enableMilkFluid() {
         milkFluid = Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath("balm-fabric", "milk"), new SimpleMilkFluid());
+        FluidRenderHandlerRegistry.INSTANCE.register(milkFluid, new SimpleFluidRenderHandler(SimpleFluidRenderHandler.WATER_STILL, SimpleFluidRenderHandler.WATER_FLOWING, 0xFFFFFFFF));
     }
 
     @Override
