@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.1
+- Fixed potential crash with other mods in regards to the dummy milk fluid
