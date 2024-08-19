@@ -1,1 +1,2 @@
+- Fixed embedded Kuma causing crash on Fabric
 - Fixed potential crash with other mods in regards to the dummy milk fluid
