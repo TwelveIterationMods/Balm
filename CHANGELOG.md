@@ -1,2 +1,1 @@
-- Added support for Reborn Energy on Fabric
-- Fixed milk fluid causing errors with certain other mods
+- Fixed potential crash with other mods in regards to the dummy milk fluid
