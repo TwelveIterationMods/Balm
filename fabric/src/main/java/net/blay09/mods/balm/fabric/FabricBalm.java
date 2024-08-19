@@ -7,8 +7,8 @@ import net.blay09.mods.balm.api.energy.EnergyStorage;
 import net.blay09.mods.balm.api.entity.BalmEntity;
 import net.blay09.mods.balm.api.fluid.BalmFluidTankProvider;
 import net.blay09.mods.balm.api.fluid.FluidTank;
-import net.blay09.mods.balm.common.command.BalmCommand;
 import net.blay09.mods.balm.config.ExampleConfig;
+import net.blay09.mods.balm.api.proxy.SidedProxy;
 import net.blay09.mods.balm.fabric.fluid.BalmFluidStorage;
 import net.blay09.mods.balm.fabric.provider.FabricBalmProviders;
 import net.fabricmc.api.ModInitializer;
@@ -20,14 +20,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 
+import static net.blay09.mods.balm.api.Balm.sidedProxy;
+
 public class FabricBalm implements ModInitializer {
+
+    private static final SidedProxy<FabricBalmProxy> proxy = sidedProxy("net.blay09.mods.balm.fabric.FabricBalmProxy", "net.blay09.mods.balm.fabric.client.FabricBalmClientProxy");
 
     @Override
     public void onInitialize() {
         ((FabricBalmHooks) Balm.getHooks()).initialize();
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
         ExampleConfig.initialize();
-        Balm.getCommands().register(BalmCommand::register);
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
             CompoundTag data = ((BalmEntity) oldPlayer).getFabricBalmData();
@@ -59,5 +62,9 @@ public class FabricBalm implements ModInitializer {
         });
 
         Balm.initializeIfLoaded("team_reborn_energy", "net.blay09.mods.balm.fabric.compat.energy.RebornEnergy");
+    }
+
+    public static FabricBalmProxy getProxy() {
+        return proxy.get();
     }
 }
