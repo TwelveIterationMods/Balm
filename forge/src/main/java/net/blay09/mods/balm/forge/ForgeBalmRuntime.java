@@ -180,7 +180,6 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
         ((ForgeBalmItems) items).register();
         ((ForgeBalmEntities) entities).register();
         ((ForgeBalmWorldGen) worldGen).register();
-        ((ForgeBalmComponents) components).register();
         ((ForgeBalmStats) stats).register();
 
         initializer.run();
