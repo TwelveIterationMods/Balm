@@ -1,1 +1,1 @@
-- Fixed biome modifiers not working on NeoForge, causing wild waystones to not spawn
+- Fixed crash on newer Forge versions
