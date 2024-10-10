@@ -1,1 +1,1 @@
-- Fixed crash on newer Forge versions
+- Updated to Minecraft 1.21.2
