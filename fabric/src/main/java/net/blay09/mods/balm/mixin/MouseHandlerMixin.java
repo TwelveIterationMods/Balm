@@ -20,7 +20,7 @@ public class MouseHandlerMixin {
             return true;
         }
 
-        final var result = operation.call(screen, mouseX, mouseY, dragX, dragY);
+        final var result = operation.call(screen, mouseX, mouseY, activeButton, dragX, dragY);
         ScreenMouseEvent.Drag.Post postEvent = new ScreenMouseEvent.Drag.Post(screen, mouseX, mouseY, activeButton, dragX, dragY);
         Balm.getEvents().fireEvent(postEvent);
         return result;
