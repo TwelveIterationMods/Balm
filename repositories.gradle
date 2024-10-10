@@ -56,4 +56,14 @@ repositories {
             includeGroup "us.dynmap"
         }
     }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Minecraft'
+                url = 'https://libraries.minecraft.net/'
+            }
+        }
+        filter { includeGroupAndSubgroups("com.mojang") }
+    }
 }
