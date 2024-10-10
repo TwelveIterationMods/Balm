@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,17 +128,15 @@ public class FabricBalmCommonEvents {
             return event.getInteractionResult();
         }));
 
-        events.registerEvent(UseItemEvent.class, () -> {
-            UseItemCallback.EVENT.register((player, world, hand) -> {
-                final UseItemEvent event = new UseItemEvent(player, world, hand);
-                events.fireEventHandlers(event);
-                if (event.isCanceled()) {
-                    return InteractionResultHolder.fail(player.getItemInHand(hand));
-                }
+        events.registerEvent(UseItemEvent.class, () -> UseItemCallback.EVENT.register((player, world, hand) -> {
+            final UseItemEvent event = new UseItemEvent(player, world, hand);
+            events.fireEventHandlers(event);
+            if (event.isCanceled()) {
+                return InteractionResult.FAIL;
+            }
 
-                return new InteractionResultHolder<>(event.getInteractionResult(), player.getItemInHand(hand));
-            });
-        });
+            return event.getInteractionResult();
+        }));
 
         events.registerEvent(PlayerConnectedEvent.class, () -> ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
             final PlayerLoginEvent event = new PlayerLoginEvent(listener.player);

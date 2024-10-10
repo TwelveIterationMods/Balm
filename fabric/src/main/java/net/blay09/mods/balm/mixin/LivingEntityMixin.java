@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.LivingDamageEvent;
 import net.blay09.mods.balm.api.event.LivingFallEvent;
 import net.blay09.mods.balm.api.event.LivingHealEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +20,8 @@ public abstract class LivingEntityMixin {
     @Unique
     private static final ThreadLocal<LivingFallEvent> balmCurrentFallEvent = new ThreadLocal<>();
 
-    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setAbsorptionAmount(F)V"), index = 2, argsOnly = true)
-    private float actuallyHurt(float damageAmount, DamageSource damageSource) {
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setAbsorptionAmount(F)V"), argsOnly = true)
+    private float actuallyHurt(float damageAmount, ServerLevel serverLevel, DamageSource damageSource) {
         LivingDamageEvent event = new LivingDamageEvent((LivingEntity) (Object) this, damageSource, damageAmount);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {

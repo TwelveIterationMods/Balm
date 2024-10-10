@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractClientPlayer.class)
 public class AbstractClientPlayerMixin {
 
-    @Inject(method = "getFieldOfViewModifier()F", at = @At("TAIL"), cancellable = true)
-    private void getFieldOfViewModifier(CallbackInfoReturnable<Float> callbackInfo) {
+    @Inject(method = "getFieldOfViewModifier(ZF)F", at = @At("TAIL"), cancellable = true)
+    private void getFieldOfViewModifier(boolean allowScoping, float current, CallbackInfoReturnable<Float> callbackInfo) {
         FovUpdateEvent event = new FovUpdateEvent((LivingEntity) (Object) this);
         Balm.getEvents().fireEvent(event);
         Float override = event.getFov();

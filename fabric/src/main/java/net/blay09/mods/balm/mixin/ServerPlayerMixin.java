@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,18 +33,20 @@ public class ServerPlayerMixin {
         Balm.getEvents().fireEvent(new PlayerOpenMenuEvent(player, player.containerMenu));
     }
 
-    @Inject(method = "changeDimension(Lnet/minecraft/world/level/portal/DimensionTransition;)Lnet/minecraft/world/entity/Entity;", at = @At("HEAD"))
-    public void changeDimensionHead(DimensionTransition transition, CallbackInfoReturnable<Entity> callbackInfo) {
+    @Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("HEAD"))
+    public void teleportHead(TeleportTransition transition, CallbackInfoReturnable<ServerPlayer> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
-        fromDimHolder.set(player.level().dimension());
+        fromDimHolder.set(player.serverLevel().dimension());
     }
 
-    @Inject(method = "changeDimension(Lnet/minecraft/world/level/portal/DimensionTransition;)Lnet/minecraft/world/entity/Entity;", at = @At("RETURN"))
-    public void changeDimensionTail(DimensionTransition transition, CallbackInfoReturnable<Entity> callbackInfo) {
+    @Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("RETURN"))
+    public void teleportTail(TeleportTransition transition, CallbackInfoReturnable<ServerPlayer> callbackInfo) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         final ResourceKey<Level> fromDim = fromDimHolder.get();
         final ResourceKey<Level> toDim = transition.newLevel().dimension();
-        Balm.getEvents().fireEvent(new PlayerChangedDimensionEvent(player, fromDim, toDim));
+        if(!fromDim.equals(toDim)) {
+            Balm.getEvents().fireEvent(new PlayerChangedDimensionEvent(player, fromDim, toDim));
+        }
     }
 
     @Inject(method = "drop(Z)Z", at = @At("HEAD"), cancellable = true)

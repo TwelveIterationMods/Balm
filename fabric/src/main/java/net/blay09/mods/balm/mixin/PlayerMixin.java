@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.blay09.mods.balm.api.event.DigSpeedEvent;
 import net.blay09.mods.balm.api.event.LivingDamageEvent;
 import net.blay09.mods.balm.api.event.PlayerAttackEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,8 +24,8 @@ public class PlayerMixin implements BalmPlayer {
 
     private Pose forcedPose;
 
-    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setAbsorptionAmount(F)V"), argsOnly = true)
-    private float actuallyHurt(float damageAmount, DamageSource damageSource) {
+    @ModifyVariable(method = "actuallyHurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setAbsorptionAmount(F)V"), argsOnly = true)
+    private float actuallyHurt(float damageAmount, ServerLevel level, DamageSource damageSource) {
         LivingDamageEvent event = new LivingDamageEvent((Player) (Object) this, damageSource, damageAmount);
         Balm.getEvents().fireEvent(event);
         if (event.isCanceled()) {

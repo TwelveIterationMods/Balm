@@ -7,9 +7,7 @@ import net.blay09.mods.balm.api.entity.BalmPlayer;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.blay09.mods.balm.api.fluid.FluidTank;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.fabricmc.fabric.api.item.v1.FabricItemStack;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -72,16 +70,7 @@ public class FabricBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        if ((Object) itemStack instanceof FabricItemStack fabricItemStack) {
-            return fabricItemStack.getRecipeRemainder();
-        }
-
-        Item craftingRemainingItem = itemStack.getItem().getCraftingRemainingItem();
-        if (craftingRemainingItem != null) {
-            return new ItemStack(craftingRemainingItem);
-        } else {
-            return ItemStack.EMPTY;
-        }
+        return itemStack.getRecipeRemainder();
     }
 
     @Override
@@ -99,14 +88,13 @@ public class FabricBalmHooks implements BalmHooks {
     }
 
     @Override
-    public int getBurnTime(ItemStack itemStack) {
-        Integer burnTime = FuelRegistry.INSTANCE.get(itemStack.getItem());
-        return burnTime != null ? burnTime : 0;
+    public int getBurnTime(Level level, ItemStack itemStack) {
+        return level.fuelValues().burnDuration(itemStack);
     }
 
     @Override
     public void setBurnTime(Item item, int burnTime) {
-        FuelRegistry.INSTANCE.add(item, burnTime);
+        FuelRegistryEvents.BUILD.register((builder, context) -> builder.add(item, burnTime));
     }
 
     @Override

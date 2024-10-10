@@ -56,7 +56,7 @@ public interface BalmModels {
                 Collections.emptyList());
 
         // We have to resolve parents as that is usually done during stitching, which we're already past
-        blockModel.resolveParents(it -> ((ModelBakeryAccessor) bakery).callGetModel(it));
+        // TODO resolveDependencies? blockModel.resolveParents(it -> ((ModelBakeryAccessor) bakery).callGetModel(it));
 
         return blockModel;
     }

@@ -49,22 +49,22 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public Item getItem(ResourceLocation key) {
-        return BuiltInRegistries.ITEM.get(key);
+        return BuiltInRegistries.ITEM.getValue(key);
     }
 
     @Override
     public Block getBlock(ResourceLocation key) {
-        return BuiltInRegistries.BLOCK.get(key);
+        return BuiltInRegistries.BLOCK.getValue(key);
     }
 
     @Override
     public Fluid getFluid(ResourceLocation key) {
-        return BuiltInRegistries.FLUID.get(key);
+        return BuiltInRegistries.FLUID.getValue(key);
     }
 
     @Override
     public MobEffect getMobEffect(ResourceLocation key) {
-        return BuiltInRegistries.MOB_EFFECT.get(key);
+        return BuiltInRegistries.MOB_EFFECT.getValue(key);
     }
 
     @Override
@@ -89,6 +89,6 @@ public class FabricBalmRegistries implements BalmRegistries {
 
     @Override
     public Attribute getAttribute(ResourceLocation key) {
-        return BuiltInRegistries.ATTRIBUTE.get(key);
+        return BuiltInRegistries.ATTRIBUTE.getValue(key);
     }
 }

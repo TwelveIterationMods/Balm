@@ -1,23 +1,16 @@
 package net.blay09.mods.balm.api.event.client;
 
 import net.blay09.mods.balm.api.event.BalmEvent;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.client.multiplayer.ClientRecipeContainer;
 
 public class RecipesUpdatedEvent extends BalmEvent {
-    private final RecipeManager recipeManager;
-    private final RegistryAccess registryAccess;
+    private final ClientRecipeContainer clientRecipeContainer;
 
-    public RecipesUpdatedEvent(RecipeManager recipeManager, RegistryAccess registryAccess) {
-        this.recipeManager = recipeManager;
-        this.registryAccess = registryAccess;
+    public RecipesUpdatedEvent(ClientRecipeContainer clientRecipeContainer) {
+        this.clientRecipeContainer = clientRecipeContainer;
     }
 
-    public RecipeManager getRecipeManager() {
-        return recipeManager;
-    }
-
-    public RegistryAccess getRegistryAccess() {
-        return registryAccess;
+    public ClientRecipeContainer getClientRecipeContainer() {
+        return clientRecipeContainer;
     }
 }

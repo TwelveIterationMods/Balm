@@ -55,7 +55,7 @@ public interface BalmHooks {
 
     boolean canItemsStack(ItemStack first, ItemStack second);
 
-    int getBurnTime(ItemStack itemStack);
+    int getBurnTime(Level level, ItemStack itemStack);
 
     void setBurnTime(Item item, int burnTime);
 

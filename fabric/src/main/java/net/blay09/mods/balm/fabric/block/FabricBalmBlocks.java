@@ -3,7 +3,6 @@ package net.blay09.mods.balm.fabric.block;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.block.BalmBlocks;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
 public class FabricBalmBlocks implements BalmBlocks {
     @Override
     public BlockBehaviour.Properties blockProperties() {
-        return FabricBlockSettings.create();
+        return BlockBehaviour.Properties.of();
     }
 
     @Override

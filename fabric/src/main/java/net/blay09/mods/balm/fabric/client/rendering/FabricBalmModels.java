@@ -46,7 +46,7 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
     private ModelBakery modelBakery;
 
     @Override
-    public void onInitializeModelLoader(Context context) {
+    public void initialize(Context context) {
         context.addModels(additionalModels);
     }
 
@@ -117,7 +117,7 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
             public BakedModel resolve(ModelBakery bakery, ModelBakery.TextureGetter textureGetter) {
                 final var unbakedModels = new HashMap<ModelResourceLocation, UnbakedModel>();
                 for (final var modelId : models) {
-                    unbakedModels.put(modelId, ((ModelBakeryAccessor) bakery).callGetModel(modelId.id()));
+                    unbakedModels.put(modelId, getUnbakedModelOrMissing(modelId.id()));
                 }
                 return new FabricCachedDynamicModel(bakery, unbakedModels, effectiveModelFunction, null, textureMapFunction, transformFunction, renderTypes, identifier, textureGetter);
             }
@@ -153,12 +153,12 @@ public class FabricBalmModels implements BalmModels, ModelLoadingPlugin {
 
     @Override
     public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
-        return ((ModelBakeryAccessor) modelBakery).callGetModel(location);
+        return ((ModelBakeryAccessor) modelBakery).getUnbakedModels().getOrDefault(location, ((ModelBakeryAccessor) modelBakery).getMissingModel());
     }
 
     @Override
     public UnbakedModel getUnbakedMissingModel() {
-        return ((ModelBakeryAccessor) modelBakery).callGetModel(ModelBakery.MISSING_MODEL_LOCATION);
+        return ((ModelBakeryAccessor) modelBakery).getMissingModel();
     }
 
     @Override

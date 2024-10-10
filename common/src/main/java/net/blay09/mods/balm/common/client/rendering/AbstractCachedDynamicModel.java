@@ -5,20 +5,16 @@ import net.blay09.mods.balm.api.client.BalmClient;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -129,11 +125,6 @@ public abstract class AbstractCachedDynamicModel implements BakedModel {
     @Override
     public ItemTransforms getTransforms() {
         return ItemTransforms.NO_TRANSFORMS;
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
     }
 
     public abstract List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand);

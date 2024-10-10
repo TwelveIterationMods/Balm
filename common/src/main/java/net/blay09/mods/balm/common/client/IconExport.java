@@ -20,7 +20,7 @@ public class IconExport {
         minecraft.execute(() -> {
             RenderTarget renderTarget = null;
             try {
-                renderTarget = new TextureTarget(64, 64, true, Minecraft.ON_OSX);
+                renderTarget = new TextureTarget(64, 64, true);
 
                 renderTarget.setClearColor(0f, 0f, 0f, 0f);
                 CreativeModeTabs.tryRebuildTabContents(minecraft.player.connection.enabledFeatures(),
@@ -43,7 +43,7 @@ public class IconExport {
                             continue;
                         }
 
-                        renderTarget.clear(false);
+                        renderTarget.clear();
                         RenderSystem.enableDepthTest();
                         renderTarget.bindWrite(false);
 
@@ -52,14 +52,12 @@ public class IconExport {
                         final var modelViewStack = RenderSystem.getModelViewStack();
                         modelViewStack.pushMatrix();
                         modelViewStack.translation(0f, 0f, -11000f);
-                        RenderSystem.applyModelViewMatrix();
                         Lighting.setupForFlatItems();
 
                         guiGraphics.renderItem(itemStack, 0, 0);
                         guiGraphics.flush();
 
                         modelViewStack.popMatrix();
-                        RenderSystem.applyModelViewMatrix();
                         renderTarget.unbindWrite();
                         RenderSystem.disableDepthTest();
 
