@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -23,4 +24,8 @@ public class FabricBalmRecipes implements BalmRecipes {
         }).resolveImmediately();
     }
 
+    @Override
+    public DeferredObject<RecipeBookCategory> registerRecipeBookCategory(Supplier<RecipeBookCategory> supplier, ResourceLocation identifier) {
+        return new DeferredObject<>(identifier, () -> Registry.register(BuiltInRegistries.RECIPE_BOOK_CATEGORY, identifier, supplier.get())).resolveImmediately();
+    }
 }
