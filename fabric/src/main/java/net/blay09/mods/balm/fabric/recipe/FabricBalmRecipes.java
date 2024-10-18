@@ -31,7 +31,7 @@ public class FabricBalmRecipes implements BalmRecipes {
     }
 
     @Override
-    public <T extends RecipeDisplay.Type<?>> DeferredObject<T> registerRecipeDisplay(Supplier<T> supplier, ResourceLocation identifier) {
+    public <T extends RecipeDisplay.Type<?>> DeferredObject<T> registerRecipeDisplayType(Supplier<T> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> Registry.register(BuiltInRegistries.RECIPE_DISPLAY, identifier, supplier.get())).resolveImmediately();
     }
 }
