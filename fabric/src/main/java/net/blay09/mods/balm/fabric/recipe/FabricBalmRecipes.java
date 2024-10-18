@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 
 import java.util.function.Supplier;
 
@@ -27,5 +28,10 @@ public class FabricBalmRecipes implements BalmRecipes {
     @Override
     public DeferredObject<RecipeBookCategory> registerRecipeBookCategory(Supplier<RecipeBookCategory> supplier, ResourceLocation identifier) {
         return new DeferredObject<>(identifier, () -> Registry.register(BuiltInRegistries.RECIPE_BOOK_CATEGORY, identifier, supplier.get())).resolveImmediately();
+    }
+
+    @Override
+    public <T extends RecipeDisplay.Type<?>> DeferredObject<T> registerRecipeDisplay(Supplier<T> supplier, ResourceLocation identifier) {
+        return new DeferredObject<>(identifier, () -> Registry.register(BuiltInRegistries.RECIPE_DISPLAY, identifier, supplier.get())).resolveImmediately();
     }
 }
