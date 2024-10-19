@@ -18,11 +18,13 @@ import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.config.ExampleConfig;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Balm {
     private static final BalmRuntime<BalmRuntimeLoadContext> runtime = BalmRuntimeSpi.create();
@@ -48,8 +50,12 @@ public class Balm {
         runtime.initializeIfLoaded(modId, className);
     }
 
-    public static void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
+    public static void addServerReloadListener(ResourceLocation identifier, Function<HolderLookup.Provider, PreparableReloadListener> reloadListener) {
         runtime.addServerReloadListener(identifier, reloadListener);
+    }
+
+    public static void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
+        runtime.addServerReloadListener(identifier, it -> reloadListener);
     }
 
     public static void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener) {

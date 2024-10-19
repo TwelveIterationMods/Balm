@@ -44,6 +44,7 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -53,6 +54,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class FabricBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     private final BalmWorldGen worldGen = new FabricBalmWorldGen();
@@ -206,8 +208,10 @@ public class FabricBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     }
 
     @Override
-    public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
+    public void addServerReloadListener(ResourceLocation identifier, Function<HolderLookup.Provider, PreparableReloadListener> factory) {
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(identifier, providers -> new IdentifiableResourceReloadListener() {
+            private final PreparableReloadListener listener = factory.apply(providers);
+
             @Override
             public ResourceLocation getFabricId() {
                 return identifier;
@@ -215,7 +219,7 @@ public class FabricBalmRuntime implements BalmRuntime<EmptyLoadContext> {
 
             @Override
             public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, Executor executor, Executor executor2) {
-                return reloadListener.reload(preparationBarrier, resourceManager, executor, executor2);
+                return listener.reload(preparationBarrier, resourceManager, executor, executor2);
             }
         });
     }

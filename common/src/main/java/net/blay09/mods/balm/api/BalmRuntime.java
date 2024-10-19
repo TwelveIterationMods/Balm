@@ -17,11 +17,13 @@ import net.blay09.mods.balm.api.recipe.BalmRecipes;
 import net.blay09.mods.balm.api.sound.BalmSounds;
 import net.blay09.mods.balm.api.stats.BalmStats;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface BalmRuntime<TLoadContext extends BalmRuntimeLoadContext> {
     BalmConfig getConfig();
@@ -66,7 +68,7 @@ public interface BalmRuntime<TLoadContext extends BalmRuntimeLoadContext> {
 
     void initializeIfLoaded(String modId, String className);
 
-    void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener);
+    void addServerReloadListener(ResourceLocation identifier, Function<HolderLookup.Provider, PreparableReloadListener> reloadListener);
     void addServerReloadListener(ResourceLocation identifier, Consumer<ResourceManager> reloadListener);
 
     BalmComponents getComponents();
