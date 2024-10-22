@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.common.client;
 
+import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.Lighting;
@@ -11,10 +12,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 public class IconExport {
+    private static final Logger logger = LoggerFactory.getLogger(IconExport.class);
+
     public static void export(String filter) {
         final var minecraft = Minecraft.getInstance();
         minecraft.execute(() -> {
@@ -48,7 +53,7 @@ public class IconExport {
                         renderTarget.bindWrite(false);
 
                         final var matrix = new Matrix4f().setOrtho(0f, 16, 16, 0f, 1000f, 21000f);
-                        RenderSystem.setProjectionMatrix(matrix, VertexSorting.ORTHOGRAPHIC_Z);
+                        RenderSystem.setProjectionMatrix(matrix, ProjectionType.ORTHOGRAPHIC);
                         final var modelViewStack = RenderSystem.getModelViewStack();
                         modelViewStack.pushMatrix();
                         modelViewStack.translation(0f, 0f, -11000f);
@@ -61,7 +66,7 @@ public class IconExport {
                         renderTarget.unbindWrite();
                         RenderSystem.disableDepthTest();
 
-                        try(final var nativeImage = new NativeImage(renderTarget.width, renderTarget.height, false)) {
+                        try (final var nativeImage = new NativeImage(renderTarget.width, renderTarget.height, false)) {
                             RenderSystem.bindTexture(renderTarget.getColorTextureId());
                             nativeImage.downloadTexture(0, false);
                             nativeImage.flipY();
@@ -70,7 +75,7 @@ public class IconExport {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to export icons", e);
             } finally {
                 if (renderTarget != null) {
                     renderTarget.destroyBuffers();
