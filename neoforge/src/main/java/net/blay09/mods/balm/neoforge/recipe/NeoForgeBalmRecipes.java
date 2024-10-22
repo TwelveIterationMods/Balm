@@ -6,8 +6,11 @@ import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import java.util.function.Supplier;
 
@@ -21,6 +24,27 @@ public class NeoForgeBalmRecipes implements BalmRecipes {
         final var serializerRegistryObject = serializerRegister.register(identifier.getPath(), serializerSupplier);
 
         return new DeferredObject<>(identifier, registryObject, () -> registryObject.isBound() && serializerRegistryObject.isBound());
+    }
+
+    @Override
+    public <T extends RecipeDisplay.Type<?>> DeferredObject<T> registerRecipeDisplayType(Supplier<T> supplier, ResourceLocation identifier) {
+        final var register = DeferredRegisters.get(Registries.RECIPE_DISPLAY, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
+    }
+
+    @Override
+    public <T extends SlotDisplay.Type<?>> DeferredObject<T> registerSlotDisplayType(Supplier<T> supplier, ResourceLocation identifier) {
+        final var register = DeferredRegisters.get(Registries.SLOT_DISPLAY, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
+    }
+
+    @Override
+    public DeferredObject<RecipeBookCategory> registerRecipeBookCategory(Supplier<RecipeBookCategory> supplier, ResourceLocation identifier) {
+        final var register = DeferredRegisters.get(Registries.RECIPE_BOOK_CATEGORY, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
 }

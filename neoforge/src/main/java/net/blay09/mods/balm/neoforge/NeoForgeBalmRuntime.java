@@ -38,6 +38,7 @@ import net.blay09.mods.balm.neoforge.recipe.NeoForgeBalmRecipes;
 import net.blay09.mods.balm.neoforge.sound.NeoForgeBalmSounds;
 import net.blay09.mods.balm.neoforge.stats.NeoForgeBalmStats;
 import net.blay09.mods.balm.neoforge.world.NeoForgeBalmWorldGen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -52,6 +53,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     private final BalmWorldGen worldGen = new NeoForgeBalmWorldGen();
@@ -222,8 +224,8 @@ public class NeoForgeBalmRuntime implements BalmRuntime<NeoForgeLoadContext> {
     }
 
     @Override
-    public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
-        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(reloadListener));
+    public void addServerReloadListener(ResourceLocation identifier, Function<HolderLookup.Provider, PreparableReloadListener> reloadListener) {
+        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(reloadListener.apply(event.getRegistryAccess())));
     }
 
     @Override

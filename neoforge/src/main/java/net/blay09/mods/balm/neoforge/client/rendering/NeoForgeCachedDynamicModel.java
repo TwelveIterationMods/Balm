@@ -39,15 +39,6 @@ public class NeoForgeCachedDynamicModel extends AbstractCachedDynamicModel {
     }
 
     @Override
-    public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
-        List<RenderType> result = getItemRenderTypes(itemStack, fabulous);
-        if (result.isEmpty()) {
-            return super.getRenderTypes(itemStack, fabulous);
-        }
-        return result;
-    }
-
-    @Override
     public List<RenderType> getBlockRenderTypes(BlockState state, RandomSource rand) {
         return renderTypes;
     }

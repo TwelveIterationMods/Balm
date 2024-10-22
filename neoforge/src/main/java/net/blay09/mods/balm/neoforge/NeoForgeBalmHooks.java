@@ -14,12 +14,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -84,11 +82,7 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public void curePotionEffects(LivingEntity entity, ItemStack curativeItem) {
-        if (curativeItem.getItem() == Items.MILK_BUCKET) {
-            entity.removeEffectsCuredBy(EffectCures.MILK);
-        } else if (curativeItem.getItem() == Items.HONEY_BOTTLE) {
-            entity.removeEffectsCuredBy(EffectCures.HONEY);
-        }
+        entity.removeAllEffects();
     }
 
     @Override
@@ -98,7 +92,7 @@ public class NeoForgeBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return itemStack.getCraftingRemainingItem();
+        return itemStack.getCraftingRemainder();
     }
 
     @Override
@@ -112,8 +106,8 @@ public class NeoForgeBalmHooks implements BalmHooks {
     }
 
     @Override
-    public int getBurnTime(ItemStack itemStack) {
-        return itemStack.getBurnTime(RecipeType.SMELTING);
+    public int getBurnTime(Level level, ItemStack itemStack) {
+        return level.fuelValues().burnDuration(itemStack);
     }
 
     @Override

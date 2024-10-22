@@ -266,14 +266,6 @@ public class NeoForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(RecipesUpdatedEvent.class, priority -> {
-            NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.client.event.RecipesUpdatedEvent orig) -> {
-                RegistryAccess registryAccess = Minecraft.getInstance().level.registryAccess(); // same way that Minecraft does it in the packet handler
-                final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager(), registryAccess);
-                events.fireEventHandlers(priority, event);
-            });
-        });
-
         events.registerEvent(ItemTooltipEvent.class, priority -> {
             NeoForge.EVENT_BUS.addListener(NeoForgeBalmEvents.toForge(priority), (net.neoforged.neoforge.event.entity.player.ItemTooltipEvent orig) -> {
                 final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getEntity(), orig.getToolTip(), orig.getFlags());

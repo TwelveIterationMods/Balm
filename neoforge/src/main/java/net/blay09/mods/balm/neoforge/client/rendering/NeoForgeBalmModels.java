@@ -46,7 +46,7 @@ public class NeoForgeBalmModels implements BalmModels {
                 set(resolve(modelBakery, modelRegistry, textureGetter));
             } catch (Exception exception) {
                 LOGGER.warn("Unable to bake model: '{}':", getIdentifier(), exception);
-                set(modelBakery.getBakedTopLevelModels().get(ModelBakery.MISSING_MODEL_LOCATION));
+                set(modelBakery.getBakedTopLevelModels().get(MissingBlockModel.VARIANT));
             }
         }
 
@@ -157,7 +157,7 @@ public class NeoForgeBalmModels implements BalmModels {
             public BakedModel resolve(ModelBakery bakery, Map<ModelResourceLocation, BakedModel> modelRegistry, ModelBakery.TextureGetter textureGetter) {
                 final var unbakedModels = new HashMap<ModelResourceLocation, UnbakedModel>();
                 for (final var modelId : models) {
-                    unbakedModels.put(modelId, ((ModelBakeryAccessor) bakery).callGetModel(modelId.id()));
+                    unbakedModels.put(modelId, getUnbakedModelOrMissing(modelId.id()));
                 }
                 return new NeoForgeCachedDynamicModel(bakery,
                         unbakedModels,
@@ -186,12 +186,12 @@ public class NeoForgeBalmModels implements BalmModels {
 
     @Override
     public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
-        return ((ModelBakeryAccessor) modelBakery).callGetModel(location);
+        return ((ModelBakeryAccessor) modelBakery).getUnbakedModels().getOrDefault(location, ((ModelBakeryAccessor) modelBakery).getMissingModel());
     }
 
     @Override
     public UnbakedModel getUnbakedMissingModel() {
-        return ((ModelBakeryAccessor) modelBakery).callGetModel(ModelBakery.MISSING_MODEL_LOCATION);
+        return ((ModelBakeryAccessor) modelBakery).getMissingModel();
     }
 
     public void register(String modId, IEventBus eventBus) {

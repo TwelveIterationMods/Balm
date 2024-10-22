@@ -26,7 +26,7 @@ public class FabricBalmBlocks implements BalmBlocks {
 
     @Override
     public DeferredObject<Item> registerBlockItem(Function<ResourceLocation, BlockItem> supplier, ResourceLocation identifier, @Nullable ResourceLocation creativeTab) {
-        return Balm.getItems().registerItem(() -> supplier.apply(identifier), identifier, creativeTab);
+        return Balm.getItems().registerItem(supplier::apply, identifier, creativeTab);
     }
 
     @Override

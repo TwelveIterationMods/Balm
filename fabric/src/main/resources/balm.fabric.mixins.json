@@ -29,7 +29,6 @@
     "AbstractContainerScreenMixin",
     "ChatComponentMixin",
     "CheckboxAccessor",
-    "ClientPacketListenerMixin",
     "EntityModelSetAccessor",
     "EntityModelSetMixin",
     "GuiMixin",

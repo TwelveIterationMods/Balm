@@ -59,8 +59,8 @@ public class NeoForgeBalmWorldGen implements BalmWorldGen {
                 if (location != null && biomeModification.getBiomePredicate().test(location, biome)) {
                     Registry<PlacedFeature> placedFeatures = ServerLifecycleHooks.getCurrentServer()
                             .registryAccess()
-                            .registryOrThrow(Registries.PLACED_FEATURE);
-                    placedFeatures.getHolder(biomeModification.getConfiguredFeatureKey())
+                            .lookupOrThrow(Registries.PLACED_FEATURE);
+                    placedFeatures.get(biomeModification.getConfiguredFeatureKey())
                             .ifPresent(placedFeature -> builder.getGenerationSettings().addFeature(biomeModification.getStep(), placedFeature));
                 }
             }

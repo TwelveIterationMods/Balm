@@ -4,6 +4,7 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.neoforge.DeferredRegisters;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -38,7 +39,7 @@ public class NeoForgeBalmEntities implements BalmEntities {
     @Override
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
         final var register = DeferredRegisters.get(Registries.ENTITY_TYPE, identifier.getNamespace());
-        final var registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(identifier.toString()));
+        final var registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, identifier)));
         return new DeferredObject<>(identifier, registryObject, registryObject::isBound);
     }
 
@@ -47,7 +48,7 @@ public class NeoForgeBalmEntities implements BalmEntities {
         final var register = DeferredRegisters.get(Registries.ENTITY_TYPE, identifier.getNamespace());
         final var registrations = getActiveRegistrations();
         final var registryObject = register.register(identifier.getPath(), () -> {
-            EntityType<T> entityType = typeBuilder.build(identifier.toString());
+            EntityType<T> entityType = typeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, identifier));
             registrations.attributeSuppliers.put(entityType, attributeBuilder.get().build());
             return entityType;
         });
