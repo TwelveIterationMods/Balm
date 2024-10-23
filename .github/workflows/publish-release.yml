@@ -65,13 +65,35 @@ jobs:
         with:
           script: |
             return {
-              loader: [${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
+              loader: ['common', '${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
               site: ['curseforge', 'modrinth', 'publish'],
               exclude: [
                 {loader: 'common', site: 'curseforge'},
                 {loader: 'common', site: 'modrinth'}
               ]
             }
+  build-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Build common artifact
+        run: ./gradlew :common:build '-Pversion=${{needs.create-release.outputs.version}}'
+      - name: Upload common artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: common-artifact
+          path: common/build
+    needs: create-release
   build-release:
     runs-on: ubuntu-latest
     strategy:
@@ -89,6 +111,11 @@ jobs:
           distribution: temurin
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: Download common artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: common-artifact
+          path: common/build
       - name: Build ${{ matrix.loader }} artifact
         run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}'
       - name: Upload ${{ matrix.loader }} artifact
@@ -96,7 +123,9 @@ jobs:
         with:
           name: ${{ matrix.loader }}-artifact
           path: ${{ matrix.loader }}/build
-    needs: create-release
+    needs:
+      - create-release
+      - build-common
   publish-release:
     runs-on: ubuntu-latest
     strategy:
@@ -133,4 +162,5 @@ jobs:
         run: sha1sum ${{ matrix.loader }}/build/libs/*
     needs:
       - create-release
+      - build-common
       - build-release
