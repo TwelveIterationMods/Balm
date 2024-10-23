@@ -56,16 +56,30 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
+            const includeForge = includes.includes('forge') && ${{inputs.forge}};
+            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
             return {
-              loader: [${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
+              loader: [includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
             }
       - name: Preparing publish matrix
         id: set-publish-matrix
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
+            const includeForge = includes.includes('forge') && ${{inputs.forge}};
+            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
             return {
-              loader: ['common', ${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
+              loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
               site: ['curseforge', 'modrinth', 'publish'],
               exclude: [
                 {loader: 'common', site: 'curseforge'},
