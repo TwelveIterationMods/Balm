@@ -37,18 +37,31 @@ jobs:
           version: ${{ steps.extract-version.outputs.version }}
           bump: patch
         id: bump-version
-      - name: Updating version properties
-        run: |
-          sed -i "s/^\s*version\s*=.*/version = ${{ steps.bump-version.outputs.version }}/g" gradle.properties
-          git config user.name "GitHub Actions"
-          git config user.email "<>"
-          git commit -am "Set version to ${{ steps.bump-version.outputs.version }}"
-          git push origin ${BRANCH_NAME}
-          git tag -a "v${{ steps.bump-version.outputs.version }}" -m "Release ${{ steps.bump-version.outputs.version }}"
-          git push origin "v${{ steps.bump-version.outputs.version }}"
-        shell: bash
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+      #- name: Updating version properties
+      #  run: |
+      #    sed -i "s/^\s*version\s*=.*/version = ${{ steps.bump-version.outputs.version }}/g" gradle.properties
+      #    git config user.name "GitHub Actions"
+      #    git config user.email "<>"
+      #    git commit -am "Set version to ${{ steps.bump-version.outputs.version }}"
+      #    git push origin ${BRANCH_NAME}
+      #    git tag -a "v${{ steps.bump-version.outputs.version }}" -m "Release ${{ steps.bump-version.outputs.version }}"
+      #    git push origin "v${{ steps.bump-version.outputs.version }}"
+      #  shell: bash
+      #  env:
+      #    BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build ${{ matrix.loader }} artifact
+        run: ./gradlew :${{ matrix.loader }}:build
+      - name: Upload ${{ matrix.loader }} artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.loader }}-artifact
+          path: ${{ matrix.loader }}/build/libs/*
+    needs: create-release
   publish-release:
     runs-on: ubuntu-latest
     permissions:
@@ -69,6 +82,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.create-release.outputs.ref }}
+      - name: Download ${{ matrix.loader }} artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.loader }}-artifact
       - name: Validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
       - name: Setup JDK
@@ -78,9 +95,14 @@ jobs:
           distribution: temurin
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: Check current artifact hash TODO
+        run: sha1sum ${{ matrix.loader }}/build/libs/*
       - name: Publish
-        run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
-        env:
-          CURSEFORGE_TOKEN: ${{secrets.CURSEFORGE_TOKEN}}
-          MODRINTH_TOKEN: ${{secrets.MODRINTH_TOKEN}}
-    needs: create-release
+        #run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+        run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+        #env:
+        #  CURSEFORGE_TOKEN: ${{secrets.CURSEFORGE_TOKEN}}
+        #  MODRINTH_TOKEN: ${{secrets.MODRINTH_TOKEN}}
+      - name: Check new artifact hash TODO
+        run: sha1sum ${{ matrix.loader }}/build/libs/*
+    needs: build-release
