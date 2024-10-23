@@ -65,7 +65,7 @@ jobs:
         with:
           script: |
             return {
-              loader: ['common', '${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
+              loader: ['common', ${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
               site: ['curseforge', 'modrinth', 'publish'],
               exclude: [
                 {loader: 'common', site: 'curseforge'},
