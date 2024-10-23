@@ -30,7 +30,7 @@ jobs:
   publish-snapshot:
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.create-release.outputs.build-matrix)}}
+      matrix: ${{fromJson(needs.prepare-matrix.outputs.matrix)}}
       fail-fast: false
     steps:
       - name: Checkout repository
