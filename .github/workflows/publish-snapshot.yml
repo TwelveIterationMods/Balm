@@ -5,13 +5,32 @@ on:
       - '**'
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Preparing matrix
+        id: set-matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includeFabric = includes.includes('fabric');
+            const includeForge = includes.includes('forge');
+            const includeNeoForge = includes.includes('neoforge');
+            return {
+              loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
+            }
   publish-snapshot:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     strategy:
-      matrix:
-        loader: [common, fabric, forge, neoforge]
+      matrix: ${{fromJson(needs.create-release.outputs.build-matrix)}}
       fail-fast: false
     steps:
       - name: Checkout repository
@@ -37,3 +56,4 @@ jobs:
         id: bump-version
       - name: Publish
         run: ./gradlew :${{ matrix.loader }}:publish '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+    needs: prepare-matrix
