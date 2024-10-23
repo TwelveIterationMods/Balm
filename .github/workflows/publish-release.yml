@@ -24,7 +24,8 @@ jobs:
     outputs:
       ref: v${{ steps.bump-version.outputs.version }}
       version: ${{ steps.bump-version.outputs.version }}
-      matrix: ${{ steps.set-matrix.outputs.result }}
+      build-matrix: ${{ steps.set-build-matrix.outputs.result }}
+      publish-matrix: ${{ steps.set-publish-matrix.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,8 +51,16 @@ jobs:
       #  shell: bash
       #  env:
       #    BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-      - name: Preparing matrix
-        id: set-matrix
+      - name: Preparing build matrix
+        id: set-build-matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            return {
+              loader: [${{inputs.fabric}} ? 'fabric' : false, ${{inputs.forge}} ? 'forge' : false, ${{inputs.neoforge}} ? 'neoforge' : false].filter(Boolean),
+            }
+      - name: Preparing publish matrix
+        id: set-publish-matrix
         uses: actions/github-script@v7
         with:
           script: |
@@ -66,7 +75,7 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.create-release.outputs.matrix)}}
+      matrix: ${{fromJson(needs.create-release.outputs.build-matrix)}}
       fail-fast: false
     steps:
       - name: Checkout repository
@@ -91,7 +100,7 @@ jobs:
   publish-release:
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.create-release.outputs.matrix)}}
+      matrix: ${{fromJson(needs.create-release.outputs.publish-matrix)}}
       fail-fast: false
     steps:
       - name: Checkout repository
