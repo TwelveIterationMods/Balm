@@ -51,6 +51,21 @@ jobs:
       #    BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   build-release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        loader: ${{ toJson([
+          'common',
+          inputs.fabric && 'fabric' || null,
+          inputs.forge && 'forge' || null,
+          inputs.neoforge && 'neoforge' || null
+          ] | compact) }}
+        site: [ curseforge, modrinth, publish ]
+        exclude:
+          - loader: common
+            site: curseforge
+          - loader: common
+            site: modrinth
+      fail-fast: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -64,11 +79,14 @@ jobs:
     needs: create-release
   publish-release:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     strategy:
       matrix:
-        loader: [ common, fabric, forge, neoforge ]
+        loader: ${{ toJson([
+          'common',
+          inputs.fabric && 'fabric' || null,
+          inputs.forge && 'forge' || null,
+          inputs.neoforge && 'neoforge' || null
+          ] | compact) }}
         site: [ curseforge, modrinth, publish ]
         exclude:
           - loader: common
@@ -76,7 +94,6 @@ jobs:
           - loader: common
             site: modrinth
       fail-fast: false
-    if: ${{ inputs[matrix.loader] }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
