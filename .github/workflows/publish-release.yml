@@ -90,7 +90,7 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build ${{ matrix.loader }} artifact
-        run: ./gradlew :${{ matrix.loader }}:build
+        run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}'
       - name: Upload ${{ matrix.loader }} artifact
         uses: actions/upload-artifact@v4
         with:
