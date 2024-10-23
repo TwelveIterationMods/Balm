@@ -53,12 +53,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        loader: ${{ toJson([
+        loader: ${{ fromJson(toJson([
           'common',
           inputs.fabric && 'fabric' || null,
           inputs.forge && 'forge' || null,
           inputs.neoforge && 'neoforge' || null
-          ] | compact) }}
+          ])) }}
         site: [ curseforge, modrinth, publish ]
         exclude:
           - loader: common
