@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.2
+- Added support for NeoForge's config screen
