@@ -15,6 +15,8 @@ import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +50,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     private void buildConfigSpec(String parentPath, ModConfigSpec.Builder builder, Class<?> clazz) throws IllegalAccessException {
         List<Field> fields = ConfigReflection.getAllFields(clazz);
         Object defaults = createConfigDataInstance(clazz);
+        final var modContainer = ModLoadingContext.get().getActiveContainer();
+        final var modId = modContainer.getModId();
         for (Field field : fields) {
             Class<?> type = field.getType();
             Object defaultValue = field.get(defaults);
@@ -57,6 +61,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             if (comment != null) {
                 builder.comment(comment.value());
             }
+
+            builder.translation("config." + modId + "." + path);
 
             if (String.class.isAssignableFrom(type)) {
                 final var property = builder.define(path, (String) defaultValue);
@@ -243,9 +249,11 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
         IConfigSpec configSpec = createConfigSpec(clazz);
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, configSpec);
+        final var modContainer = ModLoadingContext.get().getActiveContainer();
+        modContainer.registerConfig(ModConfig.Type.COMMON, configSpec);
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
-        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((ModConfigEvent.Loading event) -> {
+        modContainer.getEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
@@ -253,7 +261,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
             setActiveConfig(clazz, newConfigData);
         });
 
-        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((ModConfigEvent.Reloading event) -> {
+        modContainer.getEventBus().addListener((ModConfigEvent.Reloading event) -> {
             configs.put(clazz, event.getConfig());
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
