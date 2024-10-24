@@ -1,1 +1,1 @@
-- Fixed crash on newer Forge versions
+- Added support for NeoForge's config screen
