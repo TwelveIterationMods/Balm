@@ -8,7 +8,6 @@ neoForge {
     accessTransformers {
         publish file("src/main/resources/META-INF/accesstransformer.cfg")
     }
-    parchment.parchmentArtifact = libs.parchment.get().toString()
 }
 
 dependencies {
