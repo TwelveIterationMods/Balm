@@ -13,7 +13,6 @@ neoForge {
         disableRecompilation = System.getenv("CI") == "true"
     }
 
-    parchment.parchmentArtifact = libs.parchment.get().toString()
 
     runs {
         configureEach {
