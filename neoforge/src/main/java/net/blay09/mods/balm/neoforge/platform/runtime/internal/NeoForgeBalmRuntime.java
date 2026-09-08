@@ -28,6 +28,7 @@ import net.blay09.mods.balm.neoforge.world.entity.internal.NeoForgeBalmEntityTyp
 import net.blay09.mods.balm.neoforge.world.inventory.internal.NeoForgeBalmMenuTypeRegistrar;
 import net.blay09.mods.balm.neoforge.world.item.internal.NeoForgeBalmCompostableRegistrar;
 import net.blay09.mods.balm.neoforge.world.item.internal.NeoForgeBalmCreativeModeTabRegistrar;
+import net.blay09.mods.balm.neoforge.world.item.crafting.internal.NeoForgeBalmRecipeTypeRegistrar;
 import net.blay09.mods.balm.neoforge.world.level.block.entity.internal.NeoForgeBalmBlockEntityTypeRegistrar;
 import net.blay09.mods.balm.neoforge.world.level.levelgen.NeoForgeBalmWorldGen;
 import net.blay09.mods.balm.network.BalmNetworking;
@@ -47,6 +48,7 @@ import net.blay09.mods.balm.world.entity.BalmEntityTypeRegistrar;
 import net.blay09.mods.balm.world.inventory.BalmMenuTypeRegistrar;
 import net.blay09.mods.balm.world.item.BalmCompostableRegistrar;
 import net.blay09.mods.balm.world.item.BalmCreativeModeTabRegistrar;
+import net.blay09.mods.balm.world.item.crafting.BalmRecipeTypeRegistrar;
 import net.blay09.mods.balm.world.level.block.entity.BalmBlockEntityTypeRegistrar;
 import net.blay09.mods.balm.world.level.levelgen.BalmWorldGen;
 import net.blay09.mods.balm.world.level.storage.loot.BalmLootTables;
@@ -149,6 +151,11 @@ public class NeoForgeBalmRuntime extends CommonBalmRuntime<NeoForgeLoadContext> 
                 event.ifRegistry(Registries.ITEM, registry -> initializer.accept(new NeoForgeBalmCompostableRegistrar(registry)));
             }
         });
+    }
+
+    @Override
+    public void recipeTypes(String namespace, Consumer<BalmRecipeTypeRegistrar> initializer) {
+        initializer.accept(new NeoForgeBalmRecipeTypeRegistrar(registrar(), namespace));
     }
 
     public void blockEntityTypes(String namespace, Consumer<BalmBlockEntityTypeRegistrar> initializer) {
