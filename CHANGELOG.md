@@ -1,2 +1,1 @@
-- Fixed `ComputeFovModifierEvent` being hijacked on NeoForge even if no change is being applied
-- API: Fixed `RecipeManagerAccessor` access crashing on dedicated servers
+- Fixed custom recipe types not being registered for syncing
